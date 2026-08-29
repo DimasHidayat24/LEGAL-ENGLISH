@@ -1,0 +1,122 @@
+import React from 'react';
+
+interface LexaLogoProps {
+  className?: string;
+  size?: number;
+  variant?: 'colored' | 'monochrome' | 'gold';
+}
+
+export const LexaLogo: React.FC<LexaLogoProps> = ({
+  className = 'w-8 h-8',
+  size = 32,
+  variant = 'colored',
+}) => {
+  // Dark Academic × Editorial palette integration:
+  // Pillar / 'L': Warm Ivory (#F5F3EE)
+  // 'A' & Justice Scale: Primary Gold (#C9A45C) & Antique Gold (#8F7647)
+  const pillarColor = variant === 'monochrome' ? 'currentColor' : variant === 'gold' ? '#C9A45C' : '#F5F3EE';
+  const goldColor = variant === 'monochrome' ? 'currentColor' : '#C9A45C';
+  const goldAccent = variant === 'monochrome' ? 'currentColor' : '#E8D9B5';
+  const goldDark = variant === 'monochrome' ? 'currentColor' : '#8F7647';
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 120 120"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-label="LEXA Legal English Monogram Logo"
+    >
+      {/* ========================================================
+          LETTER 'A' & BALANCE SCALE (Layered Behind/Interlocked)
+          ======================================================== */}
+      <g id="letter-A-and-scale">
+        {/* Letter 'A' Apex & Diagonal Strokes */}
+        {/* Apex top serif */}
+        <path
+          d="M 68 18 L 84 18 L 84 21 L 79 21 L 96 66 L 93 66 L 75 21 L 70 21 Z"
+          fill={goldColor}
+        />
+        {/* Right leg of 'A' descending */}
+        <path
+          d="M 76 21 L 98 78 L 105 78 L 105 81 L 87 81 L 87 78 L 92 78 L 82 52 L 67 52 L 64 60 L 69 60 L 69 62 L 56 62 L 56 60 L 60 60 L 73 25 L 68 25 Z"
+          fill={goldColor}
+        />
+        {/* Crossbar of 'A' */}
+        <path
+          d="M 69 51 L 83 51 L 81 46 L 71 46 Z"
+          fill={goldAccent}
+        />
+
+        {/* Justice Scale Suspended from Right Arm of 'A' */}
+        {/* Hanging bracket & cord */}
+        <path
+          d="M 94 48 L 108 61"
+          stroke={goldAccent}
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <path
+          d="M 108 61 L 99 74"
+          stroke={goldAccent}
+          strokeWidth="1.2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M 108 61 L 117 74"
+          stroke={goldAccent}
+          strokeWidth="1.2"
+          strokeLinecap="round"
+        />
+        {/* Small pivot ring */}
+        <circle cx="108" cy="61" r="1.8" fill={goldAccent} />
+
+        {/* Balance Scale Pan / Dish */}
+        <path
+          d="M 97 74 Q 108 83 119 74 Z"
+          fill={goldDark}
+        />
+        <path
+          d="M 96 74 C 96 74 102 78.5 108 78.5 C 114 78.5 120 74 120 74"
+          stroke={goldAccent}
+          strokeWidth="1.2"
+          strokeLinecap="round"
+        />
+      </g>
+
+      {/* ========================================================
+          LETTER 'L' & LAW PILLAR (Law & Authority)
+          ======================================================== */}
+      <g id="letter-L-and-pillar">
+        {/* Capital Architrave / Top Abacus of Pillar */}
+        <rect x="24" y="16" width="34" height="3" rx="0.5" fill={pillarColor} />
+        <rect x="27" y="19.5" width="28" height="2.5" rx="0.5" fill={pillarColor} />
+
+        {/* Fluted Columns (3 Distinct Architectural Flutes) */}
+        {/* Column 1 (Leftmost edge) */}
+        <rect x="29" y="22.5" width="4.5" height="52" rx="1.5" fill={pillarColor} />
+        {/* Column 2 (Center flute) */}
+        <rect x="36" y="22.5" width="4.5" height="52" rx="1.5" fill={pillarColor} />
+        {/* Column 3 (Right flute) */}
+        <rect x="43" y="22.5" width="4.5" height="52" rx="1.5" fill={pillarColor} />
+
+        {/* Pillar Torus / Base Moldings */}
+        <rect x="27" y="74.5" width="28" height="2.5" rx="0.5" fill={pillarColor} />
+        <rect x="24" y="77" width="34" height="3.5" rx="0.5" fill={pillarColor} />
+
+        {/* Base 'L' Horizontal Foot & Serif */}
+        <path
+          d="M 21 80.5 L 68 80.5 C 69.5 80.5 70.5 79.5 70.5 77 L 72.5 77 L 72.5 85 L 21 85 Z"
+          fill={pillarColor}
+        />
+        {/* Left base serif on 'L' */}
+        <path
+          d="M 21 78.5 L 25 78.5 L 25 85 L 21 85 Z"
+          fill={pillarColor}
+        />
+      </g>
+    </svg>
+  );
+};

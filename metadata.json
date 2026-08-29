@@ -1,0 +1,6 @@
+{
+  "name": "LEXA - Legal English Platform",
+  "description": "Premium educational platform dedicated to Legal English for Indonesian law students, featuring interactive legal document reading, bilingual contextual explanations, and drafting modules.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
