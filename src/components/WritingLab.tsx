@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { writingModulesList } from '../data/writingData';
-import { PenTool, Copy, Check, FileText } from 'lucide-react';
+import { PenTool, Copy, Check, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const WritingLab: React.FC = () => {
   const [selectedModuleId, setSelectedModuleId] = useState<string>(writingModulesList[0].id);
   const [copied, setCopied] = useState<boolean>(false);
+  const [copiedSection, setCopiedSection] = useState<boolean>(false);
+  const [copiedPhraseIdx, setCopiedPhraseIdx] = useState<number | null>(null);
   const [activeSectionIdx, setActiveSectionIdx] = useState<number>(0);
 
   const activeModule = writingModulesList.find(m => m.id === selectedModuleId) || writingModulesList[0];
@@ -16,21 +18,36 @@ export const WritingLab: React.FC = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleCopySectionSample = () => {
+    navigator.clipboard.writeText(activeSection.sampleText);
+    setCopiedSection(true);
+    setTimeout(() => setCopiedSection(false), 2000);
+  };
+
+  const handleCopyPhrase = (phraseText: string, idx: number) => {
+    navigator.clipboard.writeText(phraseText);
+    setCopiedPhraseIdx(idx);
+    setTimeout(() => setCopiedPhraseIdx(null), 2000);
+  };
+
+  const canGoPrev = activeSectionIdx > 0;
+  const canGoNext = activeSectionIdx < activeModule.sections.length - 1;
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8">
       
       {/* Header */}
-      <div className="border-b border-[#26344A] pb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <PenTool className="w-4 h-4 text-[#C9A45C]" />
-          <span className="text-[11px] font-sans tracking-widest uppercase text-[#C9A45C] font-bold">
+      <div className="border-b border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] pb-6">
+        <div className="flex items-center gap-2 mb-1.5">
+          <PenTool className="w-4 h-4 text-[#4F83B8]" />
+          <span className="text-[11px] font-sans tracking-widest uppercase text-[#4F83B8] font-semibold">
             LEGAL DRAFTING & IRAC WORKBENCH
           </span>
         </div>
-        <h1 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#F5F3EE] tracking-tight">
+        <h1 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#F3F5F7] tracking-tight">
           Write Like a Lawyer
         </h1>
-        <p className="text-sm sm:text-base text-[#AAB4C3] font-sans mt-2 max-w-3xl leading-relaxed">
+        <p className="text-sm sm:text-base text-[#9BAABC] font-sans mt-2 max-w-3xl leading-relaxed">
           Master international corporate and litigation drafting. Explore standardized IRAC memoranda, cross-border legal opinions, and enforceable English demand letters (somasi).
         </p>
 
@@ -43,10 +60,10 @@ export const WritingLab: React.FC = () => {
                 setSelectedModuleId(mod.id);
                 setActiveSectionIdx(0);
               }}
-              className={`px-3.5 py-2 whitespace-nowrap transition-colors border cursor-pointer rounded-xs text-xs font-semibold ${
+              className={`px-4 py-2 whitespace-nowrap transition-all border cursor-pointer rounded-full text-xs font-medium ${
                 selectedModuleId === mod.id
-                  ? 'bg-[#C9A45C] text-[#0B1220] border-[#C9A45C] font-bold shadow-xs'
-                  : 'bg-[#111A2B] text-[#AAB4C3] border-[#26344A] hover:bg-[#172235] hover:text-[#F5F3EE]'
+                  ? 'bg-[#132B46] text-[#F3F5F7] border-[#294766] font-semibold shadow-xs'
+                  : 'bg-[#112239]/60 text-[#9BAABC] border-[#1D3552] hover:bg-[#132B46] hover:text-[#F3F5F7]'
               }`}
             >
               {mod.documentType}: {mod.title.split('How to ')[1] || mod.title}
@@ -62,31 +79,31 @@ export const WritingLab: React.FC = () => {
         <div className="lg:col-span-7 space-y-6">
           
           {/* Module Banner */}
-          <div className="lexa-card p-5 space-y-2 rounded-xs">
-            <span className="badge-navy text-[10px] font-sans uppercase px-2 py-0.5 rounded-xs font-semibold">
+          <div className="p-6 rounded-3xl lexa-card liquid-lens space-y-2">
+            <span className="badge-navy text-[10px] font-sans uppercase px-2.5 py-0.5 rounded-full font-semibold">
               {activeModule.documentType}
             </span>
-            <h2 className="text-xl sm:text-2xl font-sans font-extrabold text-[#F5F3EE] tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-sans font-extrabold text-[#F3F5F7] tracking-tight">
               {activeModule.title}
             </h2>
-            <p className="text-xs sm:text-sm text-[#AAB4C3] font-sans">
+            <p className="text-xs sm:text-sm text-[#9BAABC] font-sans">
               {activeModule.subtitle}
             </p>
-            <div className="pt-2 border-t border-[#26344A] text-xs font-sans text-[#C5CBD5] italic">
-              <strong className="text-[#F5F3EE] font-semibold">Tujuan Praktis:</strong> {activeModule.purposeId}
+            <div className="pt-2 border-t border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] text-xs font-sans text-[#9BAABC] italic">
+              <strong className="text-[#F3F5F7] font-semibold">Tujuan Praktis:</strong> {activeModule.purposeId}
             </div>
           </div>
 
           {/* Section Step Pills */}
-          <div className="flex items-center gap-1 overflow-x-auto text-xs font-sans border-b border-[#26344A] pb-2 no-scrollbar">
+          <div className="flex items-center gap-1.5 overflow-x-auto text-xs font-sans pb-1 no-scrollbar">
             {activeModule.sections.map((sec, idx) => (
               <button
                 key={idx}
                 onClick={() => setActiveSectionIdx(idx)}
-                className={`px-3 py-1.5 whitespace-nowrap border transition-colors cursor-pointer rounded-xs font-medium ${
+                className={`px-3.5 py-1.5 whitespace-nowrap border transition-all cursor-pointer rounded-full font-medium ${
                   activeSectionIdx === idx
-                    ? 'bg-[#C9A45C] text-[#0B1220] border-[#C9A45C] font-bold shadow-xs'
-                    : 'bg-[#111A2B] text-[#AAB4C3] border-[#26344A] hover:bg-[#172235] hover:text-[#F5F3EE]'
+                    ? 'bg-[#132B46] text-[#F3F5F7] border-[#294766] font-semibold shadow-xs'
+                    : 'bg-[#112239]/60 text-[#9BAABC] border-[#1D3552] hover:bg-[#132B46] hover:text-[#F3F5F7]'
                 }`}
               >
                 {idx + 1}. {sec.sectionName.split('(')[0].trim()}
@@ -95,35 +112,49 @@ export const WritingLab: React.FC = () => {
           </div>
 
           {/* Active Section Card */}
-          <div className="lexa-card p-6 space-y-6 shadow-xl rounded-xs">
-            <div className="border-b border-[#26344A] pb-4 space-y-1">
-              <span className="text-[10px] font-sans uppercase tracking-wider text-[#C9A45C] font-bold">
+          <div className="p-6 sm:p-8 rounded-3xl glass-panel-deep liquid-lens space-y-6">
+            <div className="border-b border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] pb-4 space-y-1">
+              <span className="text-[10px] font-sans uppercase tracking-wider text-[#4F83B8] font-semibold">
                 SECTION {activeSectionIdx + 1} OF {activeModule.sections.length}
               </span>
-              <h3 className="text-xl font-sans font-extrabold text-[#F5F3EE]">
+              <h3 className="text-xl font-sans font-extrabold text-[#F3F5F7]">
                 {activeSection.sectionName}
               </h3>
-              <p className="text-xs font-sans italic text-[#AAB4C3]">
+              <p className="text-xs font-sans italic text-[#9BAABC]">
                 Padanan Indonesia: {activeSection.indonesianName}
               </p>
-              <p className="text-xs sm:text-sm text-[#C5CBD5] font-sans pt-1 leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#9BAABC] font-sans pt-1 leading-relaxed">
                 {activeSection.purpose}
               </p>
             </div>
 
             {/* Standard Legal Phrases Table */}
-            <div className="space-y-2">
-              <span className="text-xs font-sans uppercase tracking-wider text-[#C9A45C] font-bold block">
+            <div className="space-y-2.5">
+              <span className="text-xs font-sans uppercase tracking-wider text-[#4F83B8] font-semibold block">
                 Standard Legal Formulae & Stock Phrases
               </span>
               <div className="space-y-2">
                 {activeSection.standardPhrases.map((phrase, pIdx) => (
-                  <div key={pIdx} className="p-3 bg-[#111A2B] border border-[#26344A] space-y-1 rounded-xs">
-                    <div className="flex items-center justify-between text-xs font-sans text-[#F5F3EE] font-bold">
-                      <span className="text-[#F5F3EE]">&ldquo;{phrase.en}&rdquo;</span>
-                      <span className="text-[10px] text-[#AAB4C3] font-normal font-sans">{phrase.notes}</span>
+                  <div key={pIdx} className="p-4 rounded-2xl lexa-surface-subtle space-y-1 group relative">
+                    <div className="flex items-center justify-between text-xs font-sans text-[#F3F5F7] font-semibold gap-2">
+                      <span className="text-[#F3F5F7]">&ldquo;{phrase.en}&rdquo;</span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-[10px] text-[#64758A] font-normal">{phrase.notes}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyPhrase(phrase.en, pIdx)}
+                          className="p-1 text-[#9BAABC] hover:text-[#F3F5F7] cursor-pointer rounded-full transition-colors"
+                          title="Copy phrase to clipboard"
+                        >
+                          {copiedPhraseIdx === pIdx ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+                      </div>
                     </div>
-                    <div className="text-xs text-[#AAB4C3] font-sans italic">
+                    <div className="text-xs text-[#9BAABC] font-sans italic">
                       Terjemahan: {phrase.id}
                     </div>
                   </div>
@@ -131,58 +162,101 @@ export const WritingLab: React.FC = () => {
               </div>
             </div>
 
-            {/* Sample Section Text (Source Serif 4 for authentic legal text) */}
+            {/* Sample Section Text */}
             <div className="space-y-2">
-              <span className="text-xs font-sans uppercase tracking-wider text-[#C9A45C] font-bold block">
-                Exemplary Professional Drafting
-              </span>
-              <pre className="font-serif text-xs sm:text-sm text-[#F5F3EE] bg-[#111A2B] p-4 border-l-3 border-[#C9A45C] whitespace-pre-wrap leading-[1.7] rounded-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-sans uppercase tracking-wider text-[#4F83B8] font-semibold block">
+                  Exemplary Professional Drafting
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCopySectionSample}
+                  className="px-2.5 py-1 text-[11px] rounded-full border border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] text-[#9BAABC] hover:text-[#F3F5F7] hover:bg-[#132B46] cursor-pointer transition-all flex items-center gap-1 font-medium"
+                >
+                  {copiedSection ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                  <span>{copiedSection ? 'Copied Clause' : 'Copy Clause'}</span>
+                </button>
+              </div>
+              <pre className="font-serif text-xs sm:text-sm text-[#F3F5F7] bg-[#050B16]/80 dark:bg-[#050B16]/80 bg-[#E8EFF7] p-4 border-l-2 border-[#4F83B8] whitespace-pre-wrap leading-[1.7] rounded-2xl border border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC]">
                 {activeSection.sampleText}
               </pre>
             </div>
 
             {/* Drafting Tips */}
             {activeSection.tips && (
-              <div className="p-4 badge-sage space-y-1 text-xs rounded-xs font-sans">
-                <span className="font-sans font-bold uppercase tracking-wider block">
+              <div className="p-4 rounded-2xl lexa-surface-subtle space-y-1 text-xs font-sans">
+                <span className="font-sans font-bold uppercase tracking-wider text-[#6A9BCB] block">
                   Partner&apos;s Practice Tips:
                 </span>
-                <ul className="list-disc list-inside font-sans space-y-0.5">
+                <ul className="list-disc list-inside font-sans space-y-0.5 text-[#9BAABC]">
                   {activeSection.tips.map((tip, tIdx) => (
                     <li key={tIdx}>{tip}</li>
                   ))}
                 </ul>
               </div>
             )}
+
+            {/* Step Navigation Controls */}
+            <div className="flex items-center justify-between pt-4 border-t border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC]">
+              <button
+                disabled={!canGoPrev}
+                onClick={() => canGoPrev && setActiveSectionIdx(prev => prev - 1)}
+                className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full border text-xs font-sans transition-all ${
+                  canGoPrev
+                    ? 'bg-[#112239] dark:bg-[#112239] bg-[#E8EFF8] text-[#9BAABC] border-[#1D3552] hover:text-[#F3F5F7] hover:bg-[#132B46] cursor-pointer font-medium'
+                    : 'opacity-40 cursor-not-allowed border-transparent text-[#64758A]'
+                }`}
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Previous Section</span>
+              </button>
+
+              <span className="text-[11px] font-sans text-[#64758A]">
+                Step {activeSectionIdx + 1} of {activeModule.sections.length}
+              </span>
+
+              <button
+                disabled={!canGoNext}
+                onClick={() => canGoNext && setActiveSectionIdx(prev => prev + 1)}
+                className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full border text-xs font-sans transition-all ${
+                  canGoNext
+                    ? 'bg-[#112239] dark:bg-[#112239] bg-[#E8EFF8] text-[#9BAABC] border-[#1D3552] hover:text-[#F3F5F7] hover:bg-[#132B46] cursor-pointer font-medium'
+                    : 'opacity-40 cursor-not-allowed border-transparent text-[#64758A]'
+                }`}
+              >
+                <span>Next Section</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Right Column: Full Document Template & Copy Workbench */}
-        <div className="lg:col-span-5 sticky top-20 space-y-4">
-          <div className="bg-[#111A2B] text-[#F5F3EE] p-4 flex items-center justify-between border border-[#26344A] rounded-xs">
+        <div className="lg:col-span-5 sticky top-24 space-y-4">
+          <div className="p-4 rounded-3xl glass-panel-deep liquid-lens flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-[#C9A45C]" />
-              <span className="font-sans font-extrabold text-sm tracking-wide uppercase">
+              <FileText className="w-4 h-4 text-[#4F83B8]" />
+              <span className="font-sans font-extrabold text-sm tracking-wide uppercase text-[#F3F5F7]">
                 FULL AUTHENTIC TEMPLATE
               </span>
             </div>
             <button
               onClick={handleCopyFullExample}
-              className="btn-primary px-3 py-1 text-xs rounded-xs uppercase tracking-wider flex items-center gap-1.5"
+              className="btn-primary px-3.5 py-1.5 text-xs rounded-full uppercase tracking-wider flex items-center gap-1.5 font-semibold"
             >
               {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copied ? 'Copied!' : 'Copy Template'}</span>
             </button>
           </div>
 
-          <div className="lexa-card p-5 max-h-[75vh] overflow-y-auto shadow-xl rounded-xs">
-            <pre className="font-serif text-xs sm:text-sm text-[#F5F3EE] whitespace-pre-wrap leading-[1.7]">
+          <div className="p-5 rounded-3xl glass-panel-deep max-h-[75vh] overflow-y-auto no-scrollbar">
+            <pre className="font-serif text-xs sm:text-sm text-[#F3F5F7] whitespace-pre-wrap leading-[1.7]">
               {activeModule.fullExample}
             </pre>
           </div>
 
-          <div className="p-4 bg-[#111A2B] border border-[#26344A] text-xs font-sans text-[#AAB4C3] space-y-1 rounded-xs">
-            <span className="font-sans font-bold text-[#F5F3EE] block">
+          <div className="p-4 rounded-2xl lexa-surface-subtle text-xs font-sans text-[#9BAABC] space-y-1">
+            <span className="font-sans font-semibold text-[#F3F5F7] block">
               Academic & Professional Standard:
             </span>
             <p className="leading-relaxed">

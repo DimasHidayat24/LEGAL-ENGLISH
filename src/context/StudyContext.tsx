@@ -1,8 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { LanguageMode, SavedTermRecord, UserStudyState } from '../types';
+import { LanguageMode, ThemeMode, SavedTermRecord, UserStudyState } from '../types';
 import { legalVocabularyList } from '../data/vocabularyData';
 
 interface StudyContextType {
+  theme: ThemeMode;
+  setTheme: (theme: ThemeMode) => void;
+  toggleTheme: () => void;
   languageMode: LanguageMode;
   setLanguageMode: (mode: LanguageMode) => void;
   toggleLanguageMode: () => void;
@@ -37,6 +40,7 @@ interface StudyContextType {
 }
 
 const STORAGE_KEY = 'lexa_study_state_v1';
+const THEME_STORAGE_KEY = 'lexa_theme_mode';
 
 const initialStudyState: UserStudyState = {
   savedTerms: [
@@ -62,6 +66,21 @@ const initialStudyState: UserStudyState = {
 const StudyContext = createContext<StudyContextType | undefined>(undefined);
 
 export const StudyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [theme, setThemeState] = useState<ThemeMode>(() => {
+    try {
+      const stored = localStorage.getItem(THEME_STORAGE_KEY);
+      if (stored === 'light' || stored === 'dark') {
+        return stored;
+      }
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        return 'light';
+      }
+    } catch (e) {
+      console.warn('Failed to load theme preference:', e);
+    }
+    return 'dark';
+  });
+
   const [languageMode, setLanguageMode] = useState<LanguageMode>('EN');
   const [studyState, setStudyState] = useState<UserStudyState>(() => {
     try {
@@ -89,6 +108,34 @@ export const StudyProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       console.warn('Failed to save study state:', e);
     }
   }, [studyState]);
+
+  // Synchronize theme with document and localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch (e) {
+      console.warn('Failed to save theme preference:', e);
+    }
+
+    const root = document.documentElement;
+    if (theme === 'light') {
+      root.classList.add('light');
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+    } else {
+      root.classList.add('dark');
+      root.classList.remove('light');
+      root.setAttribute('data-theme', 'dark');
+    }
+  }, [theme]);
+
+  const setTheme = (newTheme: ThemeMode) => {
+    setThemeState(newTheme);
+  };
+
+  const toggleTheme = () => {
+    setThemeState(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   // Keyboard shortcut for search (⌘K or Ctrl+K)
   useEffect(() => {
@@ -202,6 +249,9 @@ export const StudyProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   return (
     <StudyContext.Provider
       value={{
+        theme,
+        setTheme,
+        toggleTheme,
         languageMode,
         setLanguageMode,
         toggleLanguageMode,

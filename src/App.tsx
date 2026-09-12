@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StudyProvider, useStudy } from './context/StudyContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -20,21 +20,41 @@ import { TermDetailModal } from './components/TermDetailModal';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 
 const AppContent: React.FC = () => {
-  const { selectedTab } = useStudy();
+  const { selectedTab, theme, setIsSearchOpen, setActiveLookupTermId } = useStudy();
+
+  // Instant scroll-to-top on tab switch for smooth navigation
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [selectedTab]);
+
+  // Global keyboard shortcuts (CMD+K / Ctrl+K for search, Escape to close modals)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev: boolean) => !prev);
+      } else if (e.key === 'Escape') {
+        setIsSearchOpen(false);
+        setActiveLookupTermId(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [setIsSearchOpen, setActiveLookupTermId]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0B1220] text-[#F5F3EE] selection:bg-[#E8D9B5] selection:text-[#0B1220] font-sans antialiased relative overflow-x-hidden">
-      {/* Subtle deep academic background ambient lighting */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-        {/* Soft gold ambient lighting in upper corner */}
-        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-[#C9A45C]/[0.03] blur-[100px]" />
-        {/* Deep navy subtle glow */}
-        <div className="absolute top-1/3 -left-32 w-[500px] h-[500px] rounded-full bg-[#172235]/50 blur-[120px]" />
-      </div>
+    <div className={`min-h-screen flex flex-col font-sans antialiased relative overflow-x-hidden transition-colors duration-300 ${
+      theme === 'light'
+        ? 'bg-[#F4F7FB] text-[#0F1D30] selection:bg-[#2B62A3]/25 selection:text-[#0F1D30]'
+        : 'bg-[#050B16] text-[#F3F5F7] selection:bg-[#4F83B8]/40 selection:text-[#FFFFFF]'
+    }`}>
+      {/* Hardware-accelerated Apple Liquid Glass ambient refractive lighting (zero scroll GPU overhead) */}
+      <div className="ambient-canvas-bg" aria-hidden="true" />
 
       <Navbar />
 
-      <main className="flex-1 relative z-10">
+      <main className="flex-1 relative z-10 pt-24 sm:pt-28">
         {selectedTab === 'home' && <HeroSection />}
         {selectedTab === 'learn' && <CurriculumView />}
         {selectedTab === 'documents' && <DocumentReader />}

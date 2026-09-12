@@ -6,9 +6,9 @@ import {
   CheckCircle2, 
   Clock, 
   Scale, 
-  FileText, 
   Check, 
-  HelpCircle
+  HelpCircle,
+  ArrowRight
 } from 'lucide-react';
 
 export const CurriculumView: React.FC = () => {
@@ -46,20 +46,20 @@ export const CurriculumView: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8">
       
       {/* Header */}
-      <div className="border-b border-[#26344A] pb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <Scale className="w-4 h-4 text-[#C9A45C]" />
-          <span className="text-[11px] font-sans tracking-widest uppercase text-[#C9A45C] font-bold">
+      <div className="border-b border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] pb-6">
+        <div className="flex items-center gap-2 mb-1.5">
+          <Scale className="w-4 h-4 text-[#4F83B8]" />
+          <span className="text-[11px] font-sans tracking-widest uppercase text-[#4F83B8] font-semibold">
             ACADEMIC CURRICULUM & MODULES
           </span>
         </div>
-        <h1 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#F5F3EE] tracking-tight">
+        <h1 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#F3F5F7] tracking-tight">
           Structured Legal English Mastery
         </h1>
-        <p className="text-sm sm:text-base text-[#AAB4C3] font-sans mt-2 max-w-3xl leading-relaxed">
+        <p className="text-sm sm:text-base text-[#9BAABC] font-sans mt-2 max-w-3xl leading-relaxed">
           Progress from foundational pronominal connectors and modal verbs to drafting complex commercial covenants and international SIAC arbitration awards.
         </p>
 
@@ -69,10 +69,10 @@ export const CurriculumView: React.FC = () => {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-3 py-1.5 whitespace-nowrap transition-colors border cursor-pointer rounded-xs text-xs font-semibold ${
+              className={`px-4 py-2 whitespace-nowrap transition-all border cursor-pointer rounded-full text-xs font-medium ${
                 selectedCategory === cat.id
-                  ? 'bg-[#C9A45C] text-[#0B1220] border-[#C9A45C] font-bold shadow-xs'
-                  : 'bg-[#111A2B] text-[#AAB4C3] border-[#26344A] hover:bg-[#172235] hover:text-[#F5F3EE]'
+                  ? 'bg-[#132B46] text-[#F3F5F7] border-[#294766] font-semibold shadow-xs'
+                  : 'bg-[#112239]/60 text-[#9BAABC] border-[#1D3552] hover:bg-[#132B46] hover:text-[#F3F5F7]'
               }`}
             >
               {cat.label}
@@ -86,14 +86,14 @@ export const CurriculumView: React.FC = () => {
         
         {/* Left Sidebar: Lesson Navigation List */}
         <div className="lg:col-span-4 space-y-3">
-          <div className="text-xs font-sans uppercase tracking-wider text-[#AAB4C3] mb-2 px-1 flex items-center justify-between font-bold">
+          <div className="text-xs font-sans uppercase tracking-wider text-[#9BAABC] mb-2 px-1 flex items-center justify-between font-semibold">
             <span>Lessons ({filteredLessons.length})</span>
-            <span className="text-[#F5F3EE] font-bold">
+            <span className="text-[#F3F5F7] font-semibold">
               {completedLessons.length} of {curriculumLessons.length} Completed
             </span>
           </div>
 
-          <div className="space-y-2 max-h-[80vh] overflow-y-auto pr-1">
+          <div className="space-y-2.5 max-h-[80vh] overflow-y-auto pr-1 no-scrollbar">
             {filteredLessons.map((lesson) => {
               const isSelected = activeLesson.id === lesson.id;
               const isCompleted = completedLessons.includes(lesson.id);
@@ -106,30 +106,30 @@ export const CurriculumView: React.FC = () => {
                     setSelectedQuizAnswer(null);
                     setShowQuizExplanation(false);
                   }}
-                  className={`p-4 border transition-all cursor-pointer rounded-xs ${
+                  className={`p-4 transition-all cursor-pointer rounded-2xl border ${
                     isSelected
-                      ? 'bg-[#172235] border-2 border-[#C9A45C] shadow-xs'
-                      : 'bg-[#111A2B] border-[#26344A] hover:border-[#C9A45C]/40 hover:bg-[#172235]'
+                      ? 'bg-[#132B46] border-[#294766] shadow-[0_10px_25px_rgba(2,6,12,0.5)] font-medium'
+                      : 'lexa-card hover:border-[#294766]'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="badge-navy text-[10px] font-sans uppercase px-1.5 py-0.5 rounded-xs font-semibold">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="badge-navy text-[10px] font-sans uppercase px-2.5 py-0.5 rounded-full font-semibold">
                       {lesson.categoryId}
                     </span>
-                    <div className="flex items-center gap-2 text-[10px] font-sans text-[#AAB4C3] font-medium">
+                    <div className="flex items-center gap-2 text-[10px] font-sans text-[#9BAABC]">
                       <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> {lesson.durationMinutes}m
+                        <Clock className="w-3 h-3 text-[#4F83B8]" /> {lesson.durationMinutes}m
                       </span>
                       {isCompleted && (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#8FAF9B]" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#6A9BCB]" />
                       )}
                     </div>
                   </div>
 
-                  <h3 className="font-sans font-bold text-sm text-[#F5F3EE] leading-snug">
+                  <h3 className="font-sans font-bold text-sm text-[#F3F5F7] leading-snug">
                     {lesson.title}
                   </h3>
-                  <p className="text-xs text-[#AAB4C3] font-sans italic mt-0.5">
+                  <p className="text-xs text-[#9BAABC] font-sans italic mt-0.5">
                     {lesson.titleId}
                   </p>
                 </div>
@@ -139,39 +139,39 @@ export const CurriculumView: React.FC = () => {
         </div>
 
         {/* Right Pane: Comprehensive Interactive Lesson Content */}
-        <div className="lg:col-span-8 lexa-card p-6 sm:p-10 space-y-8 shadow-xl rounded-xs">
+        <div className="lg:col-span-8 p-6 sm:p-10 rounded-3xl glass-panel-deep liquid-lens space-y-8">
           
           {/* Lesson Header */}
-          <div className="border-b border-[#26344A] pb-6 space-y-3">
+          <div className="border-b border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] pb-6 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-sans uppercase tracking-wider text-[#C9A45C] font-bold">
+              <span className="text-xs font-sans uppercase tracking-wider text-[#4F83B8] font-semibold">
                 TRACK: {activeLesson.categoryId.toUpperCase()} • {activeLesson.difficulty.toUpperCase()}
               </span>
               <button
                 onClick={() => markLessonComplete(activeLesson.id)}
-                className={`px-3 py-1.5 text-xs font-sans border flex items-center gap-1.5 transition-colors cursor-pointer rounded-xs ${
+                className={`px-4 py-2 text-xs font-sans border flex items-center gap-1.5 transition-all cursor-pointer rounded-full ${
                   isLessonCompleted
-                    ? 'bg-[#8FAF9B] text-[#0B1220] border-[#8FAF9B] font-bold uppercase tracking-wider'
+                    ? 'bg-[#132B46] text-[#6A9BCB] border-[#294766] font-semibold'
                     : 'btn-secondary'
                 }`}
               >
-                <CheckCircle2 className="w-3.5 h-3.5" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#4F83B8]" />
                 <span>{isLessonCompleted ? 'Module Completed' : 'Mark as Complete'}</span>
               </button>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-sans font-extrabold text-[#F5F3EE] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-sans font-extrabold text-[#F3F5F7] tracking-tight">
               {activeLesson.title}
             </h2>
-            <p className="text-sm font-sans italic text-[#AAB4C3] font-normal">
+            <p className="text-sm font-sans italic text-[#9BAABC] font-normal">
               {activeLesson.titleId}
             </p>
 
-            <div className="p-4 bg-[#111A2B] border-l-3 border-[#C9A45C] space-y-1 rounded-xs">
-              <span className="text-[10px] font-sans uppercase tracking-wider text-[#C9A45C] block font-bold">
+            <div className="p-4 rounded-2xl lexa-surface-subtle space-y-1">
+              <span className="text-[10px] font-sans uppercase tracking-wider text-[#4F83B8] block font-semibold">
                 Overview & Pedagogical Goal
               </span>
-              <p className="text-sm font-sans text-[#C5CBD5] leading-relaxed">
+              <p className="text-sm font-sans text-[#9BAABC] leading-relaxed">
                 {languageMode === 'ID' ? activeLesson.overviewId : activeLesson.overviewEn}
               </p>
             </div>
@@ -179,7 +179,7 @@ export const CurriculumView: React.FC = () => {
 
           {/* Core Concepts Breakdown */}
           <div className="space-y-6">
-            <h3 className="text-xs font-sans tracking-wider uppercase text-[#C9A45C] font-bold border-b border-[#26344A] pb-2">
+            <h3 className="text-xs font-sans tracking-wider uppercase text-[#4F83B8] font-semibold border-b border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] pb-2">
               Core Legal Concepts & Terminology ({activeLesson.coreConcepts.length})
             </h3>
 
@@ -188,13 +188,13 @@ export const CurriculumView: React.FC = () => {
                 const termInDict = legalVocabularyList.find(t => t.term.toLowerCase() === concept.term.toLowerCase());
 
                 return (
-                  <div key={cIdx} className="p-5 bg-[#111A2B] border border-[#26344A] space-y-3 rounded-xs">
+                  <div key={cIdx} className="p-5 rounded-2xl lexa-surface-subtle space-y-3">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 bg-[#172235] text-[#F5F3EE] border border-[#26344A] text-xs font-sans font-bold flex items-center justify-center rounded-xs">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-6 h-6 bg-[#132B46] text-[#F3F5F7] border border-[#294766] text-xs font-sans font-bold flex items-center justify-center rounded-full">
                           {cIdx + 1}
                         </span>
-                        <h4 className="font-sans font-extrabold text-lg text-[#F5F3EE]">
+                        <h4 className="font-sans font-extrabold text-lg text-[#F3F5F7]">
                           {concept.term}
                         </h4>
                       </div>
@@ -202,159 +202,132 @@ export const CurriculumView: React.FC = () => {
                       {termInDict && (
                         <button
                           onClick={() => setActiveLookupTermId(termInDict.id)}
-                          className="text-xs font-sans font-semibold text-[#C9A45C] underline hover:text-[#E8D9B5] flex items-center gap-1 cursor-pointer"
+                          className="text-xs font-sans font-medium text-[#4F83B8] hover:text-[#6A9BCB] hover:underline flex items-center gap-1 cursor-pointer"
                         >
-                          View in Dictionary →
+                          View in Dictionary <ArrowRight className="w-3 h-3" />
                         </button>
                       )}
                     </div>
 
-                    <div className="p-3 bg-[#172235] border-l-2 border-[#C9A45C] rounded-xs">
-                      <span className="text-[10px] font-sans uppercase text-[#C9A45C] block font-bold">
+                    <div className="p-3.5 rounded-xl bg-[#081222]/80 dark:bg-[#081222]/80 bg-[#E8EFF7] border border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] space-y-1">
+                      <span className="text-[10px] font-sans uppercase text-[#4F83B8] block font-semibold">
                         Makna Bahasa Indonesia:
                       </span>
-                      <p className="font-sans font-bold text-sm text-[#F5F3EE]">
+                      <p className="font-sans font-bold text-sm text-[#F3F5F7]">
                         {concept.meaningId}
                       </p>
-                      <p className="text-xs text-[#C5CBD5] mt-1 font-sans font-normal">
+                      <p className="text-xs text-[#9BAABC] mt-1 font-sans font-normal">
                         {concept.explanationId}
                       </p>
                     </div>
 
-                    <div className="text-xs text-[#AAB4C3] space-y-1 font-sans">
-                      <strong className="text-[#F5F3EE] font-semibold">Legal Function:</strong> {concept.legalFunction}
+                    <div className="text-xs text-[#9BAABC] space-y-1 font-sans">
+                      <strong className="text-[#F3F5F7] font-semibold">Legal Function:</strong> {concept.legalFunction}
                     </div>
 
-                    {/* Authentic Example Box (Source Serif 4 for quoted legal clause) */}
-                    <div className="p-3 bg-[#172235] border border-[#26344A] space-y-1 rounded-xs">
-                      <span className="text-[10px] font-sans uppercase text-[#C9A45C] block font-bold">
+                    {/* Authentic Example Box */}
+                    <div className="p-4 rounded-xl bg-[#050B16] dark:bg-[#050B16] bg-[#DFE9F5] border border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] space-y-1.5">
+                      <span className="text-[10px] font-sans uppercase text-[#4F83B8] block font-semibold">
                         Authentic Example Clause:
                       </span>
-                      <blockquote className="text-xs sm:text-[13px] font-serif italic text-[#F5F3EE] leading-[1.7]">
+                      <blockquote className="text-xs sm:text-[13px] font-serif italic text-[#F3F5F7] leading-[1.7]">
                         &ldquo;{concept.authenticExample}&rdquo;
                       </blockquote>
-                      <p className="text-xs font-sans text-[#AAB4C3] pt-1 border-t border-[#26344A]">
-                        <strong className="text-[#F5F3EE] font-semibold">Terjemahan:</strong> {concept.indonesianTranslation}
+                      <p className="text-xs font-sans text-[#9BAABC] pt-2 border-t border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC]">
+                        <strong className="text-[#F3F5F7] font-semibold">Terjemahan:</strong> {concept.indonesianTranslation}
                       </p>
                     </div>
 
-                    {/* Drafting Tip */}
-                    <div className="p-2.5 badge-sage text-xs font-sans rounded-xs">
-                      <strong className="font-bold">Drafting Nuance:</strong> {concept.draftingTip}
-                    </div>
+                    {concept.draftingTip && (
+                      <div className="text-xs font-sans text-[#9BAABC] bg-[#081222]/60 dark:bg-[#081222]/60 bg-[#E8EFF7] p-3 rounded-xl border border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC]">
+                        <span className="text-[#4F83B8] font-semibold">Drafting Tip:</span>{' '}
+                        <span className="text-[#6A9BCB]">{concept.draftingTip}</span>
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
           </div>
 
-          {/* Comparative Law Note (If available) */}
-          {activeLesson.comparativeLawNote && (
-            <div className="p-5 bg-[#111A2B] border border-[#26344A] space-y-3 rounded-xs">
-              <span className="text-xs font-sans uppercase tracking-wider text-[#C9A45C] font-bold flex items-center gap-1.5">
-                <Scale className="w-4 h-4 text-[#C9A45C]" />
-                Comparative Law Nuance (KUHPerdata vs Common Law)
-              </span>
-              <div className="flex items-center gap-2 text-xs font-sans font-bold text-[#F5F3EE]">
-                <span>{activeLesson.comparativeLawNote.indonesianTerm}</span>
-                <span className="text-[#C9A45C]">⟷</span>
-                <span>{activeLesson.comparativeLawNote.englishTerm}</span>
-              </div>
-              <p className="text-xs sm:text-sm font-sans text-[#C5CBD5] leading-relaxed">
-                {activeLesson.comparativeLawNote.distinction}
-              </p>
-            </div>
-          )}
-
-          {/* Sample Excerpt Deconstruction (Source Serif 4 for authentic excerpt) */}
-          {activeLesson.sampleExcerpt && (
-            <div className="p-5 bg-[#111A2B] border border-[#26344A] space-y-3 rounded-xs">
-              <span className="text-xs font-sans uppercase tracking-wider text-[#C9A45C] font-bold flex items-center gap-1.5">
-                <FileText className="w-4 h-4 text-[#C9A45C]" />
-                Contract Excerpt Deconstruction: {activeLesson.sampleExcerpt.title}
-              </span>
-              <blockquote className="font-serif italic text-sm text-[#F5F3EE] p-4 bg-[#172235] border-l-4 border-[#C9A45C] leading-[1.7] rounded-xs">
-                &ldquo;{activeLesson.sampleExcerpt.text}&rdquo;
-              </blockquote>
-              <p className="text-xs font-sans text-[#C5CBD5] leading-relaxed">
-                <strong className="text-[#F5F3EE] font-semibold">Terjemahan Resmi:</strong> {activeLesson.sampleExcerpt.translationId}
-              </p>
-            </div>
-          )}
-
-          {/* Quick Understanding Check Quiz */}
+          {/* Interactive Check for Understanding (Quiz) */}
           {activeLesson.checkExercise && (
-            <div className="p-6 border border-[#26344A] bg-[#111A2B] space-y-4 rounded-xs">
+            <div className="p-6 rounded-2xl lexa-surface-subtle space-y-4">
               <div className="flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-[#C9A45C]" />
-                <h3 className="text-xs font-sans uppercase tracking-wider text-[#C9A45C] font-bold">
-                  Module Understanding Check
+                <HelpCircle className="w-4 h-4 text-[#4F83B8]" />
+                <h3 className="text-xs font-sans tracking-wider uppercase text-[#F3F5F7] font-semibold">
+                  Practical Check: Test Your Comprehension
                 </h3>
               </div>
 
-              <div className="space-y-3 p-4 bg-[#172235] border border-[#26344A] rounded-xs">
-                <p className="font-sans font-bold text-sm text-[#F5F3EE]">
+              <div className="space-y-1">
+                <p className="font-sans font-bold text-sm text-[#F3F5F7]">
                   {activeLesson.checkExercise.questionEn}
                 </p>
-                <p className="text-xs font-sans italic text-[#AAB4C3]">
+                <p className="text-xs font-sans italic text-[#9BAABC]">
                   {activeLesson.checkExercise.questionId}
                 </p>
-
-                {/* Options */}
-                <div className="space-y-2 pt-2">
-                  {activeLesson.checkExercise.options.map((opt, optIdx) => {
-                    let optStyle = 'bg-[#111A2B] border-[#26344A] text-[#F5F3EE] hover:border-[#C9A45C]/50';
-                    if (selectedQuizAnswer !== null) {
-                      if (optIdx === activeLesson.checkExercise.correctIndex) {
-                        optStyle = 'bg-[#8FAF9B] text-[#0B1220] border-[#8FAF9B] font-bold';
-                      } else if (optIdx === selectedQuizAnswer) {
-                        optStyle = 'bg-red-950/80 text-red-200 border-red-800 font-semibold';
-                      }
-                    }
-
-                    return (
-                      <button
-                        key={optIdx}
-                        onClick={() => handleSelectQuiz(optIdx)}
-                        className={`w-full text-left p-3 text-xs font-sans border transition-all flex items-center justify-between cursor-pointer rounded-xs font-medium ${optStyle}`}
-                      >
-                        <span>{opt}</span>
-                        {selectedQuizAnswer !== null && optIdx === activeLesson.checkExercise.correctIndex && (
-                          <Check className="w-4 h-4 text-[#0B1220] shrink-0" />
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Explanation */}
-                {showQuizExplanation && (
-                  <div className="p-3 text-xs font-sans mt-3 border badge-sage rounded-xs leading-relaxed">
-                    <strong className="font-bold">Penjelasan Kunci:</strong> {activeLesson.checkExercise.explanationId}
-                  </div>
-                )}
               </div>
+
+              <div className="space-y-2">
+                {activeLesson.checkExercise.options.map((option, optIdx) => {
+                  const isChosen = selectedQuizAnswer === optIdx;
+                  const isCorrect = optIdx === activeLesson.checkExercise?.correctIndex;
+
+                  let btnStyle = "lexa-surface-subtle text-[#9BAABC] hover:border-[#294766] hover:text-[#F3F5F7]";
+                  if (showQuizExplanation) {
+                    if (isCorrect) {
+                      btnStyle = "bg-[#132B46] border-[#4F83B8] text-[#6A9BCB] font-bold";
+                    } else if (isChosen && !isCorrect) {
+                      btnStyle = "bg-red-950/40 border-red-800 text-red-300";
+                    }
+                  }
+
+                  return (
+                    <button
+                      key={optIdx}
+                      onClick={() => handleSelectQuiz(optIdx)}
+                      className={`w-full p-3.5 text-left text-xs font-sans border rounded-xl transition-all cursor-pointer flex items-center justify-between ${btnStyle}`}
+                    >
+                      <span>{option}</span>
+                      {showQuizExplanation && isCorrect && (
+                        <Check className="w-4 h-4 text-[#4F83B8]" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {showQuizExplanation && (
+                <div className="p-4 rounded-xl bg-[#050B16] dark:bg-[#050B16] bg-[#DFE9F5] border border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] space-y-1 text-xs font-sans">
+                  <span className="font-bold text-[#6A9BCB] block">
+                    {selectedQuizAnswer === activeLesson.checkExercise.correctIndex ? '✓ Correct Answer!' : '✗ Explanation:'}
+                  </span>
+                  <p className="text-[#9BAABC] leading-relaxed">
+                    {activeLesson.checkExercise.explanationId}
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
-          {/* Module Completion CTA */}
-          <div className="pt-6 border-t border-[#26344A] flex items-center justify-between">
-            <span className="text-xs font-sans text-[#AAB4C3] font-medium">
-              Lesson: {activeLesson.title}
+          {/* Bottom Module Completion Bar */}
+          <div className="pt-6 border-t border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <span className="text-xs font-sans text-[#9BAABC]">
+              Module ID: {activeLesson.id} • Estimated Study Time: {activeLesson.durationMinutes} mins
             </span>
             <button
               onClick={() => markLessonComplete(activeLesson.id)}
-              className="btn-primary px-5 py-2.5 text-xs rounded-xs uppercase tracking-wider"
+              className="btn-primary px-6 py-3 text-xs uppercase tracking-wider font-semibold"
             >
               <Check className="w-4 h-4" />
-              <span>{isLessonCompleted ? 'Completed ✓' : 'Complete Lesson'}</span>
+              <span>Complete & Advance to Next Module</span>
             </button>
           </div>
 
         </div>
 
       </div>
-
     </div>
   );
 };
