@@ -3,6 +3,7 @@ import { useStudy } from '../context/StudyContext';
 import { legalVocabularyList } from '../data/vocabularyData';
 import { sampleLegalDocuments } from '../data/documentsData';
 import { curriculumLessons } from '../data/curriculumData';
+import { allPracticeExercises } from '../data/practice';
 import { AudioPronounceButton } from './AudioPronounceButton';
 import { 
   Bookmark, 
@@ -125,7 +126,7 @@ export const MyStudyDashboard: React.FC = () => {
           <div className="p-5 rounded-3xl lexa-card space-y-1">
             <span className="text-[10px] font-sans uppercase text-[#4F83B8] block font-semibold tracking-wider">Exercises Solved</span>
             <div className="text-2xl sm:text-3xl font-sans font-extrabold text-[#F3F5F7] tracking-tight">
-              {Object.keys(exerciseScores).length}
+              {Object.keys(exerciseScores).length} / {allPracticeExercises.length}
             </div>
             <span className="text-[11px] font-sans text-[#9BAABC] font-medium">Practice Benchmark</span>
           </div>

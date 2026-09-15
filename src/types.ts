@@ -240,18 +240,41 @@ export interface ComparativeConcept {
   exampleScenario: string;
 }
 
+export type ExerciseCategory = 'drafting' | 'translation' | 'vocabulary' | 'context' | 'reading';
+export type ExerciseDifficulty = 'Foundation' | 'Intermediate' | 'Advanced';
+export type ExerciseQuestionType = 
+  | 'multiple-choice'
+  | 'fill-in-the-blank'
+  | 'correction'
+  | 'translation'
+  | 'clause-interpretation'
+  | 'vocabulary-context'
+  | 'drafting-challenge'
+  | 'reading-comprehension';
+
 export interface ExerciseItem {
   id: string;
-  type: 'vocabulary' | 'translation' | 'reading' | 'context' | 'drafting';
+  type: ExerciseCategory;
+  category?: ExerciseCategory;
+  difficulty: ExerciseDifficulty;
+  questionType: ExerciseQuestionType;
   title: string;
   scenario?: string;
+  context?: string;
+  passage?: string; // For reading comprehension (100-250 words)
   promptEn: string;
   promptId: string;
   options: string[];
   correctIndex: number;
+  correctAnswer?: string;
   explanationId: string;
   explanationEn: string;
+  legalConcept?: string;
+  indonesianEquivalent?: string;
+  direction?: 'EN → ID' | 'ID → EN';
   relatedTermId?: string;
+  relatedTerms?: string[];
+  clauseExample?: string;
 }
 
 export interface WritingModule {

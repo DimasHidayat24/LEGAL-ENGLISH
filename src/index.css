@@ -40,19 +40,19 @@
   [data-theme="light"] {
     --bg-main: #F4F7FB;
     --bg-secondary: #E8EFF7;
-    --glass-surface: rgba(255, 255, 255, 0.88);
-    --glass-surface-elevated: rgba(255, 255, 255, 0.96);
-    --glass-surface-deep: rgba(240, 246, 253, 0.95);
-    --glass-nav: rgba(255, 255, 255, 0.85);
+    --glass-surface: #FFFFFF;
+    --glass-surface-elevated: #FFFFFF;
+    --glass-surface-deep: #FFFFFF;
+    --glass-nav: rgba(255, 255, 255, 0.96);
     
     --border-main: #D4DFEC;
     --border-strong: #B6CBE0;
-    --border-subtle: rgba(182, 203, 224, 0.5);
-    --border-accent: rgba(43, 98, 163, 0.4);
+    --border-subtle: #D4DFEC;
+    --border-accent: #2B62A3;
 
     --text-primary: #0F1D30;
-    --text-secondary: #3E5168;
-    --text-muted: #647890;
+    --text-secondary: #24354A;
+    --text-muted: #51667D;
     
     --accent-blue: #2B62A3;
     --accent-hover: #1E4E88;
@@ -166,16 +166,14 @@ html.light .smooth-card,
 [data-theme="light"] .lexa-card,
 [data-theme="light"] .glass-panel,
 [data-theme="light"] .smooth-card {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  background: #FFFFFF;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border: 1px solid #D4DFEC;
   color: #0F1D30;
   box-shadow: 
-    0 14px 36px -8px rgba(15, 29, 48, 0.08),
-    0 0 22px 0 rgba(43, 98, 163, 0.04),
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 1px 0 rgba(180, 205, 235, 0.25);
+    0 4px 18px -2px rgba(15, 29, 48, 0.06),
+    0 1px 3px 0 rgba(15, 29, 48, 0.04);
 }
 
 .lexa-card:hover,
@@ -198,12 +196,10 @@ html.light .smooth-card:hover,
 [data-theme="light"] .glass-panel:hover,
 [data-theme="light"] .smooth-card:hover {
   border-color: #B6CBE0;
-  background: rgba(255, 255, 255, 0.98);
+  background: #FFFFFF;
   box-shadow: 
-    0 20px 45px -8px rgba(15, 29, 48, 0.14),
-    0 0 28px 2px rgba(43, 98, 163, 0.09),
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 1px 0 rgba(180, 205, 235, 0.35);
+    0 10px 25px -4px rgba(15, 29, 48, 0.10),
+    0 2px 6px 0 rgba(15, 29, 48, 0.04);
 }
 
 .lexa-card-selected {
@@ -222,11 +218,10 @@ html.light .lexa-card-selected,
 [data-theme="light"] .lexa-card-selected {
   background: #E8F1FC;
   border-color: #2B62A3;
+  color: #0F1D30;
   box-shadow: 
-    0 18px 40px -6px rgba(43, 98, 163, 0.18),
-    0 0 24px 2px rgba(43, 98, 163, 0.14),
-    inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 1px 0 rgba(43, 98, 163, 0.18);
+    0 8px 24px -4px rgba(43, 98, 163, 0.15),
+    inset 0 0 0 1px #2B62A3;
 }
 
 /* Spatial Glass Containers */
@@ -245,14 +240,13 @@ html.light .lexa-card-selected,
 
 html.light .glass-panel-deep,
 [data-theme="light"] .glass-panel-deep {
-  background: rgba(246, 250, 255, 0.95);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border-color: #D4DFEC;
+  background: #FFFFFF;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid #D4DFEC;
   box-shadow: 
-    0 22px 50px -12px rgba(15, 29, 48, 0.12),
-    0 0 32px 0 rgba(43, 98, 163, 0.05),
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 1);
+    0 8px 30px -6px rgba(15, 29, 48, 0.08),
+    0 1px 4px 0 rgba(15, 29, 48, 0.04);
 }
 
 /* Subtler Glass Surfaces */
@@ -267,11 +261,11 @@ html.light .glass-panel-deep,
 
 html.light .lexa-surface-subtle,
 [data-theme="light"] .lexa-surface-subtle {
-  background: rgba(240, 246, 253, 0.78);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(182, 203, 224, 0.65);
-  box-shadow: inset 0 1px 0.5px 0 rgba(255, 255, 255, 0.85);
+  background: #F0F6FD;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid #D4DFEC;
+  box-shadow: none;
 }
 
 /* Liquid Glass Lens / Specular Sheen Effect */
@@ -295,7 +289,126 @@ html.light .lexa-surface-subtle,
 
 html.light .liquid-lens::before,
 [data-theme="light"] .liquid-lens::before {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 100%);
+  display: none !important;
+}
+
+/* ==========================================================================
+   Ultra-Refined Liquid Glass Navigation (Apple Optical Meniscus)
+   ========================================================================== */
+.liquid-nav-pill {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(135deg, rgba(22, 44, 72, 0.78) 0%, rgba(10, 23, 40, 0.82) 48%, rgba(7, 16, 28, 0.88) 100%);
+  backdrop-filter: blur(28px) saturate(200%) contrast(104%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%) contrast(104%);
+  border: 1px solid rgba(125, 178, 230, 0.24);
+  box-shadow: 
+    0 16px 42px -10px rgba(0, 0, 0, 0.55),
+    0 4px 18px -2px rgba(2, 6, 14, 0.40),
+    0 0 24px 0 rgba(79, 131, 184, 0.08),
+    inset 0 1.2px 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.45);
+  transform: translateZ(0);
+}
+
+.liquid-nav-pill.is-scrolled {
+  background: linear-gradient(135deg, rgba(24, 48, 78, 0.88) 0%, rgba(9, 21, 37, 0.92) 50%, rgba(6, 14, 25, 0.96) 100%);
+  border-color: rgba(135, 188, 240, 0.30);
+  box-shadow: 
+    0 20px 48px -8px rgba(0, 0, 0, 0.65),
+    0 6px 20px -2px rgba(2, 6, 14, 0.45),
+    0 0 28px 2px rgba(79, 131, 184, 0.12),
+    inset 0 1.2px 1px 0 rgba(255, 255, 255, 0.26),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.50);
+}
+
+html.light .liquid-nav-pill,
+[data-theme="light"] .liquid-nav-pill {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.93) 0%, rgba(246, 250, 255, 0.87) 50%, rgba(238, 246, 255, 0.91) 100%);
+  backdrop-filter: blur(28px) saturate(180%) contrast(102%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%) contrast(102%);
+  border: 1px solid rgba(182, 208, 238, 0.75);
+  box-shadow: 
+    0 12px 34px -6px rgba(15, 29, 48, 0.11),
+    0 2px 10px 0 rgba(15, 29, 48, 0.05),
+    inset 0 1.2px 1px 0 rgba(255, 255, 255, 0.98),
+    inset 0 -1px 1px 0 rgba(180, 205, 235, 0.35);
+}
+
+html.light .liquid-nav-pill.is-scrolled,
+[data-theme="light"] .liquid-nav-pill.is-scrolled {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.97) 0%, rgba(248, 252, 255, 0.93) 50%, rgba(242, 248, 255, 0.95) 100%);
+  border-color: rgba(165, 196, 232, 0.90);
+  box-shadow: 
+    0 16px 38px -4px rgba(15, 29, 48, 0.14),
+    0 4px 12px 0 rgba(15, 29, 48, 0.07),
+    inset 0 1.2px 1px 0 #FFFFFF,
+    inset 0 -1px 1px 0 rgba(180, 205, 235, 0.45);
+}
+
+/* Glass-on-Glass Active Droplet */
+.liquid-tab-active {
+  background: linear-gradient(180deg, rgba(46, 96, 156, 0.58) 0%, rgba(21, 44, 72, 0.82) 100%);
+  border: 1px solid rgba(120, 180, 245, 0.42);
+  color: #F3F5F7;
+  font-weight: 600;
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.35),
+    0 2px 8px rgba(0, 0, 0, 0.30),
+    0 0 14px rgba(79, 131, 184, 0.28);
+}
+
+html.light .liquid-tab-active,
+[data-theme="light"] .liquid-tab-active {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F1F6FD 100%);
+  border: 1px solid rgba(160, 195, 235, 0.85);
+  color: #0F1D30;
+  font-weight: 600;
+  box-shadow: 
+    inset 0 1px 1px 0 #FFFFFF,
+    0 2px 8px rgba(15, 29, 48, 0.08),
+    0 0 12px rgba(43, 98, 163, 0.12);
+}
+
+/* Utility Glass Pill */
+.liquid-ctrl-pill {
+  background: linear-gradient(180deg, rgba(25, 48, 76, 0.65) 0%, rgba(14, 28, 46, 0.75) 100%);
+  border: 1px solid rgba(120, 175, 230, 0.28);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0.5px 0 rgba(0, 0, 0, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.22);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.liquid-ctrl-pill:hover {
+  background: linear-gradient(180deg, rgba(32, 60, 95, 0.80) 0%, rgba(18, 36, 60, 0.90) 100%);
+  border-color: rgba(140, 195, 250, 0.45);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -1px 0.5px 0 rgba(0, 0, 0, 0.4),
+    0 3px 10px rgba(0, 0, 0, 0.32),
+    0 0 12px rgba(79, 131, 184, 0.22);
+}
+
+html.light .liquid-ctrl-pill,
+[data-theme="light"] .liquid-ctrl-pill {
+  background: linear-gradient(180deg, #FFFFFF 0%, #EDF4FD 100%);
+  border: 1px solid rgba(180, 205, 235, 0.70);
+  box-shadow: 
+    inset 0 1px 1px 0 #FFFFFF,
+    0 2px 6px rgba(15, 29, 48, 0.05);
+}
+
+html.light .liquid-ctrl-pill:hover,
+[data-theme="light"] .liquid-ctrl-pill:hover {
+  background: #FFFFFF;
+  border-color: rgba(150, 185, 225, 0.95);
+  box-shadow: 
+    inset 0 1px 1px 0 #FFFFFF,
+    0 3px 10px rgba(15, 29, 48, 0.09),
+    0 0 10px rgba(43, 98, 163, 0.12);
 }
 
 /* CTA Buttons */
@@ -612,6 +725,94 @@ html.light .legal-paper-canvas .doc-term-highlight.active,
   box-shadow: 0 2px 8px rgba(43, 98, 163, 0.18);
 }
 
+/* Reusable Interactive Legal Word Component styling */
+.legal-word-btn {
+  display: inline;
+  position: relative;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 1px 4px;
+  margin: 0 1px;
+  font-weight: 600;
+  border-bottom: 1.5px solid #4F83B8;
+  background-color: rgba(79, 131, 184, 0.16);
+  color: #111B29;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  vertical-align: baseline;
+  text-decoration: none;
+  line-height: inherit;
+}
+
+html.light .legal-word-btn,
+[data-theme="light"] .legal-word-btn {
+  background-color: rgba(43, 98, 163, 0.13);
+  color: #0F1D30;
+  border-bottom-color: #2B62A3;
+}
+
+.legal-word-btn:hover {
+  background-color: rgba(79, 131, 184, 0.32);
+  border-bottom-color: #1E3A5F;
+  box-shadow: 0 2px 8px rgba(79, 131, 184, 0.25);
+  transform: translateY(-0.5px);
+}
+
+.legal-word-btn:focus-visible {
+  outline: 2px solid #4F83B8;
+  outline-offset: 1px;
+}
+
+.legal-word-btn.is-selected {
+  background-color: rgba(79, 131, 184, 0.38);
+  border-bottom: 2.5px solid #132B46;
+  color: #060B14;
+  box-shadow: 0 0 10px rgba(79, 131, 184, 0.35), 0 2px 5px rgba(0, 0, 0, 0.12);
+  font-weight: 700;
+}
+
+html.light .legal-word-btn.is-selected,
+[data-theme="light"] .legal-word-btn.is-selected {
+  background-color: rgba(43, 98, 163, 0.28);
+  border-bottom-color: #0D223E;
+  color: #071526;
+  box-shadow: 0 0 10px rgba(43, 98, 163, 0.3), 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.legal-word-btn.just-activated {
+  animation: legalWordPulse 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes legalWordPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(79, 131, 184, 0.6);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 0 14px 2px rgba(79, 131, 184, 0.55);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(79, 131, 184, 0.35);
+  }
+}
+
+@keyframes inspectorContentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-inspector-fade {
+  animation: inspectorContentFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .legal-paper-canvas .doc-analysis-box {
   background-color: #EAE3D5;
   border-left: 3.5px solid #4F83B8;
@@ -689,16 +890,16 @@ html.light .bg-\[\#132B46\].border-\[\#294766\],
   background-color: #2B62A3 !important;
   color: #FFFFFF !important;
   border-color: #1E4E88 !important;
-  box-shadow: 0 4px 14px rgba(43, 98, 163, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(43, 98, 163, 0.25) !important;
 }
 
 /* Inactive Filter Buttons & Pills in Light Mode */
 html.light [class*="bg-[#112239]/60"],
 html.light [class*="bg-[#112239]"]:not(.bg-\[\#132B46\]),
 [data-theme="light"] [class*="bg-[#112239]/60"] {
-  background-color: rgba(255, 255, 255, 0.95) !important;
+  background-color: #FFFFFF !important;
   border-color: #D4DFEC !important;
-  color: #3E5168 !important;
+  color: #24354A !important;
 }
 
 /* Modal Backdrops & Overlays in Light Mode */
@@ -714,9 +915,9 @@ html.light [class*="bg-[#050B16]/80"] {
 /* Modal Windows in Light Mode */
 html.light .bg-\[\#0D1A2B\]\/95,
 html.light [class*="bg-[rgba(13,26,43,0.95)"] {
-  background-color: rgba(255, 255, 255, 0.98) !important;
+  background-color: #FFFFFF !important;
   border-color: #D4DFEC !important;
-  box-shadow: 0 25px 70px -10px rgba(15, 29, 48, 0.22), 0 0 30px 0 rgba(43, 98, 163, 0.05), inset 0 1px 1px 0 rgba(255, 255, 255, 1) !important;
+  box-shadow: 0 20px 60px -10px rgba(15, 29, 48, 0.22), 0 2px 6px rgba(15, 29, 48, 0.05) !important;
 }
 
 /* Borders in Light Mode */
@@ -731,20 +932,20 @@ html.light [class*="border-[#1D3552"] {
 /* Primary Text & Headings in Light Mode */
 html.light .text-\[\#F3F5F7\],
 html.light .text-\[\#FFFFFF\],
-html.light .text-white:not(.btn-primary *):not(.bg-\[\#4F83B8\] *):not(.bg-\[\#2B62A3\] *):not(.btn-primary) {
+html.light .text-white:not(.btn-primary *):not(.bg-\[\#4F83B8\] *):not(.bg-\[\#2B62A3\] *):not(.btn-primary):not(button.bg-\[\#132B46\] *):not(button.bg-\[\#132B46\]) {
   color: #0F1D30 !important;
 }
 
 /* Secondary Explanatory Text in Light Mode */
 html.light .text-\[\#9BAABC\],
 html.light .text-\[\#8B9EB2\] {
-  color: #3E5168 !important;
+  color: #24354A !important;
 }
 
 /* Muted / Metadata Text in Light Mode */
 html.light .text-\[\#64758A\],
 html.light .text-\[\#55687D\] {
-  color: #647890 !important;
+  color: #51667D !important;
 }
 
 /* Accents & Highlights in Light Mode */
@@ -791,15 +992,35 @@ html.light textarea::placeholder {
 html.light .bg-\[\#4F83B8\]\/20.border-\[\#4F83B8\],
 [data-theme="light"] .bg-\[\#4F83B8\]\/20.border-\[\#4F83B8\] {
   background-color: #E6F4ED !important;
-  border-color: #3B8266 !important;
-  color: #1C6B46 !important;
+  border-color: #2D8A61 !important;
+  color: #125435 !important;
+  font-weight: 600 !important;
 }
 
 html.light .bg-rose-950\/40.border-rose-700\/60,
 [data-theme="light"] .bg-rose-950\/40.border-rose-700\/60 {
   background-color: #FDE8E8 !important;
-  border-color: #E05252 !important;
-  color: #9B1C1C !important;
+  border-color: #D33838 !important;
+  color: #8A1515 !important;
+  font-weight: 600 !important;
+}
+
+html.light button.bg-\[\#132B46\].border-\[\#294766\].text-\[\#F3F5F7\],
+[data-theme="light"] button.bg-\[\#132B46\].border-\[\#294766\].text-\[\#F3F5F7\] {
+  background-color: #E8F1FC !important;
+  border-color: #2B62A3 !important;
+  color: #0F1D30 !important;
+}
+
+/* Completed State Styling in Light Mode (Completed ≠ Disabled) */
+html.light button.bg-\[\#132B46\].text-\[\#6A9BCB\],
+html.light .bg-\[\#132B46\].text-\[\#6A9BCB\],
+[data-theme="light"] button.bg-\[\#132B46\].text-\[\#6A9BCB\],
+[data-theme="light"] .bg-\[\#132B46\].text-\[\#6A9BCB\] {
+  background-color: #E6F4ED !important;
+  border-color: #3B8266 !important;
+  color: #1C6B46 !important;
+  opacity: 1 !important;
 }
 
 /* Card Drop Shadows in Light Mode */

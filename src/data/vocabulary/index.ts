@@ -60,9 +60,11 @@ import { definitiveIndonesianLegalPack } from './definitiveIndonesianLegalPack';
 import { finalMilestoneLegalPack } from './finalMilestoneLegalPack';
 import { grandMasterLexicon500Plus } from './grandMasterLexicon500Plus';
 import { pinnacleLexicon500Pinnacle } from './pinnacleLexicon500Pinnacle';
+import { documentInteractiveTerms } from './documentInteractiveTerms';
 
 // Raw combined list aggregating all modular vocabularies
 const rawLegalVocabularyList: LegalTerm[] = [
+  ...documentInteractiveTerms,
   ...generalLegalTerms,
   ...contractLawTerms,
   ...legalDraftingExpressions,

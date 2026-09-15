@@ -108,7 +108,7 @@ export const CurriculumView: React.FC = () => {
                   }}
                   className={`p-4 transition-all cursor-pointer rounded-2xl border ${
                     isSelected
-                      ? 'bg-[#132B46] border-[#294766] shadow-[0_10px_25px_rgba(2,6,12,0.5)] font-medium'
+                      ? 'lexa-card-selected font-medium'
                       : 'lexa-card hover:border-[#294766]'
                   }`}
                 >

@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useStudy } from '../context/StudyContext';
 import { sampleLegalDocuments } from '../data/documentsData';
 import { legalVocabularyList } from '../data/vocabularyData';
+import { LegalTerm } from '../types';
+import { LegalWord } from './LegalWord';
 import { 
   Bookmark, 
   BookmarkCheck, 
@@ -9,7 +11,12 @@ import {
   Check, 
   MessageSquare, 
   CheckCircle2, 
-  ArrowRight
+  ArrowRight,
+  Volume2,
+  Minimize2,
+  BookOpen,
+  Sparkles,
+  ChevronRight
 } from 'lucide-react';
 
 export const DocumentReader: React.FC = () => {
@@ -28,21 +35,153 @@ export const DocumentReader: React.FC = () => {
     saveNote
   } = useStudy();
 
-  const [selectedTermId, setSelectedTermId] = useState<string | null>(null);
+  // Selected document or default to first
+  const currentDoc = sampleLegalDocuments.find(d => d.id === activeDocId) || sampleLegalDocuments[0];
+  const isDocCompleted = completedDocuments.includes(currentDoc.id);
+
+  // Single shared state for selected legal term as specified in requirements
+  const [selectedLegalTerm, setSelectedLegalTerm] = useState<LegalTerm | null>(() => {
+    return legalVocabularyList.find(t => currentDoc.keyTermIds?.includes(t.id)) || legalVocabularyList[0];
+  });
+  const [assistantPanelOpen, setAssistantPanelOpen] = useState<boolean>(true);
   const [activeRightTab, setActiveRightTab] = useState<'INSPECTOR' | 'GLOSSARY' | 'SUMMARY' | 'NOTES'>('INSPECTOR');
   const [fontSize, setFontSize] = useState<'sm' | 'base' | 'lg'>('base');
   const [showIndonesianTranslation, setShowIndonesianTranslation] = useState<boolean>(true);
   const [activeParagraphNoteId, setActiveParagraphNoteId] = useState<string | null>(null);
   const [tempNoteText, setTempNoteText] = useState<string>('');
 
-  // Selected document or default to first
-  const currentDoc = sampleLegalDocuments.find(d => d.id === activeDocId) || sampleLegalDocuments[0];
-  const isDocCompleted = completedDocuments.includes(currentDoc.id);
+  const inspectorScrollRef = useRef<HTMLDivElement | null>(null);
+  const assistantPanelRef = useRef<HTMLDivElement | null>(null);
 
-  // Inspector term
-  const activeInspectorTerm = selectedTermId 
-    ? legalVocabularyList.find(t => t.id === selectedTermId || t.term.toLowerCase() === selectedTermId.toLowerCase())
-    : legalVocabularyList.find(t => currentDoc.keyTermIds?.includes(t.id)) || legalVocabularyList[0];
+  // Helper to dynamically identify the actual parent container controlling vertical scrolling
+  const getScrollParent = (node: HTMLElement | null): HTMLElement | Window => {
+    if (!node || typeof window === 'undefined') return window;
+    let parent = node.parentElement;
+    while (parent && parent !== document.body && parent !== document.documentElement) {
+      const style = window.getComputedStyle(parent);
+      const overflowY = style.overflowY;
+      if ((overflowY === 'auto' || overflowY === 'scroll') && parent.scrollHeight > parent.clientHeight) {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+    return window;
+  };
+
+  // Helper to calculate sticky / fixed navigation height dynamically so Assistant Panel is never hidden underneath
+  const getHeaderOffset = (): number => {
+    if (typeof document === 'undefined') return 96;
+    const headerEl = document.querySelector('header');
+    if (headerEl) {
+      const headerRect = headerEl.getBoundingClientRect();
+      // Leave clear breathing room below the sticky floating capsule
+      return Math.max(headerRect.bottom + 18, 88);
+    }
+    return 96;
+  };
+
+  // Smoothly scroll the main container so the Legal English Assistant Panel is brought clearly into view
+  const scrollToAssistantPanel = (force = false) => {
+    const panel = assistantPanelRef.current;
+    if (!panel || typeof window === 'undefined') return;
+
+    const headerOffset = getHeaderOffset();
+    const rect = panel.getBoundingClientRect();
+
+    // Check if the top of the Assistant Panel is already clearly visible in the viewport below navigation
+    // (If user is already near the Assistant Panel, avoid unnecessary large jumps)
+    const isAlreadyNear = (
+      rect.top >= (headerOffset - 25) &&
+      rect.top <= (headerOffset + 130) &&
+      rect.bottom > headerOffset
+    );
+
+    if (!force && isAlreadyNear) {
+      return;
+    }
+
+    const scrollParent = getScrollParent(panel);
+
+    if (scrollParent === window) {
+      const currentScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+      const targetScrollY = Math.max(0, currentScrollY + rect.top - headerOffset);
+
+      if ('scrollTo' in window) {
+        window.scrollTo({
+          top: targetScrollY,
+          behavior: 'smooth',
+        });
+      } else {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } else {
+      const container = scrollParent as HTMLElement;
+      const containerRect = container.getBoundingClientRect();
+      const currentScrollTop = container.scrollTop;
+      const targetScrollTop = Math.max(0, currentScrollTop + (rect.top - containerRect.top) - headerOffset);
+
+      if (typeof container.scrollTo === 'function') {
+        container.scrollTo({
+          top: targetScrollTop,
+          behavior: 'smooth',
+        });
+      } else {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
+
+  // When switching documents, default to first key term of that document
+  useEffect(() => {
+    const docTerm = legalVocabularyList.find(t => currentDoc.keyTermIds?.includes(t.id)) || legalVocabularyList[0];
+    setSelectedLegalTerm(docTerm);
+  }, [currentDoc.id]);
+
+  // Handle clicking ANY legal word in document or glossary
+  const handleSelectLegalWord = (term: LegalTerm) => {
+    // 1. Set the selected legal term
+    setSelectedLegalTerm(term);
+
+    // 2. Make sure Assistant Panel is open
+    setAssistantPanelOpen(true);
+
+    // 3. Make sure the Inspector tab is active
+    setActiveRightTab('INSPECTOR');
+
+    // 4. Scroll assistant panel internal content to top of selected word's explanation
+    if (inspectorScrollRef.current) {
+      inspectorScrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 5. Automatically scroll the main page / scroll container to the Assistant Panel after DOM updates
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (assistantPanelRef.current) {
+          scrollToAssistantPanel();
+        } else {
+          // If panel was previously closed and just mounting, allow short post-render delay
+          setTimeout(() => {
+            scrollToAssistantPanel();
+          }, 60);
+        }
+      });
+    });
+  };
+
+  // Pronunciation audio playback helper
+  const playPronunciation = (termText: string) => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(termText.toLowerCase());
+        utterance.lang = 'en-US';
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.warn('Speech synthesis unavailable', err);
+      }
+    }
+  };
 
   // Helper to render paragraph with clickable highlighted terms in warm parchment style
   const renderParagraphWithHighlights = (paragraphText: string, highlightedIds: string[] | undefined) => {
@@ -53,37 +192,71 @@ export const DocumentReader: React.FC = () => {
     // Find all terms to highlight
     const termObjects = highlightedIds
       .map(id => legalVocabularyList.find(t => t.id === id))
-      .filter((t): t is NonNullable<typeof t> => !!t);
+      .filter((t): t is LegalTerm => !!t);
 
     if (termObjects.length === 0) {
       return <span>{paragraphText}</span>;
     }
 
-    // Build regex
-    const regexPattern = new RegExp(`\\b(${termObjects.map(t => t.term).join('|')})\\b`, 'gi');
+    // Build map of text variant -> LegalTerm
+    const variantMap = new Map<string, LegalTerm>();
+    const allVariants: string[] = [];
+
+    const getTermVariants = (term: LegalTerm): string[] => {
+      const base = term.term.trim();
+      const variants = [base];
+      if (term.id === 'covenant') variants.push('covenants', 'covenant');
+      if (term.id === 'shareholder') variants.push('shareholders', 'shareholder');
+      if (term.id === 'liability') variants.push('liabilities', 'liability', 'liable');
+      if (term.id === 'indemnity') variants.push('indemnify', 'indemnities', 'indemnified', 'indemnity');
+      if (term.id === 'representation') variants.push('representations', 'represents', 'representation');
+      if (term.id === 'warranty') variants.push('warranties', 'warrants', 'warranty');
+      if (term.id === 'breach') variants.push('breaches', 'breached', 'breach');
+      if (term.id === 'arbitration') variants.push('arbitral', 'arbitration');
+      if (term.id === 'severability') variants.push('severed', 'severability');
+      if (term.id === 'thereto') variants.push('hereto', 'thereto');
+      if (term.id === 'due-diligence') variants.push('legal due diligence', 'due diligence');
+      if (term.id === 'hold-harmless') variants.push('hold harmless', 'holds harmless', 'holding harmless');
+      if (term.id === 'preponderance-of-evidence') variants.push('preponderance of the evidence', 'preponderance of evidence');
+      if (term.id === 'bona-fide') variants.push('bona fide', 'mala fide');
+      if (!base.endsWith('s')) variants.push(`${base}s`);
+      return variants;
+    };
+
+    for (const t of termObjects) {
+      for (const v of getTermVariants(t)) {
+        const lower = v.toLowerCase();
+        if (!variantMap.has(lower)) {
+          variantMap.set(lower, t);
+          allVariants.push(v);
+        }
+      }
+    }
+
+    // Sort descending by length so longer phrases match before substrings
+    allVariants.sort((a, b) => b.length - a.length);
+
+    if (allVariants.length === 0) {
+      return <span>{paragraphText}</span>;
+    }
+
+    const regexPattern = new RegExp(`\\b(${allVariants.map(v => v.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')).join('|')})\\b`, 'gi');
     const parts = paragraphText.split(regexPattern);
 
     return (
       <span>
         {parts.map((part, index) => {
-          const matchedTerm = termObjects.find(t => t.term.toLowerCase() === part.toLowerCase());
+          const matchedTerm = variantMap.get(part.toLowerCase());
           if (matchedTerm) {
-            const isSelected = selectedTermId === matchedTerm.id;
+            const isSelected = selectedLegalTerm?.id === matchedTerm.id;
             return (
-              <button
-                key={index}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedTermId(matchedTerm.id);
-                  setActiveRightTab('INSPECTOR');
-                }}
-                className={`doc-term-highlight inline cursor-pointer text-inherit ${
-                  isSelected ? 'active' : ''
-                }`}
-                title={`Inspect term: ${matchedTerm.indonesianMeaning}`}
-              >
-                {part}
-              </button>
+              <LegalWord
+                key={`${matchedTerm.id}-${index}`}
+                term={matchedTerm}
+                displayText={part}
+                isSelected={isSelected}
+                onSelect={handleSelectLegalWord}
+              />
             );
           }
           return <span key={index}>{part}</span>;
@@ -188,7 +361,8 @@ export const DocumentReader: React.FC = () => {
               key={doc.id}
               onClick={() => {
                 setActiveDocId(doc.id);
-                setSelectedTermId(null);
+                const docTerm = legalVocabularyList.find(t => doc.keyTermIds?.includes(t.id)) || legalVocabularyList[0];
+                setSelectedLegalTerm(docTerm);
               }}
               className={`px-3.5 py-1.5 whitespace-nowrap transition-all cursor-pointer rounded-full ${
                 doc.id === currentDoc.id
@@ -202,11 +376,11 @@ export const DocumentReader: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Split Layout: Document Left (7 cols) + Legal Assistant Right (5 cols) */}
+      {/* Main Split Layout: Document Left (7 or 12 cols) + Legal Assistant Right (5 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* LEFT PANE: Dedicated Physical Parchment Canvas inside Glass Frame */}
-        <div className="lg:col-span-7 p-4 sm:p-5 glass-panel-deep liquid-lens">
+        <div className={`${assistantPanelOpen ? 'lg:col-span-7' : 'lg:col-span-12'} p-4 sm:p-5 glass-panel-deep liquid-lens transition-all duration-300`}>
           <div className="legal-paper-canvas p-6 sm:p-9 space-y-8 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
             
             {/* Document Head Caption */}
@@ -321,182 +495,319 @@ export const DocumentReader: React.FC = () => {
         </div>
 
         {/* RIGHT PANE: Legal English Assistant Panel (Floating Glass Card) */}
-        <div className="lg:col-span-5 sticky top-24 space-y-4">
-          <div className="rounded-3xl glass-panel-deep liquid-lens overflow-hidden">
-            
-            {/* Assistant Header & Tab Switcher */}
-            <div className="p-5 border-b border-[#1D3552]/80">
-              <div className="flex items-center gap-2 mb-3">
-                <Scale className="w-4 h-4 text-[#4F83B8]" />
-                <h3 className="font-sans font-extrabold text-sm tracking-wide uppercase text-[#F3F5F7]">
-                  LEGAL ENGLISH ASSISTANT PANEL
-                </h3>
-              </div>
-              <div className="grid grid-cols-4 gap-1.5 text-[11px] font-sans p-1 bg-[#081222] border border-[#1D3552] rounded-full">
-                <button
-                  onClick={() => setActiveRightTab('INSPECTOR')}
-                  className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
-                    activeRightTab === 'INSPECTOR' ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766]' : 'text-[#9BAABC] font-normal hover:text-[#F3F5F7]'
-                  }`}
-                >
-                  Inspector
-                </button>
-                <button
-                  onClick={() => setActiveRightTab('GLOSSARY')}
-                  className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
-                    activeRightTab === 'GLOSSARY' ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766]' : 'text-[#9BAABC] font-normal hover:text-[#F3F5F7]'
-                  }`}
-                >
-                  Glossary
-                </button>
-                <button
-                  onClick={() => setActiveRightTab('SUMMARY')}
-                  className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
-                    activeRightTab === 'SUMMARY' ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766]' : 'text-[#9BAABC] font-normal hover:text-[#F3F5F7]'
-                  }`}
-                >
-                  Summary
-                </button>
-                <button
-                  onClick={() => setActiveRightTab('NOTES')}
-                  className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
-                    activeRightTab === 'NOTES' ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766]' : 'text-[#9BAABC] font-normal hover:text-[#F3F5F7]'
-                  }`}
-                >
-                  Notes
-                </button>
-              </div>
-            </div>
-
-            {/* TAB 1: TERM INSPECTOR */}
-            {activeRightTab === 'INSPECTOR' && activeInspectorTerm && (
-              <div className="p-5 space-y-4 max-h-[75vh] overflow-y-auto no-scrollbar">
-                <div className="flex items-start justify-between border-b border-[#1D3552]/80 pb-3">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="badge-accent text-[10px] font-sans font-medium uppercase px-2.5 py-0.5 rounded-full tracking-wider">
-                        {activeInspectorTerm.category}
-                      </span>
-                      <span className="text-[10px] font-sans text-[#64758A]">
-                        {activeInspectorTerm.partOfSpeech}
-                      </span>
-                    </div>
-                    <h4 className="text-2xl sm:text-3xl font-sans font-extrabold text-[#F3F5F7] tracking-tight">
-                      {activeInspectorTerm.term}
-                    </h4>
+        {assistantPanelOpen && (
+          <div 
+            ref={assistantPanelRef} 
+            id="legal-english-assistant-panel"
+            className="lg:col-span-5 sticky top-24 space-y-4 scroll-mt-24 sm:scroll-mt-28"
+            style={{ scrollMarginTop: '96px' }}
+          >
+            <div className="rounded-3xl glass-panel-deep liquid-lens overflow-hidden border border-[#1D3552] shadow-[0_20px_50px_rgba(2,6,12,0.6)]">
+              
+              {/* Assistant Header & Tab Switcher */}
+              <div className="p-5 border-b border-[#1D3552]/80">
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <div className="flex items-center gap-2">
+                    <Scale className="w-4 h-4 text-[#4F83B8]" />
+                    <h3 className="font-sans font-extrabold text-sm tracking-wide uppercase text-[#F3F5F7]">
+                      LEGAL ENGLISH ASSISTANT PANEL
+                    </h3>
                   </div>
-
+                  <div className="flex items-center gap-1.5">
+                    {selectedLegalTerm && (
+                      <span className="hidden sm:inline-block text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-[#132B46] border border-[#294766] text-[#6A9BCB] truncate max-w-[120px]">
+                        {selectedLegalTerm.term}
+                      </span>
+                    )}
+                    <button
+                      onClick={() => setAssistantPanelOpen(false)}
+                      className="p-1 text-[#9BAABC] hover:text-[#F3F5F7] hover:bg-[#132B46] rounded-lg transition-all cursor-pointer"
+                      title="Minimize Assistant Panel"
+                      aria-label="Minimize Assistant Panel"
+                    >
+                      <Minimize2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-1.5 text-[11px] font-sans p-1 bg-[#081222] border border-[#1D3552] rounded-full">
                   <button
-                    onClick={() => {
-                      if (isTermSaved(activeInspectorTerm.id)) {
-                        removeSavedTerm(activeInspectorTerm.id);
-                      } else {
-                        saveTerm(activeInspectorTerm.id, undefined, currentDoc.id);
-                      }
-                    }}
-                    className={`px-3.5 py-1.5 text-xs font-sans flex items-center gap-1.5 cursor-pointer rounded-full transition-all ${
-                      isTermSaved(activeInspectorTerm.id)
-                        ? 'bg-[#132B46] text-[#6A9BCB] border border-[#294766] font-semibold'
-                        : 'btn-secondary'
+                    onClick={() => setActiveRightTab('INSPECTOR')}
+                    className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
+                      activeRightTab === 'INSPECTOR' ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766]' : 'text-[#9BAABC] font-normal hover:text-[#F3F5F7]'
                     }`}
-                    title="Save term to study list"
                   >
-                    {isTermSaved(activeInspectorTerm.id) ? <BookmarkCheck className="w-3.5 h-3.5 text-[#4F83B8]" /> : <Bookmark className="w-3.5 h-3.5" />}
-                    <span>{isTermSaved(activeInspectorTerm.id) ? 'Saved' : 'Save'}</span>
+                    Inspector
+                  </button>
+                  <button
+                    onClick={() => setActiveRightTab('GLOSSARY')}
+                    className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
+                      activeRightTab === 'GLOSSARY' ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766]' : 'text-[#9BAABC] font-normal hover:text-[#F3F5F7]'
+                    }`}
+                  >
+                    Glossary
+                  </button>
+                  <button
+                    onClick={() => setActiveRightTab('SUMMARY')}
+                    className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
+                      activeRightTab === 'SUMMARY' ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766]' : 'text-[#9BAABC] font-normal hover:text-[#F3F5F7]'
+                    }`}
+                  >
+                    Summary
+                  </button>
+                  <button
+                    onClick={() => setActiveRightTab('NOTES')}
+                    className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
+                      activeRightTab === 'NOTES' ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766]' : 'text-[#9BAABC] font-normal hover:text-[#F3F5F7]'
+                    }`}
+                  >
+                    Notes
                   </button>
                 </div>
-
-                {/* Meaning & Indonesian Legal Concept */}
-                <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.7)] border border-[#1D3552] space-y-1">
-                  <span className="text-[10px] font-sans uppercase text-[#4F83B8] block font-semibold tracking-wider">
-                    Bahasa Indonesia & Konsep Hukum
-                  </span>
-                  <p className="font-sans font-bold text-base text-[#F3F5F7]">
-                    {activeInspectorTerm.indonesianMeaning}
-                  </p>
-                  <p className="text-xs sm:text-[13px] text-[#9BAABC] leading-relaxed font-normal">
-                    {activeInspectorTerm.indonesianLegalConcept}
-                  </p>
-                </div>
-
-                {/* Legal Function */}
-                <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.5)] border border-[#1D3552] space-y-1">
-                  <span className="text-[10px] font-sans uppercase text-[#F3F5F7] block font-semibold tracking-wider">
-                    Why Lawyers Use This in Contracts
-                  </span>
-                  <p className="text-xs sm:text-[13px] text-[#9BAABC] leading-relaxed font-normal">
-                    {activeInspectorTerm.legalFunction}
-                  </p>
-                </div>
-
-                {/* Civil Law / Indonesian Law Nuance */}
-                <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.5)] border border-[#1D3552] space-y-1">
-                  <span className="text-[10px] font-sans uppercase text-[#4F83B8] block flex items-center gap-1 font-semibold tracking-wider">
-                    <Scale className="w-3 h-3 text-[#4F83B8]" />
-                    Civil Law / KUHPerdata Equivalent
-                  </span>
-                  <p className="text-xs sm:text-[13px] text-[#6A9BCB] font-sans font-medium">
-                    {activeInspectorTerm.civilLawEquivalent || 'Padanan umum dalam doktrin perdata Indonesia.'}
-                  </p>
-                </div>
-
-                {/* Drafting Nuance */}
-                <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.5)] border border-[#1D3552] space-y-1">
-                  <span className="text-[10px] font-sans uppercase text-[#4F83B8] block font-semibold tracking-wider">
-                    Drafting Nuance & Traps
-                  </span>
-                  <p className="text-xs text-[#9BAABC] leading-relaxed font-normal">
-                    {activeInspectorTerm.commonMistakesOrNuances}
-                  </p>
-                </div>
-
-                {/* View in Full Modal */}
-                <button
-                  onClick={() => setActiveLookupTermId(activeInspectorTerm.id)}
-                  className="w-full btn-primary py-3 text-xs flex items-center justify-center gap-1.5 uppercase tracking-wider font-semibold"
-                >
-                  <span>Open Complete Term Analysis</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-white" />
-                </button>
               </div>
-            )}
 
-            {/* TAB 2: DOCUMENT GLOSSARY */}
-            {activeRightTab === 'GLOSSARY' && (
-              <div className="p-5 space-y-3 max-h-[75vh] overflow-y-auto no-scrollbar">
-                <div className="text-xs font-sans text-[#9BAABC] mb-2 font-medium">
-                  Key terms in this document ({currentDoc.keyTermIds.length} terms):
-                </div>
-                <div className="space-y-2">
-                  {currentDoc.keyTermIds.map((termId) => {
-                    const matchedTerm = legalVocabularyList.find(t => t.id === termId);
-                    if (!matchedTerm) return null;
-                    return (
-                      <div
-                        key={termId}
-                        onClick={() => {
-                          setSelectedTermId(termId);
-                          setActiveRightTab('INSPECTOR');
-                        }}
-                        className="p-3.5 rounded-2xl bg-[rgba(17,34,57,0.6)] border border-[#1D3552] hover:border-[#294766] hover:bg-[rgba(19,43,70,0.8)] cursor-pointer transition-all"
-                      >
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-sans font-bold text-sm text-[#F3F5F7]">
-                            {matchedTerm.term}
+              {/* TAB 1: TERM INSPECTOR */}
+              {activeRightTab === 'INSPECTOR' && selectedLegalTerm && (
+                <div ref={inspectorScrollRef} className="p-5 space-y-4 max-h-[75vh] overflow-y-auto no-scrollbar">
+                  <div key={selectedLegalTerm.id} className="animate-inspector-fade space-y-4">
+                    
+                    {/* Header with Category, Part of Speech, Pronunciation & Save */}
+                    <div className="flex items-start justify-between border-b border-[#1D3552]/80 pb-3">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                          <span className="badge-accent text-[10px] font-sans font-medium uppercase px-2.5 py-0.5 rounded-full tracking-wider">
+                            {selectedLegalTerm.category}
                           </span>
-                          <span className="text-[10px] font-sans font-medium text-[#4F83B8] px-2 py-0.5 bg-[#132B46] rounded-full border border-[#1D3552]">
-                            Inspect
+                          <span className="text-[10px] font-sans text-[#64758A]">
+                            {selectedLegalTerm.partOfSpeech}
+                          </span>
+                          {selectedLegalTerm.difficulty && (
+                            <span className="text-[10px] font-sans text-[#4F83B8] px-2 py-0.5 rounded-full bg-[#132B46]/60 border border-[#1D3552]">
+                              {selectedLegalTerm.difficulty}
+                            </span>
+                          )}
+                        </div>
+                        <h4 className="text-2xl sm:text-3xl font-sans font-extrabold text-[#F3F5F7] tracking-tight">
+                          {selectedLegalTerm.term}
+                        </h4>
+
+                        {selectedLegalTerm.pronunciation && (
+                          <div className="flex items-center gap-2 mt-2">
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#132B46] border border-[#294766] text-[#6A9BCB] text-xs font-mono">
+                              <span>{selectedLegalTerm.pronunciation}</span>
+                              <button
+                                onClick={() => playPronunciation(selectedLegalTerm.term)}
+                                className="p-1 text-[#4F83B8] hover:text-[#F3F5F7] hover:bg-[#1D3552] rounded-full transition-colors cursor-pointer"
+                                title="Listen to American legal pronunciation"
+                                aria-label="Listen to pronunciation"
+                              >
+                                <Volume2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                            <span className="text-[10px] text-[#64758A] uppercase font-semibold tracking-wider">
+                              Pronunciation
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          if (isTermSaved(selectedLegalTerm.id)) {
+                            removeSavedTerm(selectedLegalTerm.id);
+                          } else {
+                            saveTerm(selectedLegalTerm.id, undefined, currentDoc.id);
+                          }
+                        }}
+                        className={`px-3.5 py-1.5 text-xs font-sans flex items-center gap-1.5 cursor-pointer rounded-full transition-all shrink-0 ${
+                          isTermSaved(selectedLegalTerm.id)
+                            ? 'bg-[#132B46] text-[#6A9BCB] border border-[#294766] font-semibold'
+                            : 'btn-secondary'
+                        }`}
+                        title="Save term to study list"
+                      >
+                        {isTermSaved(selectedLegalTerm.id) ? <BookmarkCheck className="w-3.5 h-3.5 text-[#4F83B8]" /> : <Bookmark className="w-3.5 h-3.5" />}
+                        <span>{isTermSaved(selectedLegalTerm.id) ? 'Saved' : 'Save'}</span>
+                      </button>
+                    </div>
+
+                    {/* Meaning & Indonesian Legal Concept */}
+                    <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.7)] border border-[#1D3552] space-y-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#4F83B8]" />
+                        <span className="text-[10px] font-sans uppercase text-[#4F83B8] font-semibold tracking-wider">
+                          Indonesian Legal Meaning & Concept
+                        </span>
+                      </div>
+                      <p className="font-sans font-bold text-base text-[#F3F5F7]">
+                        {selectedLegalTerm.indonesianMeaning}
+                      </p>
+                      {selectedLegalTerm.indonesianLegalConcept && (
+                        <p className="text-xs sm:text-[13px] text-[#9BAABC] leading-relaxed font-normal">
+                          {selectedLegalTerm.indonesianLegalConcept}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Plain-Language Explanation */}
+                    {(selectedLegalTerm.plainEnglish || selectedLegalTerm.legalDefinition) && (
+                      <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.5)] border border-[#1D3552] space-y-1.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#6A9BCB]" />
+                          <span className="text-[10px] font-sans uppercase text-[#9BAABC] font-semibold tracking-wider">
+                            Plain-Language Explanation
                           </span>
                         </div>
-                        <p className="text-xs text-[#9BAABC] font-sans font-medium">
-                          {matchedTerm.indonesianMeaning}
+                        <p className="text-xs sm:text-[13px] text-[#F3F5F7] leading-relaxed font-normal">
+                          {selectedLegalTerm.plainEnglish || selectedLegalTerm.legalDefinition}
                         </p>
                       </div>
-                    );
-                  })}
+                    )}
+
+                    {/* Legal Context / How Lawyers Use This in Contracts */}
+                    {selectedLegalTerm.legalFunction && (
+                      <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.5)] border border-[#1D3552] space-y-1.5">
+                        <div className="flex items-center gap-1.5">
+                          <Scale className="w-3.5 h-3.5 text-[#4F83B8]" />
+                          <span className="text-[10px] font-sans uppercase text-[#4F83B8] font-semibold tracking-wider">
+                            Legal Context / How Lawyers Use This Term
+                          </span>
+                        </div>
+                        <p className="text-xs sm:text-[13px] text-[#9BAABC] leading-relaxed font-normal">
+                          {selectedLegalTerm.legalFunction}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Indonesian Legal Equivalent (KUHPerdata / Civil Law) */}
+                    <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.5)] border border-[#1D3552] space-y-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <BookOpen className="w-3.5 h-3.5 text-[#4F83B8]" />
+                        <span className="text-[10px] font-sans uppercase text-[#4F83B8] font-semibold tracking-wider">
+                          Indonesian Legal Equivalent (KUHPerdata / Hukum Positif)
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-[13px] text-[#6A9BCB] font-sans font-medium">
+                        {selectedLegalTerm.civilLawEquivalent || 'Padanan doktriner umum dalam sistem hukum perdata Indonesia.'}
+                      </p>
+                    </div>
+
+                    {/* Drafting Nuance & Common Traps */}
+                    {selectedLegalTerm.commonMistakesOrNuances && (
+                      <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.5)] border border-[#1D3552] space-y-1.5">
+                        <div className="flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-[#E5A93C]" />
+                          <span className="text-[10px] font-sans uppercase text-[#E5A93C] font-semibold tracking-wider">
+                            Drafting Nuance & Common Traps
+                          </span>
+                        </div>
+                        <p className="text-xs text-[#9BAABC] leading-relaxed font-normal">
+                          {selectedLegalTerm.commonMistakesOrNuances}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Example Sentence or Clause */}
+                    {(selectedLegalTerm.authenticClauseExcerpt || selectedLegalTerm.exampleSentenceEn) && (
+                      <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.5)] border border-[#1D3552] space-y-2">
+                        <span className="text-[10px] font-sans uppercase text-[#4F83B8] font-semibold tracking-wider block">
+                          Example Sentence & Authentic Clause
+                        </span>
+                        {selectedLegalTerm.authenticClauseExcerpt && (
+                          <div className="p-3 rounded-xl bg-[#081222] border border-[#1D3552] font-serif text-xs text-[#F3F5F7] italic leading-relaxed">
+                            "{selectedLegalTerm.authenticClauseExcerpt}"
+                            {selectedLegalTerm.authenticClauseSource && (
+                              <span className="block not-italic font-sans text-[10px] text-[#64758A] mt-1.5">
+                                — {selectedLegalTerm.authenticClauseSource}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        {selectedLegalTerm.exampleSentenceEn && (
+                          <div className="space-y-1 text-xs font-sans">
+                            <p className="text-[#F3F5F7]">
+                              <strong className="text-[#4F83B8]">EN:</strong> {selectedLegalTerm.exampleSentenceEn}
+                            </p>
+                            {selectedLegalTerm.exampleSentenceId && (
+                              <p className="text-[#9BAABC] italic">
+                                <strong className="text-[#64758A]">ID:</strong> {selectedLegalTerm.exampleSentenceId}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Collocations & Related Terms */}
+                    {selectedLegalTerm.commonCollocations && selectedLegalTerm.commonCollocations.length > 0 && (
+                      <div className="space-y-1.5 pt-1">
+                        <span className="text-[10px] font-sans uppercase text-[#64758A] font-semibold tracking-wider block">
+                          Common Collocations:
+                        </span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {selectedLegalTerm.commonCollocations.map((col, idx) => (
+                            <span key={idx} className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-[#112239] border border-[#1D3552] text-[#9BAABC]">
+                              {col}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* View in Full Modal */}
+                    <button
+                      onClick={() => setActiveLookupTermId(selectedLegalTerm.id)}
+                      className="w-full btn-primary py-3 text-xs flex items-center justify-center gap-1.5 uppercase tracking-wider font-semibold rounded-full cursor-pointer transition-all"
+                    >
+                      <span>Open Complete Term Analysis</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-white" />
+                    </button>
+
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+
+              {/* TAB 2: DOCUMENT GLOSSARY */}
+              {activeRightTab === 'GLOSSARY' && (
+                <div className="p-5 space-y-3 max-h-[75vh] overflow-y-auto no-scrollbar">
+                  <div className="text-xs font-sans text-[#9BAABC] mb-2 font-medium">
+                    Key terms in this document ({currentDoc.keyTermIds.length} terms):
+                  </div>
+                  <div className="space-y-2">
+                    {currentDoc.keyTermIds.map((termId) => {
+                      const matchedTerm = legalVocabularyList.find(t => t.id === termId);
+                      if (!matchedTerm) return null;
+                      const isSelected = selectedLegalTerm?.id === matchedTerm.id;
+                      return (
+                        <div
+                          key={termId}
+                          onClick={() => handleSelectLegalWord(matchedTerm)}
+                          className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#132B46] border-[#4F83B8] shadow-sm'
+                              : 'bg-[rgba(17,34,57,0.6)] border-[#1D3552] hover:border-[#294766] hover:bg-[rgba(19,43,70,0.8)]'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-sans font-bold text-sm text-[#F3F5F7]">
+                              {matchedTerm.term}
+                            </span>
+                            <span className={`text-[10px] font-sans font-medium px-2 py-0.5 rounded-full border ${
+                              isSelected
+                                ? 'bg-[#4F83B8] text-white border-[#4F83B8]'
+                                : 'text-[#4F83B8] bg-[#132B46] border-[#1D3552]'
+                            }`}>
+                              {isSelected ? 'Active' : 'Inspect'}
+                            </span>
+                          </div>
+                          <p className="text-xs text-[#9BAABC] font-sans font-medium line-clamp-1">
+                            {matchedTerm.indonesianMeaning}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
             {/* TAB 3: DOCUMENT SUMMARY */}
             {activeRightTab === 'SUMMARY' && (
@@ -572,8 +883,36 @@ export const DocumentReader: React.FC = () => {
 
           </div>
         </div>
+        )}
 
       </div>
+
+      {/* Floating Re-open Button when Assistant Panel is Minimized */}
+      {!assistantPanelOpen && (
+        <div className="fixed bottom-6 right-6 z-40">
+          <button
+            onClick={() => {
+              setAssistantPanelOpen(true);
+              requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                  scrollToAssistantPanel(true);
+                });
+              });
+            }}
+            className="flex items-center gap-2.5 px-4 py-3 rounded-full glass-panel-deep border border-[#4F83B8]/60 text-[#F3F5F7] shadow-[0_15px_35px_rgba(0,0,0,0.6)] hover:scale-105 transition-all cursor-pointer group"
+          >
+            <Scale className="w-4 h-4 text-[#4F83B8] group-hover:rotate-12 transition-transform" />
+            <span className="text-xs font-sans font-bold tracking-wide">
+              Open Legal Assistant
+            </span>
+            {selectedLegalTerm && (
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#132B46] text-[#6A9BCB] border border-[#294766]">
+                {selectedLegalTerm.term}
+              </span>
+            )}
+          </button>
+        </div>
+      )}
 
       {/* Note Edit Modal (Floating Glass Modal) */}
       {activeParagraphNoteId && (

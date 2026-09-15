@@ -1,7 +1,6 @@
 import React from 'react';
 import { useStudy } from '../context/StudyContext';
 import { Shield } from 'lucide-react';
-import { LexaLogo } from './LexaLogo';
 
 export const Footer: React.FC = () => {
   const { setSelectedTab, theme } = useStudy();
@@ -16,15 +15,8 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Column 1: Identity & Philosophy */}
           <div className="md:col-span-1 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className={`p-1.5 rounded-full flex items-center justify-center shadow-xs border transition-colors ${
-                theme === 'dark'
-                  ? 'bg-[#0D1A2B] border-[#1D3552]'
-                  : 'bg-[#FFFFFF] border-[#D4DFEC]'
-              }`}>
-                <LexaLogo className="w-6 h-6" size={24} variant="colored" />
-              </div>
-              <span className={`font-brand font-semibold italic text-xl tracking-[0.01em] select-none ${
+            <div className="flex items-center">
+              <span className={`font-brand font-semibold italic text-2xl tracking-[0.01em] select-none ${
                 theme === 'dark' ? 'text-[#F3F5F7]' : 'text-[#0F1D30]'
               }`}
               style={{ fontFamily: "'Cormorant Garamond', 'Source Serif 4', Georgia, serif" }}

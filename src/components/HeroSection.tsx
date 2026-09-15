@@ -3,7 +3,6 @@ import { useStudy } from '../context/StudyContext';
 import { legalVocabularyList } from '../data/vocabularyData';
 import { sampleLegalDocuments } from '../data/documentsData';
 import { BookOpen, FileText, Scale, ArrowRight, ChevronRight } from 'lucide-react';
-import { LexaLogo } from './LexaLogo';
 import heroLiquidBg from '../assets/images/hero_liquid_bg_1788085195969.jpg';
 import heroLiquidLightBg from '../assets/images/hero_liquid_light_bg_1788182625189.jpg';
 
