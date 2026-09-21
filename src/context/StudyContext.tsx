@@ -70,15 +70,9 @@ const StudyContext = createContext<StudyContextType | undefined>(undefined);
 export const StudyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<ThemeMode>(() => {
     try {
-      const stored = localStorage.getItem(THEME_STORAGE_KEY);
-      if (stored === 'light' || stored === 'dark') {
-        return stored;
-      }
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-        return 'light';
-      }
+      localStorage.setItem(THEME_STORAGE_KEY, 'dark');
     } catch (e) {
-      console.warn('Failed to load theme preference:', e);
+      console.warn('Failed to set dark theme preference:', e);
     }
     return 'dark';
   });

@@ -4,8 +4,6 @@ import {
   Bookmark, 
   Menu, 
   X, 
-  Sun, 
-  Moon,
   Search,
   Home as HomeIcon,
   GraduationCap,
@@ -21,7 +19,6 @@ import {
 export const Navbar: React.FC = () => {
   const { 
     theme,
-    toggleTheme,
     selectedTab, 
     setSelectedTab, 
     languageMode, 
@@ -194,7 +191,7 @@ export const Navbar: React.FC = () => {
             aria-hidden="true" 
           />
 
-          {/* 3. RIGHT-SIDE CONTROLS (Search Shortcut, Theme Toggle & My Study) */}
+          {/* 3. RIGHT-SIDE CONTROLS (Search Shortcut & My Study) */}
           <div className="relative z-10 flex items-center gap-1.5 shrink-0">
             {/* Search Shortcut Button */}
             <button
@@ -207,22 +204,6 @@ export const Navbar: React.FC = () => {
             >
               <Search className="w-3.5 h-3.5" />
               <span className="text-[10px] font-mono opacity-60 hidden xl:inline">⌘K</span>
-            </button>
-
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              aria-label={theme === 'dark' ? 'Switch to White mode (Light)' : 'Switch to Dark mode'}
-              title={theme === 'dark' ? 'Switch to White mode (Light)' : 'Switch to Dark mode'}
-              className={`liquid-ctrl-pill w-[34px] h-[34px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 ${
-                theme === 'dark' ? 'text-white/70 hover:text-white/95' : 'text-black/70 hover:text-black/95'
-              }`}
-            >
-              {theme === 'dark' ? (
-                <Sun className="w-3.5 h-3.5 text-[#DCDCDC] transition-transform duration-300 hover:rotate-45" />
-              ) : (
-                <Moon className="w-3.5 h-3.5 text-[#111111] transition-transform duration-300 hover:-rotate-12" />
-              )}
             </button>
 
             {/* My Study Utility Button */}
@@ -321,23 +302,8 @@ export const Navbar: React.FC = () => {
             </span>
           </div>
 
-          {/* Right: Controls (Theme + My Study + Menu) */}
+          {/* Right: Controls (My Study + Menu) */}
           <div className="relative z-10 flex items-center gap-1 shrink-0">
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-              className={`liquid-ctrl-pill w-[30px] h-[30px] rounded-full flex items-center justify-center cursor-pointer transition-colors ${
-                theme === 'dark' ? 'text-[#A8A8A8]' : 'text-[#555555]'
-              }`}
-            >
-              {theme === 'dark' ? (
-                <Sun className="w-3.5 h-3.5 text-[#DCDCDC]" />
-              ) : (
-                <Moon className="w-3.5 h-3.5 text-[#111111]" />
-              )}
-            </button>
-
             {/* My Study Button */}
             <button
               onClick={() => handleNavSelect('mystudy')}
