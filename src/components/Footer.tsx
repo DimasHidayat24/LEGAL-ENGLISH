@@ -29,22 +29,6 @@ export const Footer: React.FC = () => {
             }`}>
               An academic and professional Legal English learning platform crafted specifically for Indonesian law students, advocates, and corporate legal counsel.
             </p>
-            <div className="flex flex-wrap items-center gap-1.5 pt-1">
-              <span className={`px-3 py-0.5 rounded-full text-[10px] font-sans font-medium border ${
-                theme === 'dark'
-                  ? 'bg-[#112239]/60 text-[#4F83B8] border-[#1D3552]'
-                  : 'bg-[#E4EEF8] text-[#1E4E88] border-[#B6CBE0]'
-              }`}>
-                Common Law × Civil Law
-              </span>
-              <span className={`px-3 py-0.5 rounded-full text-[10px] font-sans font-medium border ${
-                theme === 'dark'
-                  ? 'bg-[#112239]/60 text-[#9EC4AC] border-[#1D3552]'
-                  : 'bg-[#E6F4ED] text-[#1C6B46] border-[#A3D9B8]'
-              }`}>
-                Indonesian Jurisprudence
-              </span>
-            </div>
           </div>
 
           {/* Column 2: Curriculum & Study */}

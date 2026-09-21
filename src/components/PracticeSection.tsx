@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useStudy } from '../context/StudyContext';
 import { allPracticeExercises, practiceBankMetadata } from '../data/practice';
 import { ExerciseCategory, ExerciseDifficulty, ExerciseItem } from '../types';
+import { TimedExamSimulation } from './TimedExamSimulation';
 import { 
   Check, 
   X, 
@@ -16,12 +17,16 @@ import {
   Sparkles,
   Layers,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Clock,
+  Zap,
+  ShieldCheck
 } from 'lucide-react';
 
 export const PracticeSection: React.FC = () => {
-  const { recordExerciseScore, exerciseScores, setActiveLookupTermId } = useStudy();
+  const { recordExerciseScore, exerciseScores, setActiveLookupTermId, examHistory } = useStudy();
   
+  const [practiceMode, setPracticeMode] = useState<'DRILLS' | 'EXAM'>('DRILLS');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -141,6 +146,11 @@ export const PracticeSection: React.FC = () => {
     }
   };
 
+  // If in Exam mode, render TimedExamSimulation (rendered after all hooks have executed)
+  if (practiceMode === 'EXAM') {
+    return <TimedExamSimulation onBackToPractice={() => setPracticeMode('DRILLS')} />;
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8">
       
@@ -184,6 +194,36 @@ export const PracticeSection: React.FC = () => {
         <p className="text-sm sm:text-base text-[#9BAABC] font-sans mt-2 leading-relaxed">
           Master drafting precision, bilingual legal translation (<em>wanprestasi</em>, <em>tanggung jawab mutlak</em>), commercial terminology, contextual clauses, and authentic contract reading across 100 benchmark exercises.
         </p>
+
+        {/* Mode Switcher: Drills vs Timed Exam Simulation */}
+        <div className="flex items-center gap-2 pt-5 pb-1">
+          <button
+            onClick={() => setPracticeMode('DRILLS')}
+            className={`px-4 py-2 rounded-full text-xs font-sans font-semibold transition-all border cursor-pointer flex items-center gap-2 ${
+              practiceMode === 'DRILLS'
+                ? 'bg-[#132B46] text-[#F3F5F7] border-[#4F83B8] shadow-md'
+                : 'bg-[#112239]/60 text-[#9BAABC] border-[#1D3552] hover:text-[#F3F5F7]'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5 text-[#6A9BCB]" />
+            <span>Interactive Drills (100 Questions)</span>
+          </button>
+
+          <button
+            onClick={() => setPracticeMode('EXAM')}
+            className={`px-4 py-2 rounded-full text-xs font-sans font-semibold transition-all border cursor-pointer flex items-center gap-2 ${
+              practiceMode === 'EXAM'
+                ? 'bg-[#132B46] text-[#F3F5F7] border-[#4F83B8] shadow-md'
+                : 'bg-[#112239]/80 text-[#6A9BCB] border-[#294766] hover:border-[#4F83B8] hover:text-[#F3F5F7]'
+            }`}
+          >
+            <Clock className="w-3.5 h-3.5 text-amber-400" />
+            <span>Timed Exam Simulation</span>
+            <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-[#2B62A3] text-white tracking-wide uppercase">
+              Diagnostic
+            </span>
+          </button>
+        </div>
 
         {/* Category Filters with Counts */}
         <div className="flex items-center gap-2 overflow-x-auto pt-6 text-xs font-sans no-scrollbar">

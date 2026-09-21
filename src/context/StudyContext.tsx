@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { LanguageMode, ThemeMode, SavedTermRecord, UserStudyState } from '../types';
+import { LanguageMode, ThemeMode, SavedTermRecord, UserStudyState, ExamResultRecord } from '../types';
 import { legalVocabularyList } from '../data/vocabularyData';
 
 interface StudyContextType {
@@ -23,6 +23,8 @@ interface StudyContextType {
   markDocumentComplete: (docId: string) => void;
   exerciseScores: { [exerciseId: string]: { score: number; date: string } };
   recordExerciseScore: (exerciseId: string, score: number) => void;
+  examHistory: ExamResultRecord[];
+  recordExamResult: (result: ExamResultRecord) => void;
   personalNotes: { [key: string]: string };
   saveNote: (key: string, content: string) => void;
   isSearchOpen: boolean;
@@ -236,6 +238,13 @@ export const StudyProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }));
   };
 
+  const recordExamResult = (result: ExamResultRecord) => {
+    setStudyState(prev => ({
+      ...prev,
+      examHistory: [result, ...(prev.examHistory || [])]
+    }));
+  };
+
   const saveNote = (key: string, content: string) => {
     setStudyState(prev => ({
       ...prev,
@@ -269,6 +278,8 @@ export const StudyProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         markDocumentComplete,
         exerciseScores: studyState.exerciseScores,
         recordExerciseScore,
+        examHistory: studyState.examHistory || [],
+        recordExamResult,
         personalNotes: studyState.personalNotes,
         saveNote,
         isSearchOpen,

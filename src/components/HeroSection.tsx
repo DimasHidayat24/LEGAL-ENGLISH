@@ -14,37 +14,101 @@ export const HeroSection: React.FC = () => {
 
   return (
     <div className="space-y-24 pb-20">
-      {/* 1. Main Hero Spatial Editorial Section with Exclusive Full-Bleed Liquid Flow Background */}
+      {/* 1. Main Hero Spatial Editorial Section with Living Animated Water Background (Hero Section Only) */}
       <section id="hero-banner" className={`relative -mt-20 sm:-mt-28 pt-20 sm:pt-36 pb-16 sm:pb-20 overflow-hidden border-b transition-colors duration-300 ${
         theme === 'dark' ? 'border-[#1D3552]/80 bg-[#020813]' : 'border-[#D4DFEC] bg-[#EDF3FA]'
       }`}>
-        {/* Full-bleed Liquid Flowing Background Image Layer */}
+        {/* Full-bleed Living Water Background System - Hero Section Only */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
-          {/* Liquid Background Image - dynamically themed for Dark (Midnight Navy Fluid) & Light (Luminous Pearlescent & Sapphire Fluid) */}
-          <img
-            src={theme === 'dark' ? heroLiquidBg : heroLiquidLightBg}
-            alt=""
+          {/* Water Layer 1: Undulating Deep Fluid Current & Swell */}
+          <div className="absolute -inset-[14%] w-[128%] h-[128%] animate-hero-water-drift">
+            <img
+              src={theme === 'dark' ? heroLiquidBg : heroLiquidLightBg}
+              alt=""
+              aria-hidden="true"
+              referrerPolicy="no-referrer"
+              className={`w-full h-full object-cover object-[70%_40%] filter blur-[0.6px] transition-all duration-700 ${
+                theme === 'dark' ? 'opacity-90 brightness-105' : 'opacity-95 brightness-[1.02] contrast-[1.04]'
+              }`}
+            />
+          </div>
+
+          {/* Water Layer 2: Moving Transverse Waves (SVG Wave Currents) */}
+          <div className="absolute inset-0 opacity-40 dark:opacity-35 mix-blend-screen dark:mix-blend-overlay overflow-hidden">
+            {/* Primary Flowing Wave Ribbon */}
+            <div className="absolute -top-[20%] left-0 w-[240%] h-[140%] animate-hero-water-wave-1">
+              <svg className="w-full h-full" viewBox="0 0 2400 600" preserveAspectRatio="none" fill="none">
+                <defs>
+                  <linearGradient id="heroWaterGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor={theme === 'dark' ? '#3B82F6' : '#60A5FA'} stopOpacity="0.35" />
+                    <stop offset="35%" stopColor={theme === 'dark' ? '#0284C7' : '#38BDF8'} stopOpacity="0.25" />
+                    <stop offset="70%" stopColor={theme === 'dark' ? '#1D4ED8' : '#2563EB'} stopOpacity="0.3" />
+                    <stop offset="100%" stopColor={theme === 'dark' ? '#38BDF8' : '#93C5FD'} stopOpacity="0.2" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M0,220 C300,160 600,280 900,210 C1200,150 1500,270 1800,220 C2100,160 2400,280 2700,210 L2700,600 L0,600 Z"
+                  fill="url(#heroWaterGrad1)"
+                />
+              </svg>
+            </div>
+
+            {/* Counter-Flow Wave Ribbon (Secondary Swell Interference) */}
+            <div className="absolute -top-[10%] left-0 w-[240%] h-[130%] animate-hero-water-wave-2">
+              <svg className="w-full h-full" viewBox="0 0 2400 600" preserveAspectRatio="none" fill="none">
+                <defs>
+                  <linearGradient id="heroWaterGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor={theme === 'dark' ? '#0EA5E9' : '#38BDF8'} stopOpacity="0.2" />
+                    <stop offset="50%" stopColor={theme === 'dark' ? '#2563EB' : '#1D4ED8'} stopOpacity="0.28" />
+                    <stop offset="100%" stopColor={theme === 'dark' ? '#60A5FA' : '#93C5FD'} stopOpacity="0.15" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M0,280 C350,330 650,220 950,290 C1250,350 1550,230 1850,280 C2150,340 2450,240 2750,290 L2750,600 L0,600 Z"
+                  fill="url(#heroWaterGrad2)"
+                />
+              </svg>
+            </div>
+          </div>
+
+          {/* Water Layer 3: Caustic Light Refraction Shimmer */}
+          <div
+            className="absolute inset-0 animate-hero-water-caustic mix-blend-overlay dark:mix-blend-soft-light"
+            style={{
+              backgroundImage: theme === 'dark'
+                ? `radial-gradient(ellipse at 40% 30%, rgba(125, 185, 245, 0.28) 0%, transparent 55%),
+                   radial-gradient(ellipse at 75% 65%, rgba(56, 189, 248, 0.24) 0%, transparent 60%),
+                   radial-gradient(ellipse at 20% 80%, rgba(99, 102, 241, 0.18) 0%, transparent 50%)`
+                : `radial-gradient(ellipse at 40% 30%, rgba(96, 165, 250, 0.3) 0%, transparent 55%),
+                   radial-gradient(ellipse at 75% 65%, rgba(14, 165, 233, 0.25) 0%, transparent 60%),
+                   radial-gradient(ellipse at 20% 80%, rgba(147, 197, 253, 0.25) 0%, transparent 50%)`,
+              backgroundSize: '120% 120%'
+            }}
             aria-hidden="true"
-            referrerPolicy="no-referrer"
-            className={`w-full h-full object-cover object-[70%_40%] scale-105 filter blur-[1px] transition-all duration-500 ${
-              theme === 'dark' ? 'opacity-90 brightness-100' : 'opacity-95 brightness-[1.02] contrast-[1.05]'
-            }`}
           />
 
-          {/* Primary Theme Overlay for seamless visual harmony */}
+          {/* Water Layer 4: Gentle Concentric Water Drop Ripples */}
+          <div className="absolute top-[32%] left-[32%] w-48 h-48 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+            <div className="absolute inset-0 rounded-full border border-sky-400/30 dark:border-sky-300/25 animate-hero-water-ripple-1 shadow-[0_0_15px_rgba(56,189,248,0.2)]" />
+          </div>
+          <div className="absolute top-[58%] left-[70%] w-60 h-60 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+            <div className="absolute inset-0 rounded-full border border-blue-400/25 dark:border-blue-300/20 animate-hero-water-ripple-2 shadow-[0_0_15px_rgba(37,99,235,0.15)]" />
+          </div>
+
+          {/* Primary Theme Overlay for text contrast & seamless visual harmony */}
           <div 
             className={`absolute inset-0 transition-colors duration-300 ${
-              theme === 'dark' ? 'bg-[#030913]/[0.58]' : 'bg-[#F4F7FB]/[0.22]'
+              theme === 'dark' ? 'bg-[#030913]/[0.55]' : 'bg-[#F4F7FB]/[0.2]'
             }`}
             aria-hidden="true"
           />
 
-          {/* Subtle Radial Gradient behind the left headline & description area */}
+          {/* Subtle Radial Vignette behind the left headline & description area */}
           <div 
             className="absolute inset-0"
             style={{
               background: theme === 'dark'
-                ? 'radial-gradient(circle at 30% 50%, rgba(3, 9, 19, 0.35) 0%, rgba(3, 9, 19, 0.08) 55%, transparent 80%)'
+                ? 'radial-gradient(circle at 30% 50%, rgba(3, 9, 19, 0.4) 0%, rgba(3, 9, 19, 0.1) 55%, transparent 80%)'
                 : 'radial-gradient(circle at 30% 50%, rgba(244, 247, 251, 0.65) 0%, rgba(244, 247, 251, 0.25) 55%, transparent 85%)'
             }}
             aria-hidden="true"

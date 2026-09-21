@@ -5,6 +5,7 @@ import { sampleLegalDocuments } from '../data/documentsData';
 import { curriculumLessons } from '../data/curriculumData';
 import { allPracticeExercises } from '../data/practice';
 import { AudioPronounceButton } from './AudioPronounceButton';
+import { ExamCategoryScore } from '../types';
 import { 
   Bookmark, 
   Trash2, 
@@ -15,7 +16,11 @@ import {
   ArrowRight,
   Copy,
   Check,
-  Volume2
+  Volume2,
+  Clock,
+  Zap,
+  ShieldCheck,
+  Sparkles
 } from 'lucide-react';
 
 export const MyStudyDashboard: React.FC = () => {
@@ -27,12 +32,13 @@ export const MyStudyDashboard: React.FC = () => {
     completedDocuments, 
     exerciseScores, 
     personalNotes, 
+    examHistory,
     setActiveLookupTermId, 
     setActiveDocId, 
     setSelectedTab 
   } = useStudy();
 
-  const [activeTab, setActiveTab] = useState<'VOCAB' | 'FLASHCARDS' | 'BOOKMARKS' | 'NOTES'>('VOCAB');
+  const [activeTab, setActiveTab] = useState<'VOCAB' | 'FLASHCARDS' | 'BOOKMARKS' | 'NOTES' | 'DIAGNOSTICS'>('VOCAB');
   const [vocabSearch, setVocabSearch] = useState<string>('');
   const [flashcardIdx, setFlashcardIdx] = useState<number>(0);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
@@ -178,6 +184,23 @@ export const MyStudyDashboard: React.FC = () => {
             }`}
           >
             Study Notes ({Object.keys(personalNotes).length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('DIAGNOSTICS')}
+            className={`px-4 py-2 whitespace-nowrap border transition-all cursor-pointer rounded-full text-xs font-medium flex items-center gap-1.5 ${
+              activeTab === 'DIAGNOSTICS'
+                ? 'bg-[#132B46] text-[#F3F5F7] border-[#4F83B8] font-semibold shadow-xs'
+                : 'bg-[#112239]/60 text-[#6A9BCB] border-[#1D3552] hover:bg-[#132B46] hover:text-[#F3F5F7]'
+            }`}
+          >
+            <Clock className="w-3.5 h-3.5 text-amber-400" />
+            <span>Exam Diagnostics</span>
+            {examHistory && examHistory.length > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full text-[9px] bg-[#4F83B8] text-white font-bold">
+                {examHistory.length}
+              </span>
+            )}
           </button>
         </div>
 
@@ -525,6 +548,141 @@ export const MyStudyDashboard: React.FC = () => {
                   </p>
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* TAB 5: EXAM DIAGNOSTICS */}
+      {activeTab === 'DIAGNOSTICS' && (
+        <div className="space-y-6">
+          {(!examHistory || examHistory.length === 0) ? (
+            <div className="text-center py-16 rounded-3xl lexa-card p-8 space-y-4 max-w-xl mx-auto">
+              <Clock className="w-12 h-12 mx-auto text-[#4F83B8] opacity-70" />
+              <h3 className="font-sans font-extrabold text-xl text-[#F3F5F7]">
+                No Timed Diagnostic Exams Taken Yet
+              </h3>
+              <p className="text-xs sm:text-sm font-sans text-[#9BAABC] leading-relaxed">
+                Take a 12-minute sprint or 25-minute comprehensive diagnostic exam to evaluate your contract drafting, bilingual translation, and commercial legal English proficiency under authentic exam pressure.
+              </p>
+              <div className="pt-2">
+                <button
+                  onClick={() => setSelectedTab('practice')}
+                  className="btn-primary px-6 py-2.5 text-xs font-bold uppercase tracking-wider rounded-full shadow-md inline-flex items-center gap-2 cursor-pointer"
+                >
+                  <Zap className="w-4 h-4" /> Start Diagnostic Assessment
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              
+              {/* Summary Stats Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="p-5 rounded-3xl lexa-card space-y-1">
+                  <span className="text-[10px] font-sans uppercase text-[#4F83B8] block font-semibold tracking-wider">
+                    Total Exams Taken
+                  </span>
+                  <div className="text-2xl sm:text-3xl font-sans font-extrabold text-[#F3F5F7]">
+                    {examHistory.length}
+                  </div>
+                  <span className="text-[11px] font-sans text-[#9BAABC]">Diagnostic Sessions</span>
+                </div>
+
+                <div className="p-5 rounded-3xl lexa-card space-y-1">
+                  <span className="text-[10px] font-sans uppercase text-[#4F83B8] block font-semibold tracking-wider">
+                    Average Score
+                  </span>
+                  <div className="text-2xl sm:text-3xl font-sans font-extrabold text-[#6A9BCB]">
+                    {Math.round(examHistory.reduce((acc, h) => acc + h.scorePercentage, 0) / examHistory.length)}%
+                  </div>
+                  <span className="text-[11px] font-sans text-[#9BAABC]">Cumulative Benchmark</span>
+                </div>
+
+                <div className="p-5 rounded-3xl lexa-card space-y-1 flex flex-col justify-between">
+                  <div>
+                    <span className="text-[10px] font-sans uppercase text-[#4F83B8] block font-semibold tracking-wider">
+                      Latest Proficiency Tier
+                    </span>
+                    <div className="text-sm font-sans font-bold text-[#F3F5F7] mt-1 truncate">
+                      {examHistory[0]?.proficiencyTier || 'Foundational'}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSelectedTab('practice')}
+                    className="text-xs font-sans text-[#4F83B8] hover:text-[#6A9BCB] font-semibold flex items-center gap-1 cursor-pointer pt-2"
+                  >
+                    Take New Exam <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* History List */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-sans font-bold text-[#F3F5F7] flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-[#4F83B8]" /> Historical Diagnostic Records
+                  </h3>
+                  <button
+                    onClick={() => setSelectedTab('practice')}
+                    className="btn-primary px-4 py-1.5 text-xs rounded-full font-semibold flex items-center gap-1 cursor-pointer"
+                  >
+                    <Zap className="w-3.5 h-3.5" /> Launch New Exam
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {examHistory.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-5 rounded-3xl lexa-card border border-[#1D3552] space-y-4"
+                    >
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <div>
+                          <div className="text-base font-sans font-bold text-[#F3F5F7]">{item.title}</div>
+                          <div className="text-xs font-sans text-[#9BAABC]">
+                            Completed on {item.date} • {item.totalQuestions} Questions • {Math.round(item.timeSpentSeconds / 60)}m {item.timeSpentSeconds % 60}s duration
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs font-semibold text-[#6A9BCB]">
+                            {item.proficiencyTier}
+                          </span>
+                          <div className={`px-3.5 py-1 rounded-full font-bold text-sm ${
+                            item.scorePercentage >= 75
+                              ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-700/60'
+                              : item.scorePercentage >= 60
+                                ? 'bg-sky-950/60 text-sky-300 border border-sky-700/60'
+                                : 'bg-amber-950/60 text-amber-300 border border-amber-700/60'
+                          }`}>
+                            {item.scorePercentage}% ({item.correctAnswers}/{item.totalQuestions})
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Category Breakdown Mini Bars */}
+                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2 border-t border-[#1D3552]">
+                        {Object.entries(item.categoryBreakdown).map(([cat, scoreVal]) => {
+                          const score = scoreVal as ExamCategoryScore;
+                          return (
+                            <div key={cat} className="p-2 rounded-xl bg-[#0F2238]/60 border border-[#1D3552]/70 text-[11px] font-sans space-y-1">
+                              <div className="text-[#9BAABC] uppercase font-bold text-[9.5px] truncate">{cat}</div>
+                              <div className="flex justify-between font-semibold">
+                                <span className="text-[#F3F5F7]">{score.correct}/{score.total}</span>
+                                <span className={score.percentage >= 70 ? 'text-[#6A9BCB]' : 'text-amber-400'}>
+                                  {score.percentage}%
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
             </div>
           )}
         </div>

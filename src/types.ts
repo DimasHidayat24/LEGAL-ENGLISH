@@ -315,6 +315,36 @@ export interface SavedTermRecord {
   sourceDocId?: string;
 }
 
+export interface ExamQuestionResult {
+  exerciseId: string;
+  selectedOption: number | null;
+  correctIndex: number;
+  isCorrect: boolean;
+  flagged: boolean;
+}
+
+export interface ExamCategoryScore {
+  total: number;
+  correct: number;
+  percentage: number;
+}
+
+export interface ExamResultRecord {
+  id: string;
+  date: string;
+  title: string;
+  durationMinutes: number;
+  timeSpentSeconds: number;
+  totalQuestions: number;
+  correctAnswers: number;
+  scorePercentage: number;
+  proficiencyTier: string;
+  categoryBreakdown: {
+    [category: string]: ExamCategoryScore;
+  };
+  questionResults: ExamQuestionResult[];
+}
+
 export interface UserStudyState {
   savedTerms: SavedTermRecord[];
   bookmarkedParagraphs: { docId: string; paragraphId: string; timestamp: string }[];
@@ -322,4 +352,5 @@ export interface UserStudyState {
   completedDocuments: string[];
   exerciseScores: { [exerciseId: string]: { score: number; date: string } };
   personalNotes: { [key: string]: string };
+  examHistory?: ExamResultRecord[];
 }
