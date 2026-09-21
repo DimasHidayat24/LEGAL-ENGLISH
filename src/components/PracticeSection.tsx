@@ -136,13 +136,13 @@ export const PracticeSection: React.FC = () => {
   const getDifficultyBadge = (difficulty?: ExerciseDifficulty) => {
     switch (difficulty) {
       case 'Foundation':
-        return 'bg-emerald-950/60 text-emerald-300 border-emerald-700/60';
+        return 'bg-[#181818] text-[#F2F2F2] border-white/10';
       case 'Intermediate':
-        return 'bg-sky-950/60 text-sky-300 border-sky-700/60';
+        return 'bg-[#1C1C1C] text-[#F2F2F2] border-white/15';
       case 'Advanced':
-        return 'bg-purple-950/60 text-purple-300 border-purple-700/60';
+        return 'bg-[#242424] text-white border-white/20';
       default:
-        return 'bg-[#132B46] text-[#9BAABC] border-[#294766]';
+        return 'bg-[#151515] text-[#A8A8A8] border-white/10';
     }
   };
 
@@ -155,11 +155,11 @@ export const PracticeSection: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8">
       
       {/* Header */}
-      <div className="border-b border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] pb-6">
+      <div className="border-b border-white/[0.08] pb-6">
         <div className="flex items-center justify-between flex-wrap gap-2 mb-1.5">
           <div className="flex items-center gap-2">
-            <Award className="w-4 h-4 text-[#4F83B8]" />
-            <span className="text-[11px] font-sans tracking-widest uppercase text-[#4F83B8] font-semibold">
+            <Award className="w-4 h-4 text-[#DCDCDC]" />
+            <span className="text-[11px] font-sans tracking-widest uppercase text-[#A8A8A8] font-semibold">
               INTERACTIVE BENCHMARK & DRILLS • {allPracticeExercises.length} PRACTICABLE QUESTIONS
             </span>
           </div>
@@ -169,8 +169,8 @@ export const PracticeSection: React.FC = () => {
               onClick={handleShuffleToggle}
               className={`text-xs font-sans px-3 py-1.5 rounded-full border flex items-center gap-1.5 cursor-pointer transition-colors ${
                 isShuffleActive 
-                  ? 'bg-[#132B46] text-[#6A9BCB] border-[#4F83B8] font-semibold' 
-                  : 'bg-[#112239]/60 text-[#9BAABC] border-[#1D3552] hover:text-[#F3F5F7]'
+                  ? 'bg-[#242424] text-white border-white/25 font-semibold' 
+                  : 'bg-[#151515] text-[#A8A8A8] border-white/10 hover:text-[#FFFFFF]'
               }`}
               title="Shuffle questions for a dynamic randomized session"
             >
@@ -180,7 +180,7 @@ export const PracticeSection: React.FC = () => {
             {isShuffleActive && (
               <button
                 onClick={handleResetOrder}
-                className="text-xs font-sans text-[#9BAABC] hover:text-[#F3F5F7] px-2 py-1 underline cursor-pointer"
+                className="text-xs font-sans text-[#A8A8A8] hover:text-[#FFFFFF] px-2 py-1 underline cursor-pointer"
               >
                 Reset Order
               </button>
@@ -188,10 +188,10 @@ export const PracticeSection: React.FC = () => {
           </div>
         </div>
 
-        <h1 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#F3F5F7] tracking-tight">
+        <h1 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#FFFFFF] tracking-tight">
           Legal English Practice & Translation Lab
         </h1>
-        <p className="text-sm sm:text-base text-[#9BAABC] font-sans mt-2 leading-relaxed">
+        <p className="text-sm sm:text-base text-[#A8A8A8] font-sans mt-2 leading-relaxed">
           Master drafting precision, bilingual legal translation (<em>wanprestasi</em>, <em>tanggung jawab mutlak</em>), commercial terminology, contextual clauses, and authentic contract reading across 100 benchmark exercises.
         </p>
 
@@ -201,11 +201,11 @@ export const PracticeSection: React.FC = () => {
             onClick={() => setPracticeMode('DRILLS')}
             className={`px-4 py-2 rounded-full text-xs font-sans font-semibold transition-all border cursor-pointer flex items-center gap-2 ${
               practiceMode === 'DRILLS'
-                ? 'bg-[#132B46] text-[#F3F5F7] border-[#4F83B8] shadow-md'
-                : 'bg-[#112239]/60 text-[#9BAABC] border-[#1D3552] hover:text-[#F3F5F7]'
+                ? 'bg-[#242424] text-[#FFFFFF] border-white/25 shadow-md'
+                : 'bg-[#151515] text-[#A8A8A8] border-white/10 hover:text-[#FFFFFF]'
             }`}
           >
-            <BookOpen className="w-3.5 h-3.5 text-[#6A9BCB]" />
+            <BookOpen className="w-3.5 h-3.5 text-white" />
             <span>Interactive Drills (100 Questions)</span>
           </button>
 
@@ -213,13 +213,13 @@ export const PracticeSection: React.FC = () => {
             onClick={() => setPracticeMode('EXAM')}
             className={`px-4 py-2 rounded-full text-xs font-sans font-semibold transition-all border cursor-pointer flex items-center gap-2 ${
               practiceMode === 'EXAM'
-                ? 'bg-[#132B46] text-[#F3F5F7] border-[#4F83B8] shadow-md'
-                : 'bg-[#112239]/80 text-[#6A9BCB] border-[#294766] hover:border-[#4F83B8] hover:text-[#F3F5F7]'
+                ? 'bg-[#242424] text-[#FFFFFF] border-white/25 shadow-md'
+                : 'bg-[#151515] text-[#A8A8A8] border-white/10 hover:border-white/20 hover:text-[#FFFFFF]'
             }`}
           >
-            <Clock className="w-3.5 h-3.5 text-amber-400" />
+            <Clock className="w-3.5 h-3.5 text-[#DCDCDC]" />
             <span>Timed Exam Simulation</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-[#2B62A3] text-white tracking-wide uppercase">
+            <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-[#333333] text-white tracking-wide uppercase border border-white/20">
               Diagnostic
             </span>
           </button>
@@ -245,12 +245,12 @@ export const PracticeSection: React.FC = () => {
               }}
               className={`px-3.5 py-1.5 uppercase transition-all border cursor-pointer rounded-full text-xs font-medium whitespace-nowrap flex items-center gap-1.5 ${
                 selectedCategory === item.id
-                  ? 'bg-[#132B46] text-[#F3F5F7] border-[#294766] font-semibold shadow-xs'
-                  : 'bg-[#112239]/60 text-[#9BAABC] border-[#1D3552] hover:bg-[#132B46] hover:text-[#F3F5F7]'
+                  ? 'bg-[#242424] text-[#FFFFFF] border-white/25 font-semibold shadow-xs'
+                  : 'bg-[#151515] text-[#A8A8A8] border-white/10 hover:bg-[#1C1C1C] hover:text-[#FFFFFF]'
               }`}
             >
               <span>{item.label}</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#112239] text-[#6A9BCB] border border-[#1D3552]">
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#101010] text-[#DCDCDC] border border-white/10">
                 {item.count}
               </span>
             </button>
@@ -260,7 +260,7 @@ export const PracticeSection: React.FC = () => {
         {/* Difficulty & Search Filter Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4">
           <div className="flex items-center gap-1.5 overflow-x-auto text-xs font-sans">
-            <span className="text-[11px] font-sans text-[#9BAABC] mr-1 uppercase font-semibold">Tier:</span>
+            <span className="text-[11px] font-sans text-[#A8A8A8] mr-1 uppercase font-semibold">Tier:</span>
             {[
               { id: 'ALL', label: 'All Levels', count: allPracticeExercises.length },
               { id: 'Foundation', label: 'Foundation', count: practiceBankMetadata.byDifficulty.Foundation },
@@ -277,8 +277,8 @@ export const PracticeSection: React.FC = () => {
                 }}
                 className={`px-2.5 py-1 rounded-md text-[11px] font-sans border transition-colors cursor-pointer ${
                   selectedDifficulty === tier.id
-                    ? 'bg-[#1D3552] text-[#F3F5F7] border-[#4F83B8] font-bold'
-                    : 'bg-[#112239]/40 text-[#9BAABC] border-[#1D3552]/70 hover:text-[#F3F5F7]'
+                    ? 'bg-[#242424] text-[#FFFFFF] border-white/25 font-bold'
+                    : 'bg-[#151515] text-[#A8A8A8] border-white/10 hover:text-[#FFFFFF]'
                 }`}
               >
                 {tier.label} ({tier.count})
@@ -288,7 +288,7 @@ export const PracticeSection: React.FC = () => {
 
           {/* Quick Search */}
           <div className="relative min-w-[200px]">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#9BAABC]" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#707070]" />
             <input
               type="text"
               placeholder="Search concepts or terms..."
@@ -299,12 +299,12 @@ export const PracticeSection: React.FC = () => {
                 setSelectedOption(null);
                 setIsSubmitted(false);
               }}
-              className="w-full pl-8 pr-3 py-1.5 rounded-xl text-xs font-sans bg-[#112239]/80 border border-[#1D3552] text-[#F3F5F7] placeholder-[#9BAABC]/60 focus:outline-none focus:border-[#4F83B8]"
+              className="w-full pl-8 pr-3 py-1.5 rounded-xl text-xs font-sans bg-[#121212] border border-white/10 text-[#F2F2F2] placeholder-[#707070] focus:outline-none focus:border-white/40"
             />
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[#9BAABC] hover:text-[#F3F5F7]"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[#A8A8A8] hover:text-[#FFFFFF]"
               >
                 ✕
               </button>
@@ -318,9 +318,9 @@ export const PracticeSection: React.FC = () => {
         <div className="p-6 sm:p-10 rounded-3xl glass-panel-deep liquid-lens space-y-8">
           
           {/* Progress & Meta Header */}
-          <div className="flex items-center justify-between border-b border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] pb-4 flex-wrap gap-2">
+          <div className="flex items-center justify-between border-b border-white/[0.08] pb-4 flex-wrap gap-2">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="badge-navy text-xs font-sans uppercase px-3 py-0.5 rounded-full font-bold">
+              <span className="text-xs font-sans uppercase px-3 py-0.5 rounded-full font-bold bg-[#1C1C1C] text-white border border-white/10">
                 {currentExercise.category || currentExercise.type}
               </span>
 
@@ -331,12 +331,12 @@ export const PracticeSection: React.FC = () => {
               )}
 
               {currentExercise.direction && (
-                <span className="text-[10px] font-sans px-2 py-0.5 rounded-md bg-[#112239] text-[#6A9BCB] border border-[#1D3552] font-semibold">
+                <span className="text-[10px] font-sans px-2 py-0.5 rounded-md bg-[#151515] text-[#DCDCDC] border border-white/10 font-semibold">
                   {currentExercise.direction}
                 </span>
               )}
 
-              <span className="text-xs font-sans text-[#9BAABC] font-medium ml-1">
+              <span className="text-xs font-sans text-[#A8A8A8] font-medium ml-1">
                 Question {activeQuestionIdx + 1} of {filteredExercises.length}
               </span>
             </div>
@@ -344,7 +344,7 @@ export const PracticeSection: React.FC = () => {
             {/* Jump Selector & Total Solved */}
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
-                <label className="text-[10px] font-sans text-[#9BAABC] uppercase font-semibold">Jump:</label>
+                <label className="text-[10px] font-sans text-[#A8A8A8] uppercase font-semibold">Jump:</label>
                 <select
                   value={activeQuestionIdx}
                   onChange={(e) => {
@@ -352,7 +352,7 @@ export const PracticeSection: React.FC = () => {
                     setSelectedOption(null);
                     setIsSubmitted(false);
                   }}
-                  className="bg-[#112239] text-xs font-sans text-[#F3F5F7] border border-[#1D3552] rounded-lg px-2 py-1 focus:outline-none focus:border-[#4F83B8] cursor-pointer"
+                  className="bg-[#151515] text-xs font-sans text-[#F2F2F2] border border-white/10 rounded-lg px-2 py-1 focus:outline-none focus:border-white cursor-pointer"
                 >
                   {filteredExercises.map((ex, idx) => (
                     <option key={ex.id} value={idx}>
@@ -362,7 +362,7 @@ export const PracticeSection: React.FC = () => {
                 </select>
               </div>
 
-              <span className="text-xs font-sans text-[#F3F5F7] font-semibold bg-[#132B46]/70 px-2.5 py-1 rounded-lg border border-[#294766]">
+              <span className="text-xs font-sans text-white font-semibold bg-[#1C1C1C] px-2.5 py-1 rounded-lg border border-white/10">
                 Solved: {completedCount}/{allPracticeExercises.length}
               </span>
             </div>
@@ -371,43 +371,43 @@ export const PracticeSection: React.FC = () => {
           {/* Title & Scenario */}
           <div className="space-y-3">
             <div className="flex items-start justify-between gap-4">
-              <h2 className="text-xl sm:text-2xl font-sans font-extrabold text-[#F3F5F7] tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-sans font-extrabold text-[#FFFFFF] tracking-tight">
                 {currentExercise.title}
               </h2>
               {currentExercise.legalConcept && (
-                <span className="hidden sm:inline-block text-[11px] font-sans px-2.5 py-1 rounded-lg bg-[#112239] text-[#6A9BCB] border border-[#1D3552] font-semibold shrink-0">
+                <span className="hidden sm:inline-block text-[11px] font-sans px-2.5 py-1 rounded-lg bg-[#181818] text-[#DCDCDC] border border-white/10 font-semibold shrink-0">
                   {currentExercise.legalConcept}
                 </span>
               )}
             </div>
 
             {currentExercise.scenario && (
-              <div className="p-4 rounded-2xl lexa-surface-subtle text-xs sm:text-sm font-sans text-[#9BAABC] leading-relaxed">
-                <strong className="text-[#F3F5F7] font-semibold">Context / Scenario:</strong> {currentExercise.scenario}
+              <div className="p-4 rounded-2xl lexa-surface-subtle text-xs sm:text-sm font-sans text-[#A8A8A8] leading-relaxed">
+                <strong className="text-[#FFFFFF] font-semibold">Context / Scenario:</strong> {currentExercise.scenario}
               </div>
             )}
           </div>
 
           {/* Reading Passage if applicable */}
           {currentExercise.passage && (
-            <div className="p-5 rounded-2xl bg-[#0B1728]/80 border border-[#1D3552] space-y-2.5">
-              <div className="flex items-center gap-2 text-[#4F83B8] text-xs font-sans font-bold uppercase tracking-wider">
+            <div className="p-5 rounded-2xl bg-[#0F0F0F] border border-white/10 space-y-2.5">
+              <div className="flex items-center gap-2 text-white text-xs font-sans font-bold uppercase tracking-wider">
                 <BookOpen className="w-4 h-4" />
                 <span>Legal Instrument / Commentary Excerpt</span>
               </div>
-              <div className="text-xs sm:text-sm font-sans text-[#CAD6E2] leading-relaxed whitespace-pre-line border-l-2 border-[#4F83B8] pl-4 py-1 italic">
+              <div className="text-xs sm:text-sm font-sans text-[#DCDCDC] leading-relaxed whitespace-pre-line border-l-2 border-white/50 pl-4 py-1 italic">
                 {currentExercise.passage}
               </div>
             </div>
           )}
 
           {/* Prompt */}
-          <div className="p-5 rounded-2xl bg-[#112239]/60 dark:bg-[#112239]/60 bg-[#E4EEF8] border border-[#1D3552] dark:border-[#1D3552] border-[#B4CDEB] space-y-2">
-            <p className="font-sans font-bold text-base sm:text-lg text-[#F3F5F7] leading-relaxed">
+          <div className="p-5 rounded-2xl bg-[#151515] border border-white/[0.08] space-y-2">
+            <p className="font-sans font-bold text-base sm:text-lg text-[#FFFFFF] leading-relaxed">
               {currentExercise.promptEn}
             </p>
             {currentExercise.promptId && (
-              <p className="text-xs sm:text-sm font-sans italic text-[#9BAABC] font-normal">
+              <p className="text-xs sm:text-sm font-sans italic text-[#A8A8A8] font-normal">
                 {currentExercise.promptId}
               </p>
             )}
@@ -424,13 +424,13 @@ export const PracticeSection: React.FC = () => {
                   className={`w-full text-left p-4 text-xs sm:text-sm font-sans border transition-all flex items-center justify-between cursor-pointer rounded-2xl ${
                     isSubmitted 
                       ? idx === currentExercise.correctIndex 
-                        ? 'bg-[#4F83B8]/20 border-[#4F83B8] text-[#6A9BCB] font-bold' 
+                        ? 'bg-white/10 border-white text-[#FFFFFF] font-bold shadow-[0_0_15px_rgba(255,255,255,0.08)]' 
                         : idx === selectedOption 
-                          ? 'bg-rose-950/40 border-rose-700/60 text-rose-300 font-medium' 
-                          : 'lexa-surface-subtle text-[#9BAABC]'
+                          ? 'bg-[#242424]/80 border-white/30 text-[#DCDCDC] font-medium' 
+                          : 'lexa-surface-subtle text-[#707070]'
                       : selectedOption === idx 
-                        ? 'bg-[#132B46] border-[#294766] font-semibold text-[#F3F5F7] shadow-xs' 
-                        : 'lexa-surface-subtle text-[#9BAABC] hover:border-[#294766] hover:text-[#F3F5F7]'
+                        ? 'bg-[#242424] border-white/30 font-semibold text-[#FFFFFF] shadow-xs' 
+                        : 'lexa-surface-subtle text-[#A8A8A8] hover:border-white/20 hover:text-[#FFFFFF]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -441,10 +441,10 @@ export const PracticeSection: React.FC = () => {
                   </div>
 
                   {isSubmitted && idx === currentExercise.correctIndex && (
-                    <Check className="w-5 h-5 text-[#6A9BCB] shrink-0" />
+                    <Check className="w-5 h-5 text-white shrink-0" />
                   )}
                   {isSubmitted && idx === selectedOption && idx !== currentExercise.correctIndex && (
-                    <X className="w-5 h-5 text-rose-400 shrink-0" />
+                    <X className="w-5 h-5 text-[#A8A8A8] shrink-0" />
                   )}
                 </button>
               );
@@ -455,37 +455,37 @@ export const PracticeSection: React.FC = () => {
           {isSubmitted && (
             <div className={`p-5 border space-y-3 rounded-2xl ${
               isCorrect 
-                ? 'bg-[#132B46]/70 dark:bg-[#132B46]/70 bg-[#E0EDFA] border-[#294766] dark:border-[#294766] border-[#B4CDEB]' 
+                ? 'bg-[#181818] border-white/20' 
                 : 'lexa-surface-subtle'
             }`}>
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2 font-sans text-xs font-bold uppercase tracking-wider">
                   {isCorrect ? (
-                    <span className="text-[#6A9BCB] flex items-center gap-1.5 font-bold">
-                      <CheckCircle2 className="w-4 h-4" /> Correct Answer
+                    <span className="text-[#FFFFFF] flex items-center gap-1.5 font-bold">
+                      <CheckCircle2 className="w-4 h-4 text-white" /> Correct Answer
                     </span>
                   ) : (
-                    <span className="text-[#9BAABC] flex items-center gap-1.5 font-bold">
+                    <span className="text-[#A8A8A8] flex items-center gap-1.5 font-bold">
                       <HelpCircle className="w-4 h-4" /> Incorrect Choice
                     </span>
                   )}
                 </div>
 
                 {currentExercise.indonesianEquivalent && (
-                  <span className="text-xs font-sans text-[#4F83B8] font-medium">
-                    Padanan Baku: <strong className="text-[#F3F5F7]">{currentExercise.indonesianEquivalent}</strong>
+                  <span className="text-xs font-sans text-[#A8A8A8] font-medium">
+                    Padanan Baku: <strong className="text-[#FFFFFF]">{currentExercise.indonesianEquivalent}</strong>
                   </span>
                 )}
               </div>
 
-              <p className="text-sm font-sans text-[#F3F5F7] leading-relaxed">
+              <p className="text-sm font-sans text-[#FFFFFF] leading-relaxed">
                 {currentExercise.explanationEn}
               </p>
 
               {currentExercise.explanationId && (
-                <div className="pt-2 border-t border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC]">
-                  <p className="text-xs font-sans italic text-[#9BAABC]">
-                    <strong className="text-[#F3F5F7] font-semibold">Penjelasan Bahasa Indonesia:</strong> {currentExercise.explanationId}
+                <div className="pt-2 border-t border-white/[0.08]">
+                  <p className="text-xs font-sans italic text-[#A8A8A8]">
+                    <strong className="text-[#FFFFFF] font-semibold">Penjelasan Bahasa Indonesia:</strong> {currentExercise.explanationId}
                   </p>
                 </div>
               )}
@@ -494,7 +494,7 @@ export const PracticeSection: React.FC = () => {
                 <div className="pt-2">
                   <button
                     onClick={() => setActiveLookupTermId(currentExercise.relatedTermId!)}
-                    className="text-xs font-sans text-[#4F83B8] font-semibold hover:text-[#6A9BCB] hover:underline flex items-center gap-1 cursor-pointer"
+                    className="text-xs font-sans text-white font-semibold hover:text-[#DCDCDC] hover:underline flex items-center gap-1 cursor-pointer"
                   >
                     Inspect Term &ldquo;{currentExercise.relatedTermId}&rdquo; in Detail Dictionary <ArrowRight className="w-3 h-3" />
                   </button>
@@ -504,7 +504,7 @@ export const PracticeSection: React.FC = () => {
           )}
 
           {/* Action Controls */}
-          <div className="pt-6 border-t border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] flex items-center justify-between flex-wrap gap-3">
+          <div className="pt-6 border-t border-white/[0.08] flex items-center justify-between flex-wrap gap-3">
             <div className="flex items-center gap-2">
               <button
                 onClick={handlePrevious}
@@ -557,9 +557,9 @@ export const PracticeSection: React.FC = () => {
         </div>
       ) : (
         <div className="p-12 rounded-3xl glass-panel-deep text-center space-y-4">
-          <Layers className="w-12 h-12 text-[#4F83B8] mx-auto opacity-60" />
-          <h3 className="text-lg font-sans font-bold text-[#F3F5F7]">No Questions Found</h3>
-          <p className="text-xs text-[#9BAABC] max-w-sm mx-auto">
+          <Layers className="w-12 h-12 text-[#DCDCDC] mx-auto opacity-60" />
+          <h3 className="text-lg font-sans font-bold text-[#FFFFFF]">No Questions Found</h3>
+          <p className="text-xs text-[#A8A8A8] max-w-sm mx-auto">
             No questions match your current filter selection. Try changing the category, difficulty level, or search query.
           </p>
           <button

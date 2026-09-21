@@ -87,45 +87,45 @@ export const GlobalSearchModal: React.FC = () => {
                     filteredResults.writing.length;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-[#02060C]/75 dark:bg-[#02060C]/75 bg-[#0F1D30]/40 backdrop-blur-md">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-20 px-4 bg-[#050505]/80 backdrop-blur-xl animate-in fade-in duration-200">
       <div 
-        className="glass-panel-deep liquid-lens text-[#F3F5F7] w-full max-w-3xl max-h-[80vh] flex flex-col rounded-3xl overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+        className="bg-[#121212]/95 backdrop-blur-2xl border border-white/[0.14] text-[#F2F2F2] w-full max-w-3xl max-h-[82vh] flex flex-col rounded-3xl overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.8)] animate-in fade-in zoom-in-95 duration-200"
       >
         {/* Search Bar Input */}
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] bg-[#050B16]/60 dark:bg-[#050B16]/60 bg-[#FFFFFF]/60">
-          <Search className="w-5 h-5 text-[#4F83B8] shrink-0" />
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.08] bg-[#181818]/90">
+          <Search className="w-5 h-5 text-[#A8A8A8] shrink-0" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search legal terms (e.g. indemnity, whereas, wanprestasi, shall)..."
-            className="w-full text-base font-sans bg-transparent text-[#F3F5F7] placeholder:text-[#64758A] focus:outline-none"
+            className="w-full text-base font-sans bg-transparent text-[#F2F2F2] placeholder:text-[#707070] focus:outline-none"
             autoFocus
           />
           {searchQuery && (
             <button 
               onClick={() => setSearchQuery('')}
-              className="text-xs font-sans text-[#9BAABC] hover:text-[#F3F5F7] cursor-pointer font-medium"
+              className="text-xs font-sans text-[#A8A8A8] hover:text-white cursor-pointer font-medium"
             >
               Clear
             </button>
           )}
           <button
             onClick={() => setIsSearchOpen(false)}
-            className="p-1.5 text-[#9BAABC] hover:text-[#F3F5F7] hover:bg-[#112239] dark:hover:bg-[#112239] hover:bg-[#E8EFF8] cursor-pointer rounded-full transition-colors"
+            className="p-1.5 text-[#A8A8A8] hover:text-white hover:bg-white/[0.08] cursor-pointer rounded-full transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 px-5 py-2.5 bg-[#081222]/80 dark:bg-[#081222]/80 bg-[#E8EFF8] border-b border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] overflow-x-auto text-xs font-sans no-scrollbar">
+        <div className="flex items-center gap-1.5 px-5 py-2.5 bg-[#0C0C0C] border-b border-white/[0.08] overflow-x-auto text-xs font-sans no-scrollbar">
           <button
             onClick={() => setSelectedFilter('ALL')}
             className={`px-3 py-1 whitespace-nowrap cursor-pointer rounded-full transition-all text-xs ${
               selectedFilter === 'ALL' 
-                ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766] shadow-xs' 
-                : 'bg-[#112239]/60 dark:bg-[#112239]/60 bg-[#DCE7F4] text-[#9BAABC] border border-[#1D3552] dark:border-[#1D3552] border-[#C2D6EC] hover:text-[#F3F5F7] font-normal'
+                ? 'bg-[#242424] text-white font-semibold border border-white/20 shadow-xs' 
+                : 'bg-[#151515] text-[#A8A8A8] border border-white/[0.08] hover:text-white hover:bg-[#1C1C1C] font-normal'
             }`}
           >
             All Results ({totalHits})
@@ -134,8 +134,8 @@ export const GlobalSearchModal: React.FC = () => {
             onClick={() => setSelectedFilter('TERMS')}
             className={`px-3 py-1 whitespace-nowrap cursor-pointer rounded-full transition-all text-xs ${
               selectedFilter === 'TERMS' 
-                ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766] shadow-xs' 
-                : 'bg-[#112239]/60 dark:bg-[#112239]/60 bg-[#DCE7F4] text-[#9BAABC] border border-[#1D3552] dark:border-[#1D3552] border-[#C2D6EC] hover:text-[#F3F5F7] font-normal'
+                ? 'bg-[#242424] text-white font-semibold border border-white/20 shadow-xs' 
+                : 'bg-[#151515] text-[#A8A8A8] border border-white/[0.08] hover:text-white hover:bg-[#1C1C1C] font-normal'
             }`}
           >
             Vocabulary ({filteredResults.terms.length})
@@ -144,8 +144,8 @@ export const GlobalSearchModal: React.FC = () => {
             onClick={() => setSelectedFilter('DOCS')}
             className={`px-3 py-1 whitespace-nowrap cursor-pointer rounded-full transition-all text-xs ${
               selectedFilter === 'DOCS' 
-                ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766] shadow-xs' 
-                : 'bg-[#112239]/60 dark:bg-[#112239]/60 bg-[#DCE7F4] text-[#9BAABC] border border-[#1D3552] dark:border-[#1D3552] border-[#C2D6EC] hover:text-[#F3F5F7] font-normal'
+                ? 'bg-[#242424] text-white font-semibold border border-white/20 shadow-xs' 
+                : 'bg-[#151515] text-[#A8A8A8] border border-white/[0.08] hover:text-white hover:bg-[#1C1C1C] font-normal'
             }`}
           >
             Documents ({filteredResults.docs.length})
@@ -154,8 +154,8 @@ export const GlobalSearchModal: React.FC = () => {
             onClick={() => setSelectedFilter('LESSONS')}
             className={`px-3 py-1 whitespace-nowrap cursor-pointer rounded-full transition-all text-xs ${
               selectedFilter === 'LESSONS' 
-                ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766] shadow-xs' 
-                : 'bg-[#112239]/60 dark:bg-[#112239]/60 bg-[#DCE7F4] text-[#9BAABC] border border-[#1D3552] dark:border-[#1D3552] border-[#C2D6EC] hover:text-[#F3F5F7] font-normal'
+                ? 'bg-[#242424] text-white font-semibold border border-white/20 shadow-xs' 
+                : 'bg-[#151515] text-[#A8A8A8] border border-white/[0.08] hover:text-white hover:bg-[#1C1C1C] font-normal'
             }`}
           >
             Lessons ({filteredResults.lessons.length})
@@ -164,8 +164,8 @@ export const GlobalSearchModal: React.FC = () => {
             onClick={() => setSelectedFilter('COMPARATIVE')}
             className={`px-3 py-1 whitespace-nowrap cursor-pointer rounded-full transition-all text-xs ${
               selectedFilter === 'COMPARATIVE' 
-                ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766] shadow-xs' 
-                : 'bg-[#112239]/60 dark:bg-[#112239]/60 bg-[#DCE7F4] text-[#9BAABC] border border-[#1D3552] dark:border-[#1D3552] border-[#C2D6EC] hover:text-[#F3F5F7] font-normal'
+                ? 'bg-[#242424] text-white font-semibold border border-white/20 shadow-xs' 
+                : 'bg-[#151515] text-[#A8A8A8] border border-white/[0.08] hover:text-white hover:bg-[#1C1C1C] font-normal'
             }`}
           >
             Same Concept ({filteredResults.comparative.length})
@@ -177,8 +177,8 @@ export const GlobalSearchModal: React.FC = () => {
           {/* 1. Legal Terms */}
           {(selectedFilter === 'ALL' || selectedFilter === 'TERMS') && filteredResults.terms.length > 0 && (
             <div className="space-y-2.5">
-              <div className="text-[11px] font-sans uppercase tracking-wider text-[#4F83B8] font-semibold flex items-center gap-1.5 pb-1 border-b border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC]">
-                <BookOpen className="w-3.5 h-3.5 text-[#4F83B8]" />
+              <div className="text-[11px] font-sans uppercase tracking-wider text-[#A8A8A8] font-semibold flex items-center gap-1.5 pb-1 border-b border-white/[0.08]">
+                <BookOpen className="w-3.5 h-3.5 text-[#DCDCDC]" />
                 Legal Terms & Definitions ({filteredResults.terms.length})
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -189,18 +189,18 @@ export const GlobalSearchModal: React.FC = () => {
                       setIsSearchOpen(false);
                       setActiveLookupTermId(t.id);
                     }}
-                    className="p-3.5 rounded-2xl lexa-surface-subtle hover:border-[#294766] cursor-pointer transition-all hover:shadow-md group flex items-start justify-between"
+                    className="p-3.5 rounded-2xl bg-[#151515] border border-white/[0.08] hover:border-white/20 cursor-pointer transition-all hover:shadow-md group flex items-start justify-between"
                   >
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-sans font-bold text-base text-[#F3F5F7] group-hover:text-[#6A9BCB] transition-colors">
+                        <span className="font-sans font-bold text-base text-[#F2F2F2] group-hover:text-white transition-colors">
                           {t.term}
                         </span>
-                        <span className="text-[10px] font-sans px-2.5 py-0.5 bg-[#132B46] text-[#4F83B8] rounded-full border border-[#294766]">
+                        <span className="text-[10px] font-sans px-2.5 py-0.5 bg-[#242424] text-[#DCDCDC] rounded-full border border-white/10">
                           {t.category}
                         </span>
                       </div>
-                      <p className="text-xs text-[#9BAABC] mt-1 line-clamp-1 font-sans">
+                      <p className="text-xs text-[#A8A8A8] mt-1 line-clamp-1 font-sans">
                         {t.indonesianMeaning}
                       </p>
                     </div>
@@ -221,8 +221,8 @@ export const GlobalSearchModal: React.FC = () => {
           {/* 2. Legal Documents */}
           {(selectedFilter === 'ALL' || selectedFilter === 'DOCS') && filteredResults.docs.length > 0 && (
             <div className="space-y-2.5">
-              <div className="text-[11px] font-sans uppercase tracking-wider text-[#4F83B8] font-semibold flex items-center gap-1.5 pb-1 border-b border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC]">
-                <FileText className="w-3.5 h-3.5 text-[#4F83B8]" />
+              <div className="text-[11px] font-sans uppercase tracking-wider text-[#A8A8A8] font-semibold flex items-center gap-1.5 pb-1 border-b border-white/[0.08]">
+                <FileText className="w-3.5 h-3.5 text-[#DCDCDC]" />
                 Authentic Legal Documents ({filteredResults.docs.length})
               </div>
               <div className="space-y-2">
@@ -234,22 +234,22 @@ export const GlobalSearchModal: React.FC = () => {
                       setActiveDocId(d.id);
                       setSelectedTab('documents');
                     }}
-                    className="p-3.5 rounded-2xl lexa-surface-subtle hover:border-[#294766] cursor-pointer transition-all hover:shadow-md group flex items-start justify-between"
+                    className="p-3.5 rounded-2xl bg-[#151515] border border-white/[0.08] hover:border-white/20 cursor-pointer transition-all hover:shadow-md group flex items-start justify-between"
                   >
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-sans uppercase px-2 py-0.5 bg-[#132B46] text-[#9EC4AC] border border-[#294766] rounded-full font-semibold">
+                        <span className="text-[10px] font-sans uppercase px-2 py-0.5 bg-[#242424] text-[#DCDCDC] border border-white/10 rounded-full font-semibold">
                           {d.documentType}
                         </span>
-                        <h4 className="font-sans font-bold text-sm text-[#F3F5F7] group-hover:text-[#6A9BCB] transition-colors">
+                        <h4 className="font-sans font-bold text-sm text-[#F2F2F2] group-hover:text-white transition-colors">
                           {d.title}
                         </h4>
                       </div>
-                      <p className="text-xs text-[#9BAABC] mt-1 line-clamp-2 font-sans">
+                      <p className="text-xs text-[#A8A8A8] mt-1 line-clamp-2 font-sans">
                         {d.abstractId}
                       </p>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-[#9BAABC] group-hover:text-[#4F83B8] shrink-0 mt-1 transition-colors" />
+                    <ArrowRight className="w-4 h-4 text-[#707070] group-hover:text-white shrink-0 mt-1 transition-colors" />
                   </div>
                 ))}
               </div>
@@ -259,8 +259,8 @@ export const GlobalSearchModal: React.FC = () => {
           {/* 3. Curriculum Lessons */}
           {(selectedFilter === 'ALL' || selectedFilter === 'LESSONS') && filteredResults.lessons.length > 0 && (
             <div className="space-y-2.5">
-              <div className="text-[11px] font-sans uppercase tracking-wider text-[#4F83B8] font-semibold flex items-center gap-1.5 pb-1 border-b border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC]">
-                <Sparkles className="w-3.5 h-3.5 text-[#4F83B8]" />
+              <div className="text-[11px] font-sans uppercase tracking-wider text-[#A8A8A8] font-semibold flex items-center gap-1.5 pb-1 border-b border-white/[0.08]">
+                <Sparkles className="w-3.5 h-3.5 text-[#DCDCDC]" />
                 Curriculum Lessons ({filteredResults.lessons.length})
               </div>
               <div className="space-y-2">
@@ -272,17 +272,17 @@ export const GlobalSearchModal: React.FC = () => {
                       setActiveLessonId(l.id);
                       setSelectedTab('learn');
                     }}
-                    className="p-3.5 rounded-2xl lexa-surface-subtle hover:border-[#294766] cursor-pointer transition-all group"
+                    className="p-3.5 rounded-2xl bg-[#151515] border border-white/[0.08] hover:border-white/20 cursor-pointer transition-all group"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-sans font-bold text-sm text-[#F3F5F7] group-hover:text-[#6A9BCB] transition-colors">
+                      <span className="font-sans font-bold text-sm text-[#F2F2F2] group-hover:text-white transition-colors">
                         {l.title}
                       </span>
-                      <span className="text-[10px] font-sans text-[#64758A]">
+                      <span className="text-[10px] font-sans text-[#707070]">
                         {l.durationMinutes} mins
                       </span>
                     </div>
-                    <p className="text-xs text-[#9BAABC] mt-1 font-sans">
+                    <p className="text-xs text-[#A8A8A8] mt-1 font-sans">
                       {l.titleId}
                     </p>
                   </div>
@@ -294,8 +294,8 @@ export const GlobalSearchModal: React.FC = () => {
           {/* 4. Comparative Concepts */}
           {(selectedFilter === 'ALL' || selectedFilter === 'COMPARATIVE') && filteredResults.comparative.length > 0 && (
             <div className="space-y-2.5">
-              <div className="text-[11px] font-sans uppercase tracking-wider text-[#4F83B8] font-semibold flex items-center gap-1.5 pb-1 border-b border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC]">
-                <Scale className="w-3.5 h-3.5 text-[#4F83B8]" />
+              <div className="text-[11px] font-sans uppercase tracking-wider text-[#A8A8A8] font-semibold flex items-center gap-1.5 pb-1 border-b border-white/[0.08]">
+                <Scale className="w-3.5 h-3.5 text-[#DCDCDC]" />
                 Indonesian Law vs Common Law Comparison ({filteredResults.comparative.length})
               </div>
               <div className="space-y-2">
@@ -306,15 +306,15 @@ export const GlobalSearchModal: React.FC = () => {
                       setIsSearchOpen(false);
                       setSelectedTab('comparative');
                     }}
-                    className="p-3.5 rounded-2xl lexa-surface-subtle hover:border-[#294766] cursor-pointer transition-all"
+                    className="p-3.5 rounded-2xl bg-[#151515] border border-white/[0.08] hover:border-white/20 cursor-pointer transition-all"
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-sans font-bold text-sm text-[#F3F5F7]">
+                      <span className="font-sans font-bold text-sm text-[#F2F2F2]">
                         {c.englishTerm} ⟷ {c.indonesianTerm}
                       </span>
-                      <span className="text-[10px] font-sans px-2.5 py-0.5 bg-[#132B46] text-[#4F83B8] border border-[#294766] rounded-full">{c.category}</span>
+                      <span className="text-[10px] font-sans px-2.5 py-0.5 bg-[#242424] text-[#DCDCDC] border border-white/10 rounded-full">{c.category}</span>
                     </div>
-                    <p className="text-xs text-[#9BAABC] line-clamp-2 font-sans">
+                    <p className="text-xs text-[#A8A8A8] line-clamp-2 font-sans">
                       {c.whyContextMatters}
                     </p>
                   </div>
@@ -325,21 +325,21 @@ export const GlobalSearchModal: React.FC = () => {
 
           {/* No results */}
           {totalHits === 0 && (
-            <div className="text-center py-12 text-[#9BAABC]">
-              <Search className="w-8 h-8 mx-auto mb-3 opacity-30 text-[#64758A]" />
-              <p className="text-sm font-sans font-bold text-[#F3F5F7]">No legal resources matching &ldquo;{searchQuery}&rdquo;</p>
-              <p className="text-xs font-sans mt-1 text-[#64758A]">Try searching for terms like: indemnity, whereas, shall, breach, wanprestasi</p>
+            <div className="text-center py-12 text-[#A8A8A8]">
+              <Search className="w-8 h-8 mx-auto mb-3 opacity-30 text-[#707070]" />
+              <p className="text-sm font-sans font-bold text-white">No legal resources matching &ldquo;{searchQuery}&rdquo;</p>
+              <p className="text-xs font-sans mt-1 text-[#707070]">Try searching for terms like: indemnity, whereas, shall, breach, wanprestasi</p>
             </div>
           )}
         </div>
 
         {/* Footer shortcuts */}
-        <div className="px-5 py-3 bg-[#050B16]/90 dark:bg-[#050B16]/90 bg-[#E8EFF8] border-t border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] flex items-center justify-between text-[11px] font-sans text-[#64758A]">
+        <div className="px-5 py-3 bg-[#0C0C0C] border-t border-white/[0.08] flex items-center justify-between text-[11px] font-sans text-[#707070]">
           <div className="flex items-center gap-3">
-            <span>Press <kbd className="px-2 py-0.5 bg-[#112239] dark:bg-[#112239] bg-[#FFFFFF] border border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] text-[#F3F5F7] rounded-full text-[10px]">ESC</kbd> to close</span>
-            <span>Press <kbd className="px-2 py-0.5 bg-[#112239] dark:bg-[#112239] bg-[#FFFFFF] border border-[#1D3552] dark:border-[#1D3552] border-[#D4DFEC] text-[#F3F5F7] rounded-full text-[10px]">⌘K</kbd> to toggle</span>
+            <span>Press <kbd className="px-2 py-0.5 bg-[#1C1C1C] border border-white/10 text-[#F2F2F2] rounded-full text-[10px]">ESC</kbd> to close</span>
+            <span>Press <kbd className="px-2 py-0.5 bg-[#1C1C1C] border border-white/10 text-[#F2F2F2] rounded-full text-[10px]">⌘K</kbd> to toggle</span>
           </div>
-          <span className="text-[#4F83B8] font-medium">LEXA Legal Knowledge Engine</span>
+          <span className="text-[#A8A8A8] font-medium">LEXA Legal Knowledge Engine</span>
         </div>
       </div>
     </div>

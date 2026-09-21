@@ -46,8 +46,8 @@ const AppContent: React.FC = () => {
   return (
     <div className={`min-h-screen flex flex-col font-sans antialiased relative overflow-x-hidden transition-colors duration-300 ${
       theme === 'light'
-        ? 'bg-[#F4F7FB] text-[#0F1D30] selection:bg-[#2B62A3]/25 selection:text-[#0F1D30]'
-        : 'bg-[#050B16] text-[#F3F5F7] selection:bg-[#4F83B8]/40 selection:text-[#FFFFFF]'
+        ? 'bg-[#F9F9F9] text-[#121212] selection:bg-black/15 selection:text-[#121212]'
+        : 'bg-[#050505] text-[#F2F2F2] selection:bg-white/20 selection:text-[#FFFFFF]'
     }`}>
       {/* Hardware-accelerated Apple Liquid Glass ambient refractive lighting (zero scroll GPU overhead) */}
       <div className="ambient-canvas-bg" aria-hidden="true" />

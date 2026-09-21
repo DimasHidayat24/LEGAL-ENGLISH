@@ -283,21 +283,21 @@ export const DocumentReader: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-6">
       
       {/* Top Document Header & Selector (Floating Glass Container) */}
-      <div className="glass-panel-deep liquid-lens p-5 sm:p-6 space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#1D3552]/80 dark:border-[#1D3552]/80 border-[#D4DFEC] pb-4">
+      <div className="bg-[#101010] border border-white/[0.08] rounded-3xl p-5 sm:p-6 space-y-4 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/[0.08] pb-4">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="badge-accent text-[10px] font-sans font-medium uppercase px-2.5 py-0.5 rounded-full tracking-wider">
+              <span className="text-[10px] font-sans font-medium uppercase px-2.5 py-0.5 rounded-full tracking-wider bg-[#242424] text-[#DCDCDC] border border-white/10">
                 {currentDoc.documentType}
               </span>
-              <span className="text-[11px] font-sans text-[#9BAABC]">
+              <span className="text-[11px] font-sans text-[#A8A8A8]">
                 {currentDoc.jurisdiction}
               </span>
-              <span className="text-[11px] font-sans text-[#64758A]">
+              <span className="text-[11px] font-sans text-[#707070]">
                 • {currentDoc.readingTimeMinutes} min read
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-sans font-extrabold text-[#F3F5F7] tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-sans font-extrabold text-white tracking-tight">
               {currentDoc.title}
             </h1>
           </div>
@@ -308,7 +308,7 @@ export const DocumentReader: React.FC = () => {
               onClick={() => markDocumentComplete(currentDoc.id)}
               className={`px-4 py-2 text-xs font-sans flex items-center gap-1.5 transition-all cursor-pointer rounded-full ${
                 isDocCompleted
-                  ? 'bg-[#132B46] text-[#6A9BCB] border border-[#294766] font-semibold'
+                  ? 'bg-[#242424] text-white border border-white/20 font-semibold'
                   : 'btn-primary'
               }`}
             >
@@ -318,34 +318,34 @@ export const DocumentReader: React.FC = () => {
 
             <button
               onClick={() => setShowIndonesianTranslation(prev => !prev)}
-              className={`px-4 py-2 text-xs font-sans flex items-center gap-1.5 cursor-pointer rounded-full transition-all ${
+              className={`px-4 py-2 text-xs font-sans flex items-center gap-1.5 cursor-pointer rounded-full transition-all border ${
                 showIndonesianTranslation 
-                  ? 'bg-[#132B46] border border-[#294766] text-[#F3F5F7] font-semibold' 
-                  : 'btn-secondary'
+                  ? 'bg-[#242424] border-white/20 text-white font-semibold' 
+                  : 'bg-[#151515] border-white/[0.08] text-[#A8A8A8] hover:text-white hover:bg-[#1C1C1C]'
               }`}
               title="Toggle paragraph-by-paragraph Indonesian translation"
             >
-              <Scale className="w-3.5 h-3.5 text-[#4F83B8]" />
+              <Scale className="w-3.5 h-3.5 text-[#DCDCDC]" />
               <span>Indonesian Analysis: {showIndonesianTranslation ? 'ON' : 'OFF'}</span>
             </button>
 
             {/* Font Size Adjust */}
-            <div className="flex items-center bg-[#081222] border border-[#1D3552] text-xs font-sans rounded-full overflow-hidden p-0.5">
+            <div className="flex items-center bg-[#0C0C0C] border border-white/[0.08] text-xs font-sans rounded-full overflow-hidden p-0.5">
               <button
                 onClick={() => setFontSize('sm')}
-                className={`px-3 py-1 cursor-pointer font-bold transition-all rounded-full ${fontSize === 'sm' ? 'bg-[#132B46] text-[#F3F5F7]' : 'text-[#9BAABC] hover:text-[#F3F5F7]'}`}
+                className={`px-3 py-1 cursor-pointer font-bold transition-all rounded-full ${fontSize === 'sm' ? 'bg-[#242424] text-white' : 'text-[#A8A8A8] hover:text-white'}`}
               >
                 A-
               </button>
               <button
                 onClick={() => setFontSize('base')}
-                className={`px-3 py-1 cursor-pointer font-bold transition-all rounded-full ${fontSize === 'base' ? 'bg-[#132B46] text-[#F3F5F7]' : 'text-[#9BAABC] hover:text-[#F3F5F7]'}`}
+                className={`px-3 py-1 cursor-pointer font-bold transition-all rounded-full ${fontSize === 'base' ? 'bg-[#242424] text-white' : 'text-[#A8A8A8] hover:text-white'}`}
               >
                 A
               </button>
               <button
                 onClick={() => setFontSize('lg')}
-                className={`px-3 py-1 cursor-pointer font-bold transition-all rounded-full ${fontSize === 'lg' ? 'bg-[#132B46] text-[#F3F5F7]' : 'text-[#9BAABC] hover:text-[#F3F5F7]'}`}
+                className={`px-3 py-1 cursor-pointer font-bold transition-all rounded-full ${fontSize === 'lg' ? 'bg-[#242424] text-white' : 'text-[#A8A8A8] hover:text-white'}`}
               >
                 A+
               </button>
@@ -355,7 +355,7 @@ export const DocumentReader: React.FC = () => {
 
         {/* Quick Document Picker Switcher */}
         <div className="flex items-center gap-2 overflow-x-auto text-xs font-sans pt-1 no-scrollbar">
-          <span className="text-[#4F83B8] font-semibold uppercase tracking-wider shrink-0 text-[10px]">Switch Document:</span>
+          <span className="text-[#A8A8A8] font-semibold uppercase tracking-wider shrink-0 text-[10px]">Switch Document:</span>
           {sampleLegalDocuments.map((doc) => (
             <button
               key={doc.id}
@@ -366,8 +366,8 @@ export const DocumentReader: React.FC = () => {
               }}
               className={`px-3.5 py-1.5 whitespace-nowrap transition-all cursor-pointer rounded-full ${
                 doc.id === currentDoc.id
-                  ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766]'
-                  : 'bg-[#112239]/60 border border-[#1D3552] text-[#9BAABC] hover:text-[#F3F5F7] hover:bg-[#132B46] font-normal'
+                  ? 'bg-[#242424] text-white font-semibold border border-white/20'
+                  : 'bg-[#151515] border border-white/[0.08] text-[#A8A8A8] hover:text-white hover:bg-[#1C1C1C] font-normal'
               }`}
             >
               {doc.title.split('—')[0].trim()}
@@ -380,7 +380,7 @@ export const DocumentReader: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* LEFT PANE: Dedicated Physical Parchment Canvas inside Glass Frame */}
-        <div className={`${assistantPanelOpen ? 'lg:col-span-7' : 'lg:col-span-12'} p-4 sm:p-5 glass-panel-deep liquid-lens transition-all duration-300`}>
+        <div className={`${assistantPanelOpen ? 'lg:col-span-7' : 'lg:col-span-12'} p-4 sm:p-5 bg-[#101010] border border-white/[0.08] rounded-3xl transition-all duration-300`}>
           <div className="legal-paper-canvas p-6 sm:p-9 space-y-8 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
             
             {/* Document Head Caption */}
@@ -422,8 +422,8 @@ export const DocumentReader: React.FC = () => {
                     id={p.id}
                     className={`group relative p-4.5 transition-all rounded-xl border-l-3 ${
                       isBookmarked 
-                        ? 'bg-[#E3DFD5] border-[#294766]' 
-                        : 'border-transparent hover:border-[#294766]/50 hover:bg-[#EFEAE0]'
+                        ? 'bg-[#E3DFD5] border-[#18202C]' 
+                        : 'border-transparent hover:border-[#18202C]/40 hover:bg-[#EFEAE0]'
                     }`}
                   >
                     {/* Paragraph Number & Utilities Bar */}
@@ -437,14 +437,14 @@ export const DocumentReader: React.FC = () => {
                           className="hover:text-[#18202C] cursor-pointer transition-colors"
                           title={isBookmarked ? "Remove Bookmark" : "Bookmark Paragraph"}
                         >
-                          {isBookmarked ? <BookmarkCheck className="w-4 h-4 text-[#294766]" /> : <Bookmark className="w-4 h-4" />}
+                          {isBookmarked ? <BookmarkCheck className="w-4 h-4 text-[#18202C]" /> : <Bookmark className="w-4 h-4" />}
                         </button>
                         <button
                           onClick={() => handleOpenNoteModal(p.id)}
                           className="hover:text-[#18202C] cursor-pointer transition-colors"
                           title="Add Note to Paragraph"
                         >
-                          <MessageSquare className={`w-4 h-4 ${hasNote ? 'text-[#294766] font-bold' : ''}`} />
+                          <MessageSquare className={`w-4 h-4 ${hasNote ? 'text-[#18202C] font-bold' : ''}`} />
                         </button>
                       </div>
                     </div>
@@ -457,8 +457,8 @@ export const DocumentReader: React.FC = () => {
                     {/* Optional Indonesian Summary & Legal Nuance */}
                     {showIndonesianTranslation && p.indonesianSummary && (
                       <div className="mt-3.5 pt-2.5 p-3.5 rounded-xl bg-black/[0.04] border border-black/10 space-y-1">
-                        <span className="text-[10px] font-sans uppercase text-[#294766] flex items-center gap-1 font-bold tracking-wider">
-                          <Scale className="w-3 h-3 text-[#294766]" />
+                        <span className="text-[10px] font-sans uppercase text-[#18202C] flex items-center gap-1 font-bold tracking-wider">
+                          <Scale className="w-3 h-3 text-[#18202C]" />
                           Analisis Yuridis & Makna Klausul:
                         </span>
                         <p className="text-xs sm:text-[13px] font-sans text-[#2E384D] leading-relaxed font-normal">
@@ -470,7 +470,7 @@ export const DocumentReader: React.FC = () => {
                     {/* Existing Paragraph Note Banner */}
                     {hasNote && (
                       <div className="mt-2.5 p-3 bg-white/70 border border-black/10 text-xs font-sans text-[#18202C] rounded-xl">
-                        <strong className="text-[#294766]">My Note:</strong> {personalNotes[noteKey]}
+                        <strong className="text-[#18202C]">My Note:</strong> {personalNotes[noteKey]}
                       </div>
                     )}
                   </div>
@@ -502,26 +502,26 @@ export const DocumentReader: React.FC = () => {
             className="lg:col-span-5 sticky top-24 space-y-4 scroll-mt-24 sm:scroll-mt-28"
             style={{ scrollMarginTop: '96px' }}
           >
-            <div className="rounded-3xl glass-panel-deep liquid-lens overflow-hidden border border-[#1D3552] shadow-[0_20px_50px_rgba(2,6,12,0.6)]">
+            <div className="rounded-3xl bg-[#101010] overflow-hidden border border-white/[0.12] shadow-2xl">
               
               {/* Assistant Header & Tab Switcher */}
-              <div className="p-5 border-b border-[#1D3552]/80">
+              <div className="p-5 border-b border-white/[0.08]">
                 <div className="flex items-center justify-between gap-2 mb-3">
                   <div className="flex items-center gap-2">
-                    <Scale className="w-4 h-4 text-[#4F83B8]" />
-                    <h3 className="font-sans font-extrabold text-sm tracking-wide uppercase text-[#F3F5F7]">
+                    <Scale className="w-4 h-4 text-[#DCDCDC]" />
+                    <h3 className="font-sans font-extrabold text-sm tracking-wide uppercase text-white">
                       LEGAL ENGLISH ASSISTANT PANEL
                     </h3>
                   </div>
                   <div className="flex items-center gap-1.5">
                     {selectedLegalTerm && (
-                      <span className="hidden sm:inline-block text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-[#132B46] border border-[#294766] text-[#6A9BCB] truncate max-w-[120px]">
+                      <span className="hidden sm:inline-block text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-[#242424] border border-white/20 text-[#DCDCDC] truncate max-w-[120px]">
                         {selectedLegalTerm.term}
                       </span>
                     )}
                     <button
                       onClick={() => setAssistantPanelOpen(false)}
-                      className="p-1 text-[#9BAABC] hover:text-[#F3F5F7] hover:bg-[#132B46] rounded-lg transition-all cursor-pointer"
+                      className="p-1 text-[#A8A8A8] hover:text-white hover:bg-[#1C1C1C] rounded-lg transition-all cursor-pointer"
                       title="Minimize Assistant Panel"
                       aria-label="Minimize Assistant Panel"
                     >
@@ -529,11 +529,11 @@ export const DocumentReader: React.FC = () => {
                     </button>
                   </div>
                 </div>
-                <div className="grid grid-cols-4 gap-1.5 text-[11px] font-sans p-1 bg-[#081222] border border-[#1D3552] rounded-full">
+                <div className="grid grid-cols-4 gap-1.5 text-[11px] font-sans p-1 bg-[#0C0C0C] border border-white/[0.08] rounded-full">
                   <button
                     onClick={() => setActiveRightTab('INSPECTOR')}
                     className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
-                      activeRightTab === 'INSPECTOR' ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766]' : 'text-[#9BAABC] font-normal hover:text-[#F3F5F7]'
+                      activeRightTab === 'INSPECTOR' ? 'bg-[#242424] text-white font-semibold border border-white/20' : 'text-[#A8A8A8] font-normal hover:text-white'
                     }`}
                   >
                     Inspector
@@ -541,7 +541,7 @@ export const DocumentReader: React.FC = () => {
                   <button
                     onClick={() => setActiveRightTab('GLOSSARY')}
                     className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
-                      activeRightTab === 'GLOSSARY' ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766]' : 'text-[#9BAABC] font-normal hover:text-[#F3F5F7]'
+                      activeRightTab === 'GLOSSARY' ? 'bg-[#242424] text-white font-semibold border border-white/20' : 'text-[#A8A8A8] font-normal hover:text-white'
                     }`}
                   >
                     Glossary
@@ -549,7 +549,7 @@ export const DocumentReader: React.FC = () => {
                   <button
                     onClick={() => setActiveRightTab('SUMMARY')}
                     className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
-                      activeRightTab === 'SUMMARY' ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766]' : 'text-[#9BAABC] font-normal hover:text-[#F3F5F7]'
+                      activeRightTab === 'SUMMARY' ? 'bg-[#242424] text-white font-semibold border border-white/20' : 'text-[#A8A8A8] font-normal hover:text-white'
                     }`}
                   >
                     Summary
@@ -557,7 +557,7 @@ export const DocumentReader: React.FC = () => {
                   <button
                     onClick={() => setActiveRightTab('NOTES')}
                     className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
-                      activeRightTab === 'NOTES' ? 'bg-[#132B46] text-[#F3F5F7] font-semibold border border-[#294766]' : 'text-[#9BAABC] font-normal hover:text-[#F3F5F7]'
+                      activeRightTab === 'NOTES' ? 'bg-[#242424] text-white font-semibold border border-white/20' : 'text-[#A8A8A8] font-normal hover:text-white'
                     }`}
                   >
                     Notes
@@ -571,39 +571,39 @@ export const DocumentReader: React.FC = () => {
                   <div key={selectedLegalTerm.id} className="animate-inspector-fade space-y-4">
                     
                     {/* Header with Category, Part of Speech, Pronunciation & Save */}
-                    <div className="flex items-start justify-between border-b border-[#1D3552]/80 pb-3">
+                    <div className="flex items-start justify-between border-b border-white/[0.08] pb-3">
                       <div>
                         <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                          <span className="badge-accent text-[10px] font-sans font-medium uppercase px-2.5 py-0.5 rounded-full tracking-wider">
+                          <span className="text-[10px] font-sans font-medium uppercase px-2.5 py-0.5 rounded-full tracking-wider bg-[#242424] text-[#DCDCDC] border border-white/10">
                             {selectedLegalTerm.category}
                           </span>
-                          <span className="text-[10px] font-sans text-[#64758A]">
+                          <span className="text-[10px] font-sans text-[#707070]">
                             {selectedLegalTerm.partOfSpeech}
                           </span>
                           {selectedLegalTerm.difficulty && (
-                            <span className="text-[10px] font-sans text-[#4F83B8] px-2 py-0.5 rounded-full bg-[#132B46]/60 border border-[#1D3552]">
+                            <span className="text-[10px] font-sans text-[#DCDCDC] px-2 py-0.5 rounded-full bg-[#1C1C1C] border border-white/[0.08]">
                               {selectedLegalTerm.difficulty}
                             </span>
                           )}
                         </div>
-                        <h4 className="text-2xl sm:text-3xl font-sans font-extrabold text-[#F3F5F7] tracking-tight">
+                        <h4 className="text-2xl sm:text-3xl font-sans font-extrabold text-white tracking-tight">
                           {selectedLegalTerm.term}
                         </h4>
 
                         {selectedLegalTerm.pronunciation && (
                           <div className="flex items-center gap-2 mt-2">
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#132B46] border border-[#294766] text-[#6A9BCB] text-xs font-mono">
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1C1C1C] border border-white/[0.08] text-[#DCDCDC] text-xs font-mono">
                               <span>{selectedLegalTerm.pronunciation}</span>
                               <button
                                 onClick={() => playPronunciation(selectedLegalTerm.term)}
-                                className="p-1 text-[#4F83B8] hover:text-[#F3F5F7] hover:bg-[#1D3552] rounded-full transition-colors cursor-pointer"
+                                className="p-1 text-[#A8A8A8] hover:text-white hover:bg-[#242424] rounded-full transition-colors cursor-pointer"
                                 title="Listen to American legal pronunciation"
                                 aria-label="Listen to pronunciation"
                               >
                                 <Volume2 className="w-3.5 h-3.5" />
                               </button>
                             </div>
-                            <span className="text-[10px] text-[#64758A] uppercase font-semibold tracking-wider">
+                            <span className="text-[10px] text-[#707070] uppercase font-semibold tracking-wider">
                               Pronunciation
                             </span>
                           </div>
@@ -618,31 +618,31 @@ export const DocumentReader: React.FC = () => {
                             saveTerm(selectedLegalTerm.id, undefined, currentDoc.id);
                           }
                         }}
-                        className={`px-3.5 py-1.5 text-xs font-sans flex items-center gap-1.5 cursor-pointer rounded-full transition-all shrink-0 ${
+                        className={`px-3.5 py-1.5 text-xs font-sans flex items-center gap-1.5 cursor-pointer rounded-full transition-all shrink-0 border ${
                           isTermSaved(selectedLegalTerm.id)
-                            ? 'bg-[#132B46] text-[#6A9BCB] border border-[#294766] font-semibold'
-                            : 'btn-secondary'
+                            ? 'bg-[#242424] text-white border-white/20 font-semibold'
+                            : 'bg-[#151515] border-white/[0.08] text-[#A8A8A8] hover:text-white hover:bg-[#1C1C1C]'
                         }`}
                         title="Save term to study list"
                       >
-                        {isTermSaved(selectedLegalTerm.id) ? <BookmarkCheck className="w-3.5 h-3.5 text-[#4F83B8]" /> : <Bookmark className="w-3.5 h-3.5" />}
+                        {isTermSaved(selectedLegalTerm.id) ? <BookmarkCheck className="w-3.5 h-3.5 text-white" /> : <Bookmark className="w-3.5 h-3.5" />}
                         <span>{isTermSaved(selectedLegalTerm.id) ? 'Saved' : 'Save'}</span>
                       </button>
                     </div>
 
                     {/* Meaning & Indonesian Legal Concept */}
-                    <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.7)] border border-[#1D3552] space-y-1.5">
+                    <div className="p-4 rounded-2xl bg-[#151515] border border-white/[0.08] space-y-1.5">
                       <div className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#4F83B8]" />
-                        <span className="text-[10px] font-sans uppercase text-[#4F83B8] font-semibold tracking-wider">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#DCDCDC]" />
+                        <span className="text-[10px] font-sans uppercase text-[#A8A8A8] font-semibold tracking-wider">
                           Indonesian Legal Meaning & Concept
                         </span>
                       </div>
-                      <p className="font-sans font-bold text-base text-[#F3F5F7]">
+                      <p className="font-sans font-bold text-base text-[#F2F2F2]">
                         {selectedLegalTerm.indonesianMeaning}
                       </p>
                       {selectedLegalTerm.indonesianLegalConcept && (
-                        <p className="text-xs sm:text-[13px] text-[#9BAABC] leading-relaxed font-normal">
+                        <p className="text-xs sm:text-[13px] text-[#A8A8A8] leading-relaxed font-normal">
                           {selectedLegalTerm.indonesianLegalConcept}
                         </p>
                       )}
@@ -650,14 +650,14 @@ export const DocumentReader: React.FC = () => {
 
                     {/* Plain-Language Explanation */}
                     {(selectedLegalTerm.plainEnglish || selectedLegalTerm.legalDefinition) && (
-                      <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.5)] border border-[#1D3552] space-y-1.5">
+                      <div className="p-4 rounded-2xl bg-[#151515] border border-white/[0.08] space-y-1.5">
                         <div className="flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#6A9BCB]" />
-                          <span className="text-[10px] font-sans uppercase text-[#9BAABC] font-semibold tracking-wider">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#DCDCDC]" />
+                          <span className="text-[10px] font-sans uppercase text-[#A8A8A8] font-semibold tracking-wider">
                             Plain-Language Explanation
                           </span>
                         </div>
-                        <p className="text-xs sm:text-[13px] text-[#F3F5F7] leading-relaxed font-normal">
+                        <p className="text-xs sm:text-[13px] text-[#F2F2F2] leading-relaxed font-normal">
                           {selectedLegalTerm.plainEnglish || selectedLegalTerm.legalDefinition}
                         </p>
                       </div>
@@ -665,42 +665,42 @@ export const DocumentReader: React.FC = () => {
 
                     {/* Legal Context / How Lawyers Use This in Contracts */}
                     {selectedLegalTerm.legalFunction && (
-                      <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.5)] border border-[#1D3552] space-y-1.5">
+                      <div className="p-4 rounded-2xl bg-[#151515] border border-white/[0.08] space-y-1.5">
                         <div className="flex items-center gap-1.5">
-                          <Scale className="w-3.5 h-3.5 text-[#4F83B8]" />
-                          <span className="text-[10px] font-sans uppercase text-[#4F83B8] font-semibold tracking-wider">
+                          <Scale className="w-3.5 h-3.5 text-[#DCDCDC]" />
+                          <span className="text-[10px] font-sans uppercase text-[#A8A8A8] font-semibold tracking-wider">
                             Legal Context / How Lawyers Use This Term
                           </span>
                         </div>
-                        <p className="text-xs sm:text-[13px] text-[#9BAABC] leading-relaxed font-normal">
+                        <p className="text-xs sm:text-[13px] text-[#A8A8A8] leading-relaxed font-normal">
                           {selectedLegalTerm.legalFunction}
                         </p>
                       </div>
                     )}
 
                     {/* Indonesian Legal Equivalent (KUHPerdata / Civil Law) */}
-                    <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.5)] border border-[#1D3552] space-y-1.5">
+                    <div className="p-4 rounded-2xl bg-[#151515] border border-white/[0.08] space-y-1.5">
                       <div className="flex items-center gap-1.5">
-                        <BookOpen className="w-3.5 h-3.5 text-[#4F83B8]" />
-                        <span className="text-[10px] font-sans uppercase text-[#4F83B8] font-semibold tracking-wider">
+                        <BookOpen className="w-3.5 h-3.5 text-[#DCDCDC]" />
+                        <span className="text-[10px] font-sans uppercase text-[#A8A8A8] font-semibold tracking-wider">
                           Indonesian Legal Equivalent (KUHPerdata / Hukum Positif)
                         </span>
                       </div>
-                      <p className="text-xs sm:text-[13px] text-[#6A9BCB] font-sans font-medium">
+                      <p className="text-xs sm:text-[13px] text-[#DCDCDC] font-sans font-medium">
                         {selectedLegalTerm.civilLawEquivalent || 'Padanan doktriner umum dalam sistem hukum perdata Indonesia.'}
                       </p>
                     </div>
 
                     {/* Drafting Nuance & Common Traps */}
                     {selectedLegalTerm.commonMistakesOrNuances && (
-                      <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.5)] border border-[#1D3552] space-y-1.5">
+                      <div className="p-4 rounded-2xl bg-[#151515] border border-white/[0.08] space-y-1.5">
                         <div className="flex items-center gap-1.5">
-                          <Sparkles className="w-3.5 h-3.5 text-[#E5A93C]" />
-                          <span className="text-[10px] font-sans uppercase text-[#E5A93C] font-semibold tracking-wider">
+                          <Sparkles className="w-3.5 h-3.5 text-[#DCDCDC]" />
+                          <span className="text-[10px] font-sans uppercase text-[#DCDCDC] font-semibold tracking-wider">
                             Drafting Nuance & Common Traps
                           </span>
                         </div>
-                        <p className="text-xs text-[#9BAABC] leading-relaxed font-normal">
+                        <p className="text-xs text-[#A8A8A8] leading-relaxed font-normal">
                           {selectedLegalTerm.commonMistakesOrNuances}
                         </p>
                       </div>
@@ -708,15 +708,15 @@ export const DocumentReader: React.FC = () => {
 
                     {/* Example Sentence or Clause */}
                     {(selectedLegalTerm.authenticClauseExcerpt || selectedLegalTerm.exampleSentenceEn) && (
-                      <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.5)] border border-[#1D3552] space-y-2">
-                        <span className="text-[10px] font-sans uppercase text-[#4F83B8] font-semibold tracking-wider block">
+                      <div className="p-4 rounded-2xl bg-[#151515] border border-white/[0.08] space-y-2">
+                        <span className="text-[10px] font-sans uppercase text-[#A8A8A8] font-semibold tracking-wider block">
                           Example Sentence & Authentic Clause
                         </span>
                         {selectedLegalTerm.authenticClauseExcerpt && (
-                          <div className="p-3 rounded-xl bg-[#081222] border border-[#1D3552] font-serif text-xs text-[#F3F5F7] italic leading-relaxed">
+                          <div className="p-3 rounded-xl bg-[#0C0C0C] border border-white/[0.08] font-serif text-xs text-[#F2F2F2] italic leading-relaxed">
                             "{selectedLegalTerm.authenticClauseExcerpt}"
                             {selectedLegalTerm.authenticClauseSource && (
-                              <span className="block not-italic font-sans text-[10px] text-[#64758A] mt-1.5">
+                              <span className="block not-italic font-sans text-[10px] text-[#707070] mt-1.5">
                                 — {selectedLegalTerm.authenticClauseSource}
                               </span>
                             )}
@@ -724,12 +724,12 @@ export const DocumentReader: React.FC = () => {
                         )}
                         {selectedLegalTerm.exampleSentenceEn && (
                           <div className="space-y-1 text-xs font-sans">
-                            <p className="text-[#F3F5F7]">
-                              <strong className="text-[#4F83B8]">EN:</strong> {selectedLegalTerm.exampleSentenceEn}
+                            <p className="text-[#F2F2F2]">
+                              <strong className="text-white">EN:</strong> {selectedLegalTerm.exampleSentenceEn}
                             </p>
                             {selectedLegalTerm.exampleSentenceId && (
-                              <p className="text-[#9BAABC] italic">
-                                <strong className="text-[#64758A]">ID:</strong> {selectedLegalTerm.exampleSentenceId}
+                              <p className="text-[#A8A8A8] italic">
+                                <strong className="text-[#707070]">ID:</strong> {selectedLegalTerm.exampleSentenceId}
                               </p>
                             )}
                           </div>
@@ -740,12 +740,12 @@ export const DocumentReader: React.FC = () => {
                     {/* Collocations & Related Terms */}
                     {selectedLegalTerm.commonCollocations && selectedLegalTerm.commonCollocations.length > 0 && (
                       <div className="space-y-1.5 pt-1">
-                        <span className="text-[10px] font-sans uppercase text-[#64758A] font-semibold tracking-wider block">
+                        <span className="text-[10px] font-sans uppercase text-[#707070] font-semibold tracking-wider block">
                           Common Collocations:
                         </span>
                         <div className="flex flex-wrap gap-1.5">
                           {selectedLegalTerm.commonCollocations.map((col, idx) => (
-                            <span key={idx} className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-[#112239] border border-[#1D3552] text-[#9BAABC]">
+                            <span key={idx} className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-[#1C1C1C] border border-white/[0.08] text-[#A8A8A8]">
                               {col}
                             </span>
                           ))}
@@ -769,7 +769,7 @@ export const DocumentReader: React.FC = () => {
               {/* TAB 2: DOCUMENT GLOSSARY */}
               {activeRightTab === 'GLOSSARY' && (
                 <div className="p-5 space-y-3 max-h-[75vh] overflow-y-auto no-scrollbar">
-                  <div className="text-xs font-sans text-[#9BAABC] mb-2 font-medium">
+                  <div className="text-xs font-sans text-[#A8A8A8] mb-2 font-medium">
                     Key terms in this document ({currentDoc.keyTermIds.length} terms):
                   </div>
                   <div className="space-y-2">
@@ -783,23 +783,23 @@ export const DocumentReader: React.FC = () => {
                           onClick={() => handleSelectLegalWord(matchedTerm)}
                           className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                             isSelected
-                              ? 'bg-[#132B46] border-[#4F83B8] shadow-sm'
-                              : 'bg-[rgba(17,34,57,0.6)] border-[#1D3552] hover:border-[#294766] hover:bg-[rgba(19,43,70,0.8)]'
+                              ? 'bg-[#242424] border-white/20 shadow-sm'
+                              : 'bg-[#151515] border-white/[0.08] hover:border-white/20 hover:bg-[#1C1C1C]'
                           }`}
                         >
                           <div className="flex items-center justify-between mb-1">
-                            <span className="font-sans font-bold text-sm text-[#F3F5F7]">
+                            <span className="font-sans font-bold text-sm text-[#F2F2F2]">
                               {matchedTerm.term}
                             </span>
                             <span className={`text-[10px] font-sans font-medium px-2 py-0.5 rounded-full border ${
                               isSelected
-                                ? 'bg-[#4F83B8] text-white border-[#4F83B8]'
-                                : 'text-[#4F83B8] bg-[#132B46] border-[#1D3552]'
+                                ? 'bg-white text-black border-white font-semibold'
+                                : 'text-[#A8A8A8] bg-[#242424] border-white/10'
                             }`}>
                               {isSelected ? 'Active' : 'Inspect'}
                             </span>
                           </div>
-                          <p className="text-xs text-[#9BAABC] font-sans font-medium line-clamp-1">
+                          <p className="text-xs text-[#A8A8A8] font-sans font-medium line-clamp-1">
                             {matchedTerm.indonesianMeaning}
                           </p>
                         </div>
@@ -813,27 +813,27 @@ export const DocumentReader: React.FC = () => {
             {activeRightTab === 'SUMMARY' && (
               <div className="p-5 space-y-4 max-h-[75vh] overflow-y-auto no-scrollbar font-sans">
                 <div className="space-y-2">
-                  <h4 className="font-bold text-base text-[#F3F5F7]">
+                  <h4 className="font-bold text-base text-white">
                     Document Summary (English)
                   </h4>
-                  <p className="text-xs sm:text-sm text-[#9BAABC] leading-relaxed font-normal">
+                  <p className="text-xs sm:text-sm text-[#A8A8A8] leading-relaxed font-normal">
                     {currentDoc.abstractEn}
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[rgba(17,34,57,0.7)] border border-[#1D3552] space-y-2">
-                  <h4 className="font-bold text-base text-[#F3F5F7]">
+                <div className="p-4 rounded-2xl bg-[#151515] border border-white/[0.08] space-y-2">
+                  <h4 className="font-bold text-base text-white">
                     Ikhtisar Dokumen (Bahasa Indonesia)
                   </h4>
-                  <p className="text-xs sm:text-sm text-[#9BAABC] leading-relaxed font-normal">
+                  <p className="text-xs sm:text-sm text-[#A8A8A8] leading-relaxed font-normal">
                     {currentDoc.abstractId}
                   </p>
                 </div>
 
-                <div className="pt-2 font-sans text-xs text-[#9BAABC] space-y-1">
-                  <div><strong className="text-[#F3F5F7]">Document Type:</strong> {currentDoc.documentType}</div>
-                  <div><strong className="text-[#F3F5F7]">Governing Law:</strong> {currentDoc.governingLaw}</div>
-                  <div><strong className="text-[#F3F5F7]">Estimated Study Time:</strong> {currentDoc.readingTimeMinutes} Minutes</div>
+                <div className="pt-2 font-sans text-xs text-[#A8A8A8] space-y-1">
+                  <div><strong className="text-white">Document Type:</strong> {currentDoc.documentType}</div>
+                  <div><strong className="text-white">Governing Law:</strong> {currentDoc.governingLaw}</div>
+                  <div><strong className="text-white">Estimated Study Time:</strong> {currentDoc.readingTimeMinutes} Minutes</div>
                 </div>
               </div>
             )}
@@ -841,15 +841,15 @@ export const DocumentReader: React.FC = () => {
             {/* TAB 4: MY ANNOTATIONS & NOTES */}
             {activeRightTab === 'NOTES' && (
               <div className="p-5 space-y-4 max-h-[75vh] overflow-y-auto no-scrollbar">
-                <div className="text-xs font-sans text-[#9BAABC]">
-                  Personal notes and annotations for <em className="text-[#F3F5F7]">{currentDoc.title}</em>:
+                <div className="text-xs font-sans text-[#A8A8A8]">
+                  Personal notes and annotations for <em className="text-white">{currentDoc.title}</em>:
                 </div>
 
                 {Object.keys(personalNotes).filter(k => k.startsWith(currentDoc.id)).length === 0 ? (
-                  <div className="p-6 text-center rounded-2xl border border-dashed border-[#1D3552] text-[#64758A]">
-                    <MessageSquare className="w-6 h-6 mx-auto mb-2 opacity-40 text-[#4F83B8]" />
+                  <div className="p-6 text-center rounded-2xl border border-dashed border-white/10 text-[#707070]">
+                    <MessageSquare className="w-6 h-6 mx-auto mb-2 opacity-40 text-[#DCDCDC]" />
                     <p className="text-xs font-sans">Belum ada catatan pada dokumen ini.</p>
-                    <p className="text-[11px] font-sans mt-1 text-[#64758A]">
+                    <p className="text-[11px] font-sans mt-1 text-[#707070]">
                       Klik ikon pesan di sebelah paragraf dokumen untuk menambahkan catatan.
                     </p>
                   </div>
@@ -860,17 +860,17 @@ export const DocumentReader: React.FC = () => {
                       .map(([key, note]) => {
                         const pId = key.replace(`${currentDoc.id}-`, '');
                         return (
-                          <div key={key} className="p-3.5 rounded-2xl bg-[rgba(17,34,57,0.7)] border border-[#1D3552] space-y-1">
-                            <div className="flex items-center justify-between text-[10px] font-sans font-semibold text-[#9BAABC]">
-                              <span className="text-[#4F83B8] font-bold">Paragraph {pId}</span>
+                          <div key={key} className="p-3.5 rounded-2xl bg-[#151515] border border-white/[0.08] space-y-1">
+                            <div className="flex items-center justify-between text-[10px] font-sans font-semibold text-[#A8A8A8]">
+                              <span className="text-[#DCDCDC] font-bold">Paragraph {pId}</span>
                               <button
                                 onClick={() => handleOpenNoteModal(pId)}
-                                className="text-[#4F83B8] underline hover:text-[#6A9BCB] cursor-pointer"
+                                className="text-[#A8A8A8] underline hover:text-white cursor-pointer"
                               >
                                 Edit
                               </button>
                             </div>
-                            <p className="text-xs text-[#F3F5F7] font-sans">
+                            <p className="text-xs text-[#F2F2F2] font-sans">
                               {note}
                             </p>
                           </div>
@@ -899,14 +899,14 @@ export const DocumentReader: React.FC = () => {
                 });
               });
             }}
-            className="flex items-center gap-2.5 px-4 py-3 rounded-full glass-panel-deep border border-[#4F83B8]/60 text-[#F3F5F7] shadow-[0_15px_35px_rgba(0,0,0,0.6)] hover:scale-105 transition-all cursor-pointer group"
+            className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#151515] border border-white/20 text-[#F2F2F2] shadow-[0_15px_35px_rgba(0,0,0,0.6)] hover:scale-105 transition-all cursor-pointer group"
           >
-            <Scale className="w-4 h-4 text-[#4F83B8] group-hover:rotate-12 transition-transform" />
+            <Scale className="w-4 h-4 text-white group-hover:rotate-12 transition-transform" />
             <span className="text-xs font-sans font-bold tracking-wide">
               Open Legal Assistant
             </span>
             {selectedLegalTerm && (
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#132B46] text-[#6A9BCB] border border-[#294766]">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#242424] text-[#DCDCDC] border border-white/20">
                 {selectedLegalTerm.term}
               </span>
             )}
@@ -916,16 +916,16 @@ export const DocumentReader: React.FC = () => {
 
       {/* Note Edit Modal (Floating Glass Modal) */}
       {activeParagraphNoteId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#050B16]/80 backdrop-blur-md">
-          <div className="rounded-3xl bg-[rgba(13,26,43,0.95)] backdrop-blur-2xl border border-[#1D3552] p-6 max-w-md w-full space-y-4 shadow-[0_30px_70px_rgba(2,6,12,0.7)]">
-            <h3 className="font-sans font-bold text-base text-[#F3F5F7]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#050505]/80 backdrop-blur-md">
+          <div className="rounded-3xl bg-[#101010] backdrop-blur-2xl border border-white/[0.12] p-6 max-w-md w-full space-y-4 shadow-2xl">
+            <h3 className="font-sans font-bold text-base text-white">
               Add Study Note to Paragraph {activeParagraphNoteId}
             </h3>
             <textarea
               value={tempNoteText}
               onChange={(e) => setTempNoteText(e.target.value)}
               placeholder="Tuliskan analisis pasal, perbandingan KUHPerdata, atau catatan drafting..."
-              className="w-full text-xs p-3.5 rounded-2xl bg-[#050B16] border border-[#1D3552] text-[#F3F5F7] placeholder:text-[#64758A] focus:outline-none focus:border-[#4F83B8] font-sans h-28 resize-none"
+              className="w-full text-xs p-3.5 rounded-2xl bg-[#0C0C0C] border border-white/[0.08] text-[#F2F2F2] placeholder:text-[#707070] focus:outline-none focus:border-white/30 font-sans h-28 resize-none"
               autoFocus
             />
             <div className="flex justify-end gap-2 text-xs font-sans">

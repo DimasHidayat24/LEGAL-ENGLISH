@@ -32,13 +32,13 @@ export const LexaLogo: React.FC<LexaLogoProps> = ({
 
   const effectiveTheme = explicitTheme || contextTheme;
 
-  // Optimized Theme-Aware Color Mapping:
-  // Dark Mode: Crisp Platinum White pillar with radiant sapphire accent ('A' + Scale)
-  // Light Mode: Authoritative Deep Ink Sapphire pillar (#0C2038) with vibrant Royal Legal Sapphire ('A' + Scale)
-  let pillarColor = '#F1F4F7';
-  let scaleColor = '#9BB5CC';
-  let scaleAccent = '#C2D5E5';
-  let scaleDark = '#5B7A99';
+  // Optimized Theme-Aware Color Mapping for Graphite Monochrome Aesthetic:
+  // Dark Mode: Crisp Pure White pillar (#F2F2F2) with silver/white accents (#DCDCDC / #FFFFFF)
+  // Light Mode: Authoritative Deep Graphite pillar (#050505) with dark charcoal accents (#1C1C1C)
+  let pillarColor = '#F2F2F2';
+  let scaleColor = '#DCDCDC';
+  let scaleAccent = '#FFFFFF';
+  let scaleDark = '#A8A8A8';
 
   if (variant === 'monochrome') {
     pillarColor = 'currentColor';
@@ -58,17 +58,17 @@ export const LexaLogo: React.FC<LexaLogoProps> = ({
       scaleDark = '#AA8222';
     }
   } else {
-    // 'colored' (default)
+    // 'colored' / graphite monochrome default
     if (effectiveTheme === 'light') {
-      pillarColor = '#0C2038';    // Deep Oxford Law Navy (Crisp, authoritative contrast)
-      scaleColor = '#2563EB';     // High-definition Royal Sapphire Blue for 'A'
-      scaleAccent = '#3B82F6';    // Luminous Precision Blue for cords & pivot
-      scaleDark = '#1D4ED8';      // Deep Royal Blue for weighing pan
+      pillarColor = '#050505';
+      scaleColor = '#1C1C1C';
+      scaleAccent = '#050505';
+      scaleDark = '#707070';
     } else {
-      pillarColor = '#F1F4F7';    // Crisp White
-      scaleColor = '#9BB5CC';     // Frosted Accent
-      scaleAccent = '#C2D5E5';    // Ice-blue
-      scaleDark = '#5B7A99';      // Steel Blue
+      pillarColor = '#F2F2F2';
+      scaleColor = '#DCDCDC';
+      scaleAccent = '#FFFFFF';
+      scaleDark = '#A8A8A8';
     }
   }
 
