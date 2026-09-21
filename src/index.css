@@ -1086,34 +1086,36 @@ html.light .lexa-custom-scrollbar::-webkit-scrollbar-thumb:hover,
   will-change: transform;
 }
 
+.bg-monochrome-neon-beam,
 .bg-rainbow-beam {
   background: conic-gradient(
     from 0deg at 50% 50%,
     transparent 0deg,
-    transparent 135deg,
-    rgba(244, 63, 94, 0.95) 190deg,
-    rgba(249, 115, 22, 1.0) 225deg,
-    rgba(250, 204, 21, 1.0) 255deg,
-    rgba(34, 197, 94, 1.0) 285deg,
-    rgba(6, 182, 212, 1.0) 315deg,
-    rgba(168, 85, 247, 0.95) 342deg,
-    rgba(244, 63, 94, 0.85) 358deg,
+    transparent 130deg,
+    rgba(255, 255, 255, 0.04) 160deg,
+    rgba(255, 255, 255, 0.18) 205deg,
+    rgba(255, 255, 255, 0.45) 250deg,
+    rgba(255, 255, 255, 0.75) 295deg,
+    rgba(255, 255, 255, 0.95) 335deg,
+    #FFFFFF 356deg,
+    rgba(255, 255, 255, 0.70) 359deg,
     transparent 360deg
   );
 }
 
+.bg-monochrome-neon-glow,
 .bg-rainbow-beam-glow {
   background: conic-gradient(
     from 0deg at 50% 50%,
     transparent 0deg,
-    transparent 110deg,
-    rgba(244, 63, 94, 0.80) 175deg,
-    rgba(249, 115, 22, 0.90) 215deg,
-    rgba(250, 204, 21, 0.95) 250deg,
-    rgba(34, 197, 94, 0.95) 280deg,
-    rgba(6, 182, 212, 0.90) 310deg,
-    rgba(168, 85, 247, 0.85) 340deg,
-    rgba(244, 63, 94, 0.75) 358deg,
+    transparent 100deg,
+    rgba(255, 255, 255, 0.05) 140deg,
+    rgba(255, 255, 255, 0.20) 190deg,
+    rgba(255, 255, 255, 0.45) 240deg,
+    rgba(255, 255, 255, 0.75) 290deg,
+    rgba(255, 255, 255, 0.95) 335deg,
+    #FFFFFF 355deg,
+    rgba(255, 255, 255, 0.60) 359deg,
     transparent 360deg
   );
 }

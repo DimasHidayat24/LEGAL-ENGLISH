@@ -37,14 +37,14 @@ export const HeroSection: React.FC = () => {
 
               {/* Floating Pill CTAs */}
               <div className="flex flex-wrap items-center gap-3.5 pt-2">
-                {/* Primary CTA: Premium floating button with enhanced rotating conic-gradient rainbow border beam and layered glow */}
+                {/* Primary CTA: Premium floating button with rotating monochrome neon border beam and layered glow */}
                 <div className="relative inline-flex group items-center justify-center rounded-full p-[2px] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]">
                   {/* Layer 1: Wide atmospheric soft bloom glow */}
                   <div 
                     className="absolute -inset-2.5 sm:-inset-3 rounded-full overflow-hidden blur-xl opacity-60 dark:opacity-75 pointer-events-none group-hover:opacity-95 group-hover:blur-2xl transition-all duration-300"
                     aria-hidden="true"
                   >
-                    <div className="absolute inset-[-200%] m-auto aspect-square animate-border-beam bg-rainbow-beam-glow" />
+                    <div className="absolute inset-[-200%] m-auto aspect-square animate-border-beam bg-monochrome-neon-glow" />
                   </div>
 
                   {/* Layer 2: Tight vibrant perimeter halo */}
@@ -52,7 +52,7 @@ export const HeroSection: React.FC = () => {
                     className="absolute -inset-1 rounded-full overflow-hidden blur-[6px] opacity-80 dark:opacity-90 pointer-events-none group-hover:opacity-100 transition-opacity duration-300"
                     aria-hidden="true"
                   >
-                    <div className="absolute inset-[-200%] m-auto aspect-square animate-border-beam bg-rainbow-beam" />
+                    <div className="absolute inset-[-200%] m-auto aspect-square animate-border-beam bg-monochrome-neon-beam" />
                   </div>
 
                   {/* Base border track */}
@@ -61,13 +61,13 @@ export const HeroSection: React.FC = () => {
                     aria-hidden="true"
                   >
                     {/* Rotating continuous border beam */}
-                    <div className="absolute inset-[-200%] m-auto aspect-square animate-border-beam bg-rainbow-beam" />
+                    <div className="absolute inset-[-200%] m-auto aspect-square animate-border-beam bg-monochrome-neon-beam" />
                   </div>
 
                   {/* Button surface */}
                   <button
                     onClick={() => setSelectedTab('learn')}
-                    className="relative z-10 btn-primary px-5 py-2.5 sm:px-6 sm:py-3 text-xs flex items-center gap-2 tracking-wider uppercase font-bold !border-0 cursor-pointer shadow-[0_0_15px_rgba(255,255,255,0.15)] dark:shadow-[0_0_20px_rgba(255,255,255,0.25)]"
+                    className="relative z-10 btn-primary px-5 py-2.5 sm:px-6 sm:py-3 text-xs flex items-center gap-2 tracking-wider uppercase font-bold !border-0 cursor-pointer shadow-[0_0_15px_rgba(255,255,255,0.20)] dark:shadow-[0_0_24px_rgba(255,255,255,0.35)]"
                   >
                     <BookOpen className="w-4 h-4" />
                     <span>Start Learning</span>
