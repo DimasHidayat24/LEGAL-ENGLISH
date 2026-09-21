@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   :root {
@@ -278,95 +279,112 @@ html.light .liquid-lens::before,
 
 /* ==========================================================================
    Ultra-Refined Liquid Glass Navigation (Section 2 - Floating Glass Capsule)
+   Light & soft appearance with delicate transparency and crisp optical essence
    ========================================================================== */
 .liquid-nav-pill {
   position: relative;
   isolation: isolate;
-  background: rgba(35, 35, 35, 0.60);
-  backdrop-filter: blur(24px) saturate(110%);
-  -webkit-backdrop-filter: blur(24px) saturate(110%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.20);
+  background: rgba(12, 12, 12, 0.20);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 10px 32px -4px rgba(0, 0, 0, 0.20),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.06);
   border-radius: 999px;
   transform: translateZ(0);
 }
 
 .liquid-nav-pill.is-scrolled {
-  background: rgba(28, 28, 28, 0.75);
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow: 0 12px 42px rgba(0, 0, 0, 0.30);
+  background: rgba(12, 12, 12, 0.35);
+  border-color: rgba(255, 255, 255, 0.11);
+  box-shadow: 
+    0 14px 38px -4px rgba(0, 0, 0, 0.28),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 html.light .liquid-nav-pill,
 [data-theme="light"] .liquid-nav-pill {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(24px) saturate(110%);
-  -webkit-backdrop-filter: blur(24px) saturate(110%);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 
+    0 8px 30px -4px rgba(0, 0, 0, 0.03),
+    0 2px 8px -2px rgba(0, 0, 0, 0.015),
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.70);
   border-radius: 999px;
 }
 
 html.light .liquid-nav-pill.is-scrolled,
 [data-theme="light"] .liquid-nav-pill.is-scrolled {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(0, 0, 0, 0.12);
-  box-shadow: 0 12px 42px rgba(0, 0, 0, 0.10);
+  background: rgba(255, 255, 255, 0.38);
+  border-color: rgba(255, 255, 255, 0.60);
+  box-shadow: 
+    0 12px 34px -4px rgba(0, 0, 0, 0.05),
+    0 3px 10px -2px rgba(0, 0, 0, 0.02),
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.85);
 }
 
 /* Glass-on-Glass Active Droplet (Section 2 - Brighter Translucent Pill, No Blue) */
 .liquid-tab-active {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   color: #FFFFFF !important;
   font-weight: 600;
   border-radius: 999px;
   box-shadow: 
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.14),
-    0 2px 8px rgba(0, 0, 0, 0.25);
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.14);
 }
 
 html.light .liquid-tab-active,
 [data-theme="light"] .liquid-tab-active {
-  background: #111111;
-  border: 1px solid #111111;
+  background: rgba(18, 18, 18, 0.80);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(18, 18, 18, 0.10);
   color: #FFFFFF !important;
   font-weight: 600;
   border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.16);
 }
 
 /* Utility Glass Pill */
 .liquid-ctrl-pill {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 999px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .liquid-ctrl-pill:hover {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255, 255, 255, 0.18);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
 }
 
 html.light .liquid-ctrl-pill,
 [data-theme="light"] .liquid-ctrl-pill {
-  background: #F2F2F2;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   color: #111111;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
 }
 
 html.light .liquid-ctrl-pill:hover,
 [data-theme="light"] .liquid-ctrl-pill:hover {
-  background: #EAEAEA;
-  border-color: rgba(0, 0, 0, 0.16);
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(0, 0, 0, 0.08);
   color: #000000;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 /* Primary CTA Button (Section 4 - Small Premium Floating Button) */
@@ -1120,6 +1138,145 @@ html.light .lexa-custom-scrollbar::-webkit-scrollbar-thumb:hover,
   );
 }
 
+/* Light Mode Border Beam & Glow (Monochrome Graphite / Inverted High-Contrast) */
+html.light .bg-monochrome-neon-beam,
+[data-theme="light"] .bg-monochrome-neon-beam {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    transparent 130deg,
+    rgba(0, 0, 0, 0.04) 160deg,
+    rgba(0, 0, 0, 0.15) 205deg,
+    rgba(0, 0, 0, 0.35) 250deg,
+    rgba(0, 0, 0, 0.65) 295deg,
+    rgba(0, 0, 0, 0.90) 335deg,
+    #0A0A0A 356deg,
+    rgba(0, 0, 0, 0.60) 359deg,
+    transparent 360deg
+  );
+}
+
+html.light .bg-monochrome-neon-glow,
+[data-theme="light"] .bg-monochrome-neon-glow {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    transparent 100deg,
+    rgba(0, 0, 0, 0.04) 140deg,
+    rgba(0, 0, 0, 0.12) 190deg,
+    rgba(0, 0, 0, 0.25) 240deg,
+    rgba(0, 0, 0, 0.45) 290deg,
+    rgba(0, 0, 0, 0.70) 335deg,
+    #0A0A0A 355deg,
+    rgba(0, 0, 0, 0.40) 359deg,
+    transparent 360deg
+  );
+}
+
+/* ==========================================================================
+   Comprehensive Light Mode Clarity & Surface Contrast Rules
+   Ensures text, headings, cards, and metadata maintain pristine WCAG AA readability
+   ========================================================================== */
+html.light {
+  color: #111111;
+}
+
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4 {
+  color: #0A0A0A;
+}
+
+/* Surfaces and cards in light mode */
+html.light .bg-\[\#101010\],
+[data-theme="light"] .bg-\[\#101010\] {
+  background-color: #FFFFFF !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .bg-\[\#151515\],
+[data-theme="light"] .bg-\[\#151515\] {
+  background-color: #F8F8F8 !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .bg-\[\#181818\],
+[data-theme="light"] .bg-\[\#181818\] {
+  background-color: #F4F4F4 !important;
+  border-color: rgba(0, 0, 0, 0.10) !important;
+}
+
+html.light .bg-\[\#1C1C1C\],
+[data-theme="light"] .bg-\[\#1C1C1C\] {
+  background-color: #EFEFEF !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+html.light .bg-\[\#0C0C0C\],
+[data-theme="light"] .bg-\[\#0C0C0C\] {
+  background-color: #F2F2F2 !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .bg-\[\#242424\],
+[data-theme="light"] .bg-\[\#242424\] {
+  background-color: #E6E6E6 !important;
+  border-color: rgba(0, 0, 0, 0.10) !important;
+}
+
+/* Borders in light mode */
+html.light .border-white\/\[0\.08\],
+html.light .border-white\/\[0\.12\],
+html.light .border-white\/\[0\.15\],
+html.light .border-white\/10,
+html.light .border-white\/20,
+html.light .border-white\/25,
+[data-theme="light"] .border-white\/\[0\.08\],
+[data-theme="light"] .border-white\/\[0\.12\],
+[data-theme="light"] .border-white\/\[0\.15\],
+[data-theme="light"] .border-white\/10,
+[data-theme="light"] .border-white\/20,
+[data-theme="light"] .border-white\/25 {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Contrast enhancement for muted text classes in light mode */
+html.light .text-\[\#A8A8A8\],
+html.light .text-\[\#A0A0A0\],
+[data-theme="light"] .text-\[\#A8A8A8\],
+[data-theme="light"] .text-\[\#A0A0A0\] {
+  color: #4A4A4A !important;
+}
+
+html.light .text-\[\#707070\],
+html.light .text-\[\#666666\],
+[data-theme="light"] .text-\[\#707070\],
+[data-theme="light"] .text-\[\#666666\] {
+  color: #616161 !important;
+}
+
+html.light .text-\[\#DCDCDC\],
+[data-theme="light"] .text-\[\#DCDCDC\] {
+  color: #262626 !important;
+}
+
+/* Preserve crisp white text on intentionally inverted dark elements */
+html.light .btn-primary,
+html.light .btn-primary *,
+html.light .liquid-tab-active,
+html.light .liquid-tab-active *,
+[data-theme="light"] .btn-primary,
+[data-theme="light"] .btn-primary *,
+[data-theme="light"] .liquid-tab-active,
+[data-theme="light"] .liquid-tab-active * {
+  color: #FFFFFF !important;
+}
+
 /* ==========================================================================
    Hero Wave Slow Ambient Breathing & Drift
    ========================================================================== */
@@ -1136,7 +1293,7 @@ html.light .lexa-custom-scrollbar::-webkit-scrollbar-thumb:hover,
 }
 
 .animate-hero-wave-drift {
-  animation: heroWaveDrift 18s ease-in-out infinite alternate;
+  animation: heroWaveDrift 28s ease-in-out infinite alternate;
   will-change: transform;
 }
 

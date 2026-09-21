@@ -27,11 +27,11 @@ export const HeroSection: React.FC = () => {
             {/* Left Column: Typography & Floating Pill CTAs */}
             <div className="lg:col-span-7 space-y-6 sm:space-y-7">
               {/* Visual Anchor Headline */}
-              <h1 className="text-[40px] sm:text-5xl lg:text-6xl font-sans font-extrabold text-[#F2F2F2] tracking-[-0.04em] leading-[1.02] sm:leading-[1.05] lg:leading-[1.04]">
+              <h1 className="text-[40px] sm:text-5xl lg:text-6xl font-sans font-extrabold text-[#0C0C0C] dark:text-[#F2F2F2] tracking-[-0.04em] leading-[1.02] sm:leading-[1.05] lg:leading-[1.04] transition-colors">
                 Understand the Legal English Meanings
               </h1>
 
-              <p className="text-base sm:text-lg text-[#A8A8A8] font-sans font-normal leading-relaxed max-w-2xl">
+              <p className="text-base sm:text-lg text-[#444444] dark:text-[#A8A8A8] font-sans font-normal leading-relaxed max-w-2xl transition-colors">
                 Learn the language of law through documents, doctrine, and practice.
               </p>
 
@@ -87,20 +87,20 @@ export const HeroSection: React.FC = () => {
                 {/* Tertiary Link */}
                 <button
                   onClick={() => setSelectedTab('comparative')}
-                  className="px-3 py-2 text-xs font-sans font-medium text-[#A0A0A0] hover:text-[#F5F5F5] flex items-center gap-1.5 cursor-pointer rounded-full hover:bg-white/[0.04] transition-colors"
+                  className="px-3 py-2 text-xs font-sans font-medium text-[#555555] dark:text-[#A0A0A0] hover:text-[#0A0A0A] dark:hover:text-[#F5F5F5] flex items-center gap-1.5 cursor-pointer rounded-full hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition-colors"
                 >
-                  <span>KUHPerdata vs Common Law</span>
+                  <span>KUHPerdata vs US Civil Law</span>
                   <ChevronRight className="w-3.5 h-3.5 opacity-60" />
                 </button>
               </div>
 
               {/* Method Cards: 4 Floating Glass Tiles */}
-              <div className="pt-6 border-t border-white/[0.08] dark:border-white/[0.08] border-black/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-3.5 text-xs font-sans">
+              <div className="pt-6 border-t border-black/[0.08] dark:border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-3.5 text-xs font-sans">
                 <div className="p-4 lexa-card liquid-lens flex flex-col justify-between">
                   <div>
                     <span className="text-[10px] text-[#555555] dark:text-[#A8A8A8] font-bold tracking-wider block mb-1">01. METHOD</span>
                     <span className="font-extrabold text-sm text-[#0C0C0C] dark:text-[#F2F2F2] block">READ</span>
-                    <p className="text-[11px] text-[#666666] dark:text-[#707070] mt-1 font-normal leading-snug">Authentic contracts & SIAC awards</p>
+                    <p className="text-[11px] text-[#555555] dark:text-[#909090] mt-1 font-normal leading-snug">Authentic contracts & SIAC awards</p>
                   </div>
                 </div>
 
@@ -108,7 +108,7 @@ export const HeroSection: React.FC = () => {
                   <div>
                     <span className="text-[10px] text-[#555555] dark:text-[#A8A8A8] font-bold tracking-wider block mb-1">02. METHOD</span>
                     <span className="font-extrabold text-sm text-[#0C0C0C] dark:text-[#F2F2F2] block">UNDERSTAND</span>
-                    <p className="text-[11px] text-[#666666] dark:text-[#707070] mt-1 font-normal leading-snug">Bilingual civil & common context</p>
+                    <p className="text-[11px] text-[#555555] dark:text-[#909090] mt-1 font-normal leading-snug">Bilingual civil & common context</p>
                   </div>
                 </div>
 
@@ -116,7 +116,7 @@ export const HeroSection: React.FC = () => {
                   <div>
                     <span className="text-[10px] text-[#555555] dark:text-[#A8A8A8] font-bold tracking-wider block mb-1">03. METHOD</span>
                     <span className="font-extrabold text-sm text-[#0C0C0C] dark:text-[#F2F2F2] block">DECONSTRUCT</span>
-                    <p className="text-[11px] text-[#666666] dark:text-[#707070] mt-1 font-normal leading-snug">Why legal draftspersons choose terms</p>
+                    <p className="text-[11px] text-[#555555] dark:text-[#909090] mt-1 font-normal leading-snug">Why legal draftspersons choose terms</p>
                   </div>
                 </div>
 
@@ -124,7 +124,7 @@ export const HeroSection: React.FC = () => {
                   <div>
                     <span className="text-[10px] text-[#555555] dark:text-[#A8A8A8] font-bold tracking-wider block mb-1">04. METHOD</span>
                     <span className="font-extrabold text-sm text-[#0C0C0C] dark:text-[#F2F2F2] block">APPLY</span>
-                    <p className="text-[11px] text-[#666666] dark:text-[#707070] mt-1 font-normal leading-snug">Draft clauses & formal legal opinions</p>
+                    <p className="text-[11px] text-[#555555] dark:text-[#909090] mt-1 font-normal leading-snug">Draft clauses & formal legal opinions</p>
                   </div>
                 </div>
               </div>
@@ -240,7 +240,7 @@ export const HeroSection: React.FC = () => {
                 {activeHoverTerm && (
                   <div className="mt-3 p-4 rounded-2xl lexa-card liquid-lens text-xs font-sans transition-all">
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className="font-sans font-extrabold text-base text-[#F2F2F2] tracking-tight">
+                      <span className="font-sans font-extrabold text-base text-[#0C0C0C] dark:text-[#F2F2F2] tracking-tight">
                         {activeHoverTerm.term}
                       </span>
                       <span className="badge-accent text-[10px] font-sans font-semibold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
@@ -248,23 +248,23 @@ export const HeroSection: React.FC = () => {
                       </span>
                     </div>
 
-                    <p className="font-sans font-bold text-[#F2F2F2] mb-1 text-sm">
+                    <p className="font-sans font-bold text-[#111111] dark:text-[#F2F2F2] mb-1 text-sm">
                       {activeHoverTerm.indonesianMeaning}
                     </p>
 
-                    <p className="text-[12px] text-[#A8A8A8] line-clamp-2 leading-relaxed font-normal">
+                    <p className="text-[12px] text-[#444444] dark:text-[#A8A8A8] line-clamp-2 leading-relaxed font-normal">
                       {activeHoverTerm.indonesianLegalConcept}
                     </p>
 
-                    <div className="mt-3 pt-2.5 border-t border-white/[0.08] flex items-center justify-between">
-                      <span className="text-[11px] font-sans text-[#707070]">
-                        Equivalent: <span className="font-medium text-[#A8A8A8]">{activeHoverTerm.civilLawEquivalent || 'KUHPerdata context'}</span>
+                    <div className="mt-3 pt-2.5 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between">
+                      <span className="text-[11px] font-sans text-[#666666] dark:text-[#707070]">
+                        Equivalent: <span className="font-medium text-[#111111] dark:text-[#A8A8A8]">{activeHoverTerm.civilLawEquivalent || 'KUHPerdata context'}</span>
                       </span>
                       <button
                         onClick={() => setActiveLookupTermId(activeHoverTerm.id)}
-                        className="text-[11px] font-sans text-white font-bold hover:text-[#DCDCDC] hover:underline flex items-center gap-1 cursor-pointer"
+                        className="text-[11px] font-sans text-[#0A0A0A] dark:text-white font-bold hover:underline flex items-center gap-1 cursor-pointer"
                       >
-                        View Full Analysis & Clause <ArrowRight className="w-3 h-3 text-white" />
+                        View Full Analysis & Clause <ArrowRight className="w-3 h-3 text-[#0A0A0A] dark:text-white" />
                       </button>
                     </div>
                   </div>
@@ -279,21 +279,21 @@ export const HeroSection: React.FC = () => {
 
       {/* 2. Structured Curriculum Tracks Overview (Floating Glass Tiles) */}
       <section id="section-learn-preview" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-3 border-b border-white/[0.08]">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-3 border-b border-black/[0.08] dark:border-white/[0.08]">
           <div>
-            <span className="text-xs font-sans uppercase tracking-wider text-[#A8A8A8] block font-bold">
+            <span className="text-xs font-sans uppercase tracking-wider text-[#555555] dark:text-[#A8A8A8] block font-bold">
               ACADEMIC ROADMAP
             </span>
-            <h2 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#FFFFFF] tracking-[-0.03em] mt-1">
+            <h2 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#0A0A0A] dark:text-[#FFFFFF] tracking-[-0.03em] mt-1">
               Structured Legal English Curriculum
             </h2>
           </div>
           <button
             onClick={() => setSelectedTab('learn')}
-            className="text-xs font-sans text-[#A8A8A8] font-medium hover:text-[#FFFFFF] flex items-center gap-1 mt-2 sm:mt-0 cursor-pointer transition-colors"
+            className="text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium hover:text-[#000000] dark:hover:text-[#FFFFFF] flex items-center gap-1 mt-2 sm:mt-0 cursor-pointer transition-colors"
           >
             <span>View All 10 Lessons</span>
-            <ArrowRight className="w-3.5 h-3.5 text-white" />
+            <ArrowRight className="w-3.5 h-3.5 text-[#0A0A0A] dark:text-white" />
           </button>
         </div>
 
@@ -307,14 +307,14 @@ export const HeroSection: React.FC = () => {
               <span className="badge-navy text-[10px] font-sans uppercase px-2.5 py-0.5 inline-block mb-3 font-semibold tracking-wider">
                 Track 01
               </span>
-              <h3 className="font-sans font-bold text-lg text-[#F2F2F2] group-hover:text-white mb-2 transition-colors">
+              <h3 className="font-sans font-bold text-lg text-[#0A0A0A] dark:text-[#F2F2F2] group-hover:text-black dark:group-hover:text-white mb-2 transition-colors">
                 Foundation & Architecture
               </h3>
-              <p className="text-xs text-[#A8A8A8] font-sans font-normal leading-relaxed">
+              <p className="text-xs text-[#555555] dark:text-[#A8A8A8] font-sans font-normal leading-relaxed">
                 Legal English vs General English, compound spatial connectors (hereby, thereof, therein), shall vs may vs must, and essential Latin maxims.
               </p>
             </div>
-            <div className="mt-6 pt-3 border-t border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#A8A8A8] font-medium group-hover:text-white">
+            <div className="mt-6 pt-3 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium group-hover:text-black dark:group-hover:text-white">
               <span>Explore Foundation</span>
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
@@ -329,14 +329,14 @@ export const HeroSection: React.FC = () => {
               <span className="badge-navy text-[10px] font-sans uppercase px-2.5 py-0.5 inline-block mb-3 font-semibold tracking-wider">
                 Track 02
               </span>
-              <h3 className="font-sans font-bold text-lg text-[#F2F2F2] group-hover:text-white mb-2 transition-colors">
+              <h3 className="font-sans font-bold text-lg text-[#0A0A0A] dark:text-[#F2F2F2] group-hover:text-black dark:group-hover:text-white mb-2 transition-colors">
                 Legal Documents & Contracts
               </h3>
-              <p className="text-xs text-[#A8A8A8] font-sans font-normal leading-relaxed">
+              <p className="text-xs text-[#555555] dark:text-[#A8A8A8] font-sans font-normal leading-relaxed">
                 Deconstructing commercial contracts, bilateral NDAs, delay liquidated damages, IP indemnities, and governing law boilerplate.
               </p>
             </div>
-            <div className="mt-6 pt-3 border-t border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#A8A8A8] font-medium group-hover:text-white">
+            <div className="mt-6 pt-3 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium group-hover:text-black dark:group-hover:text-white">
               <span>Read Documents</span>
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
@@ -351,14 +351,14 @@ export const HeroSection: React.FC = () => {
               <span className="badge-navy text-[10px] font-sans uppercase px-2.5 py-0.5 inline-block mb-3 font-semibold tracking-wider">
                 Track 03
               </span>
-              <h3 className="font-sans font-bold text-lg text-[#F2F2F2] group-hover:text-white mb-2 transition-colors">
+              <h3 className="font-sans font-bold text-lg text-[#0A0A0A] dark:text-[#F2F2F2] group-hover:text-black dark:group-hover:text-white mb-2 transition-colors">
                 Practical Legal Drafting
               </h3>
-              <p className="text-xs text-[#A8A8A8] font-sans font-normal leading-relaxed">
+              <p className="text-xs text-[#555555] dark:text-[#A8A8A8] font-sans font-normal leading-relaxed">
                 Write like an international lawyer: IRAC legal memoranda, formal legal opinions, pre-litigation demand notices (somasi), and client emails.
               </p>
             </div>
-            <div className="mt-6 pt-3 border-t border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#A8A8A8] font-medium group-hover:text-white">
+            <div className="mt-6 pt-3 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium group-hover:text-black dark:group-hover:text-white">
               <span>Open Writing Lab</span>
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
@@ -373,14 +373,14 @@ export const HeroSection: React.FC = () => {
               <span className="badge-navy text-[10px] font-sans uppercase px-2.5 py-0.5 inline-block mb-3 font-semibold tracking-wider">
                 Track 04
               </span>
-              <h3 className="font-sans font-bold text-lg text-[#F2F2F2] group-hover:text-white mb-2 transition-colors">
+              <h3 className="font-sans font-bold text-lg text-[#0A0A0A] dark:text-[#F2F2F2] group-hover:text-black dark:group-hover:text-white mb-2 transition-colors">
                 Transnational Practice
               </h3>
-              <p className="text-xs text-[#A8A8A8] font-sans font-normal leading-relaxed">
+              <p className="text-xs text-[#555555] dark:text-[#A8A8A8] font-sans font-normal leading-relaxed">
                 International commercial arbitration (SIAC / ICC), New York Convention 1958, cross-border M&A equity pacts, and FDI regulations in Indonesia.
               </p>
             </div>
-            <div className="mt-6 pt-3 border-t border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#A8A8A8] font-medium group-hover:text-white">
+            <div className="mt-6 pt-3 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium group-hover:text-black dark:group-hover:text-white">
               <span>View Advanced</span>
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
@@ -392,32 +392,32 @@ export const HeroSection: React.FC = () => {
       <section id="section-comparative-preview" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="rounded-3xl glass-panel-deep liquid-lens p-8 sm:p-10 relative overflow-hidden">
           <div className="max-w-3xl space-y-5 relative z-10">
-            <span className="text-[11px] font-sans uppercase tracking-wider text-[#A8A8A8] flex items-center gap-2 font-bold">
-              <Scale className="w-4 h-4 text-white" />
+            <span className="text-[11px] font-sans uppercase tracking-wider text-[#555555] dark:text-[#A8A8A8] flex items-center gap-2 font-bold">
+              <Scale className="w-4 h-4 text-[#0A0A0A] dark:text-white" />
               SPECIAL FEATURE FOR INDONESIAN JURISTS
             </span>
-            <h2 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#FFFFFF] tracking-[-0.03em]">
+            <h2 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#0A0A0A] dark:text-[#FFFFFF] tracking-[-0.03em]">
               Same Concept. Different Language.
             </h2>
-            <p className="text-sm sm:text-base text-[#A8A8A8] font-sans font-normal leading-relaxed">
+            <p className="text-sm sm:text-base text-[#444444] dark:text-[#A8A8A8] font-sans font-normal leading-relaxed">
               Compare civil law doctrines (<em>KUHPerdata</em>, <em>HIR/RBg</em>, <em>UU Perseroan Terbatas</em>) with Common Law legal terminology. Understand why legal concepts do not always have 1-to-1 exact equivalents across jurisdictions.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-3 font-sans text-xs">
               <div className="p-4 lexa-card liquid-lens">
-                <span className="text-[#A8A8A8] block text-[10px] font-bold uppercase tracking-wider">KUHPerdata</span>
-                <span className="font-extrabold text-[#F2F2F2] text-sm block mt-0.5">Wanprestasi</span>
-                <span className="text-[#707070] block text-[11px] mt-1 font-normal">⟷ Breach of Contract / Default</span>
+                <span className="text-[#666666] dark:text-[#A8A8A8] block text-[10px] font-bold uppercase tracking-wider">KUHPerdata</span>
+                <span className="font-extrabold text-[#0A0A0A] dark:text-[#F2F2F2] text-sm block mt-0.5">Wanprestasi</span>
+                <span className="text-[#555555] dark:text-[#707070] block text-[11px] mt-1 font-normal">⟷ Breach of Contract / Default</span>
               </div>
               <div className="p-4 lexa-card liquid-lens">
-                <span className="text-[#A8A8A8] block text-[10px] font-bold uppercase tracking-wider">Pasal 1365 KUHPerdata</span>
-                <span className="font-extrabold text-[#F2F2F2] text-sm block mt-0.5">PMH (Onrechtmatige Daad)</span>
-                <span className="text-[#707070] block text-[11px] mt-1 font-normal">⟷ Tort / Negligence</span>
+                <span className="text-[#666666] dark:text-[#A8A8A8] block text-[10px] font-bold uppercase tracking-wider">Pasal 1365 KUHPerdata</span>
+                <span className="font-extrabold text-[#0A0A0A] dark:text-[#F2F2F2] text-sm block mt-0.5">PMH (Onrechtmatige Daad)</span>
+                <span className="text-[#555555] dark:text-[#707070] block text-[11px] mt-1 font-normal">⟷ Tort / Negligence</span>
               </div>
               <div className="p-4 lexa-card liquid-lens">
-                <span className="text-[#A8A8A8] block text-[10px] font-bold uppercase tracking-wider">Pasal 1320 KUHPerdata</span>
-                <span className="font-extrabold text-[#F2F2F2] text-sm block mt-0.5">Kausa yang Halal</span>
-                <span className="text-[#707070] block text-[11px] mt-1 font-normal">⟷ Consideration & Legality</span>
+                <span className="text-[#666666] dark:text-[#A8A8A8] block text-[10px] font-bold uppercase tracking-wider">Pasal 1320 KUHPerdata</span>
+                <span className="font-extrabold text-[#0A0A0A] dark:text-[#F2F2F2] text-sm block mt-0.5">Kausa yang Halal</span>
+                <span className="text-[#555555] dark:text-[#707070] block text-[11px] mt-1 font-normal">⟷ Consideration & Legality</span>
               </div>
             </div>
 
@@ -440,21 +440,21 @@ export const HeroSection: React.FC = () => {
 
       {/* 4. Document Library Preview */}
       <section id="section-documents-preview" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-8 pb-3 border-b border-white/[0.08]">
+        <div className="flex items-end justify-between mb-8 pb-3 border-b border-black/[0.08] dark:border-white/[0.08]">
           <div>
-            <span className="text-xs font-sans uppercase tracking-wider text-[#A8A8A8] block font-semibold">
+            <span className="text-xs font-sans uppercase tracking-wider text-[#555555] dark:text-[#A8A8A8] block font-semibold">
               DIGITAL LAW LIBRARY
             </span>
-            <h2 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#FFFFFF] tracking-[-0.03em] mt-1">
+            <h2 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#0A0A0A] dark:text-[#FFFFFF] tracking-[-0.03em] mt-1">
               Authentic Legal Documents for Study
             </h2>
           </div>
           <button
             onClick={() => setSelectedTab('documents')}
-            className="text-xs font-sans text-[#A8A8A8] font-medium hover:text-[#FFFFFF] flex items-center gap-1 cursor-pointer transition-colors"
+            className="text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium hover:text-[#000000] dark:hover:text-[#FFFFFF] flex items-center gap-1 cursor-pointer transition-colors"
           >
             <span>View All Documents</span>
-            <ArrowRight className="w-3.5 h-3.5 text-white" />
+            <ArrowRight className="w-3.5 h-3.5 text-[#0A0A0A] dark:text-white" />
           </button>
         </div>
 
@@ -473,26 +473,26 @@ export const HeroSection: React.FC = () => {
                   <span className="badge-accent text-[10px] font-sans font-medium uppercase px-2.5 py-0.5 tracking-wider">
                     {doc.documentType}
                   </span>
-                  <span className="text-[11px] font-sans text-[#707070] font-medium">
+                  <span className="text-[11px] font-sans text-[#666666] dark:text-[#707070] font-medium">
                     {doc.readingTimeMinutes} min read
                   </span>
                 </div>
 
-                <h3 className="font-sans font-bold text-base text-[#F2F2F2] group-hover:text-white mb-2 leading-snug transition-colors">
+                <h3 className="font-sans font-bold text-base text-[#0A0A0A] dark:text-[#F2F2F2] group-hover:text-black dark:group-hover:text-white mb-2 leading-snug transition-colors">
                   {doc.title}
                 </h3>
 
-                <p className="text-xs text-[#A8A8A8] font-sans leading-relaxed line-clamp-3 mb-4 font-normal">
+                <p className="text-xs text-[#555555] dark:text-[#A8A8A8] font-sans leading-relaxed line-clamp-3 mb-4 font-normal">
                   {languageMode === 'ID' ? doc.abstractId : doc.abstractEn}
                 </p>
 
-                <div className="text-[11px] font-sans text-[#707070] space-y-1 mb-4">
-                  <div><strong className="text-[#A8A8A8]">Jurisdiction:</strong> {doc.jurisdiction}</div>
-                  <div><strong className="text-[#A8A8A8]">Governing Law:</strong> {doc.governingLaw}</div>
+                <div className="text-[11px] font-sans text-[#666666] dark:text-[#707070] space-y-1 mb-4">
+                  <div><strong className="text-[#111111] dark:text-[#A8A8A8]">Jurisdiction:</strong> {doc.jurisdiction}</div>
+                  <div><strong className="text-[#111111] dark:text-[#A8A8A8]">Governing Law:</strong> {doc.governingLaw}</div>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#A8A8A8] font-medium group-hover:text-white">
+              <div className="pt-4 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium group-hover:text-black dark:group-hover:text-white">
                 <span>Read & Annotate</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </div>

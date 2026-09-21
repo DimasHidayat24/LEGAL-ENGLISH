@@ -70,12 +70,32 @@ const StudyContext = createContext<StudyContextType | undefined>(undefined);
 export const StudyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setThemeState] = useState<ThemeMode>(() => {
     try {
-      localStorage.setItem(THEME_STORAGE_KEY, 'dark');
+      const stored = localStorage.getItem(THEME_STORAGE_KEY);
+      if (stored === 'light' || stored === 'dark') {
+        return stored;
+      }
+      if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        return 'light';
+      }
     } catch (e) {
-      console.warn('Failed to set dark theme preference:', e);
+      console.warn('Failed to read theme preference:', e);
     }
     return 'dark';
   });
+
+  // Listen to OS system color-scheme changes (light/dark)
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
+    const handleSystemChange = (e: MediaQueryListEvent) => {
+      const stored = localStorage.getItem(THEME_STORAGE_KEY);
+      if (!stored || stored === 'system') {
+        setThemeState(e.matches ? 'light' : 'dark');
+      }
+    };
+    mediaQuery.addEventListener('change', handleSystemChange);
+    return () => mediaQuery.removeEventListener('change', handleSystemChange);
+  }, []);
 
   const [languageMode, setLanguageMode] = useState<LanguageMode>('EN');
   const [studyState, setStudyState] = useState<UserStudyState>(() => {
@@ -118,10 +138,12 @@ export const StudyProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       root.classList.add('light');
       root.classList.remove('dark');
       root.setAttribute('data-theme', 'light');
+      root.style.colorScheme = 'light';
     } else {
       root.classList.add('dark');
       root.classList.remove('light');
       root.setAttribute('data-theme', 'dark');
+      root.style.colorScheme = 'dark';
     }
   }, [theme]);
 

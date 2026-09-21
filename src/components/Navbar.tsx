@@ -118,14 +118,14 @@ export const Navbar: React.FC = () => {
             {/* Top specular reflection hairline */}
             <div className={`absolute top-0 inset-x-6 h-[1px] ${
               theme === 'dark'
-                ? 'bg-gradient-to-r from-transparent via-white/35 to-transparent'
-                : 'bg-gradient-to-r from-transparent via-white/95 to-transparent'
+                ? 'bg-gradient-to-r from-transparent via-white/20 to-transparent'
+                : 'bg-gradient-to-r from-transparent via-white/50 to-transparent'
             }`} />
             {/* Volumetric upper refraction sheen */}
             <div className={`absolute top-0 inset-x-0 h-1/2 rounded-t-full ${
               theme === 'dark'
-                ? 'bg-gradient-to-b from-white/[0.08] via-white/[0.015] to-transparent'
-                : 'bg-gradient-to-b from-white/[0.45] via-white/[0.08] to-transparent'
+                ? 'bg-gradient-to-b from-white/[0.04] via-white/[0.005] to-transparent'
+                : 'bg-gradient-to-b from-white/[0.12] via-white/[0.02] to-transparent'
             }`} />
           </div>
 
@@ -255,13 +255,13 @@ export const Navbar: React.FC = () => {
           <div className="absolute inset-0 rounded-full pointer-events-none overflow-hidden" aria-hidden="true">
             <div className={`absolute top-0 inset-x-4 h-[1px] ${
               theme === 'dark'
-                ? 'bg-gradient-to-r from-transparent via-white/35 to-transparent'
-                : 'bg-gradient-to-r from-transparent via-white/95 to-transparent'
+                ? 'bg-gradient-to-r from-transparent via-white/20 to-transparent'
+                : 'bg-gradient-to-r from-transparent via-white/50 to-transparent'
             }`} />
             <div className={`absolute top-0 inset-x-0 h-1/2 rounded-t-full ${
               theme === 'dark'
-                ? 'bg-gradient-to-b from-white/[0.08] via-white/[0.015] to-transparent'
-                : 'bg-gradient-to-b from-white/[0.45] via-white/[0.08] to-transparent'
+                ? 'bg-gradient-to-b from-white/[0.04] via-white/[0.005] to-transparent'
+                : 'bg-gradient-to-b from-white/[0.12] via-white/[0.02] to-transparent'
             }`} />
           </div>
 
@@ -358,8 +358,8 @@ export const Navbar: React.FC = () => {
             ref={mobileMenuRef}
             className={`relative z-10 w-full max-w-sm mx-auto rounded-3xl p-5 space-y-4 border ${
               theme === 'dark'
-                ? 'backdrop-blur-2xl bg-[#0C0C0C]/96 border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.7),inset_0_1.5px_1px_rgba(255,255,255,0.1)]'
-                : 'bg-[#FFFFFF] border-black/10 shadow-[0_20px_50px_rgba(0,0,0,0.18)]'
+                ? 'backdrop-blur-2xl bg-[#0E0E0E]/90 border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6),inset_0_1.5px_1px_rgba(255,255,255,0.08)]'
+                : 'backdrop-blur-2xl bg-white/85 border-white/70 shadow-[0_20px_50px_rgba(0,0,0,0.10),inset_0_1.5px_1px_rgba(255,255,255,0.9)]'
             }`}
           >
             {/* Sheet Header */}

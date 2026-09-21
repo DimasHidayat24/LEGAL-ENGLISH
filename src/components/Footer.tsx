@@ -1,17 +1,31 @@
 import React from 'react';
 import { useStudy } from '../context/StudyContext';
-import { Shield } from 'lucide-react';
+import { Shield, Sun, Moon } from 'lucide-react';
+import { AnimatedNavyWaveHeroBackground } from './AnimatedNavyWaveHeroBackground';
 
 export const Footer: React.FC = () => {
-  const { setSelectedTab, theme } = useStudy();
+  const { setSelectedTab, theme, setTheme } = useStudy();
 
   return (
-    <footer className={`backdrop-blur-xl border-t mt-24 transition-colors duration-300 ${
+    <footer className={`relative overflow-hidden border-t mt-24 transition-colors duration-300 ${
       theme === 'dark' 
-        ? 'bg-[#080808]/95 text-[#A8A8A8] border-white/[0.08]' 
-        : 'bg-[#FAFAFA]/95 text-[#555555] border-black/[0.08]'
+        ? 'border-white/[0.08] bg-[#050505]' 
+        : 'border-black/[0.08] bg-[#F5F5F5]'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+      {/* Animated Navy Wave Background System identical to Hero Section */}
+      <AnimatedNavyWaveHeroBackground theme={theme} />
+
+      {/* Atmospheric scrim to ensure text remains crisp and highly legible over the wave */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-[1] transition-opacity duration-300"
+        style={{
+          background: theme === 'light'
+            ? 'radial-gradient(ellipse 95% 85% at 50% 50%, rgba(247, 247, 247, 0.82) 0%, rgba(247, 247, 247, 0.94) 100%)'
+            : 'radial-gradient(ellipse 95% 85% at 50% 50%, rgba(5, 5, 5, 0.78) 0%, rgba(5, 5, 5, 0.92) 100%)'
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Column 1: Identity & Philosophy */}
           <div className="md:col-span-1 space-y-4">
@@ -132,7 +146,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Legal Notice */}
         <div className={`mt-12 pt-6 border-t flex flex-col sm:flex-row items-center justify-between text-[11px] font-sans gap-4 ${
-          theme === 'dark' ? 'border-white/[0.08] text-[#707070]' : 'border-black/[0.08] text-[#888888]'
+          theme === 'dark' ? 'border-white/[0.08] text-[#707070]' : 'border-black/[0.08] text-[#666666]'
         }`}>
           <p>© {new Date().getFullYear()} LEXA Platform. For educational and professional development purposes.</p>
           <div className="flex items-center gap-6">
@@ -142,6 +156,34 @@ export const Footer: React.FC = () => {
             <button onClick={() => setSelectedTab('insights')} className="hover:text-black dark:hover:text-white underline cursor-pointer transition-colors">
               Legal Insights Journal
             </button>
+
+            {/* Discreet Theme Switcher in Footer */}
+            <div className="flex items-center border rounded-full p-0.5 border-black/10 dark:border-white/10 bg-black/[0.03] dark:bg-white/[0.04]">
+              <button
+                onClick={() => setTheme('light')}
+                title="Switch to Light Appearance"
+                className={`px-2 py-1 rounded-full flex items-center gap-1 text-[10px] font-medium transition-colors cursor-pointer ${
+                  theme === 'light'
+                    ? 'bg-white text-black shadow-xs font-semibold'
+                    : 'text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-white'
+                }`}
+              >
+                <Sun className="w-3 h-3" />
+                <span>Light</span>
+              </button>
+              <button
+                onClick={() => setTheme('dark')}
+                title="Switch to Dark Appearance"
+                className={`px-2 py-1 rounded-full flex items-center gap-1 text-[10px] font-medium transition-colors cursor-pointer ${
+                  theme === 'dark'
+                    ? 'bg-[#222222] text-white shadow-xs font-semibold'
+                    : 'text-neutral-500 hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-white'
+                }`}
+              >
+                <Moon className="w-3 h-3" />
+                <span>Dark</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
