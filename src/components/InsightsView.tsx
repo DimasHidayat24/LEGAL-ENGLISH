@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useStudy } from '../context/StudyContext';
 import { editorialArticlesList } from '../data/articlesData';
-import { Clock, Calendar, ArrowRight, Feather, CheckCircle2 } from 'lucide-react';
+import { Clock, Calendar, ArrowRight, Feather, CheckCircle2, Globe, BookOpen } from 'lucide-react';
+import { GroundedLegalSearch } from './GroundedLegalSearch';
 
 export const InsightsView: React.FC = () => {
   const { activeArticleId, setSelectedTab } = useStudy();
   
   const [selectedArticleId, setSelectedArticleId] = useState<string>(activeArticleId || editorialArticlesList[0].id);
+  const [activeTabMode, setActiveTabMode] = useState<'essays' | 'searchGrounding'>('essays');
 
   const activeArticle = editorialArticlesList.find(a => a.id === selectedArticleId) || editorialArticlesList[0];
 
@@ -15,21 +17,60 @@ export const InsightsView: React.FC = () => {
       
       {/* Header */}
       <div className="border-b border-white/[0.08] pb-6">
-        <div className="flex items-center gap-2 mb-1.5">
-          <Feather className="w-4 h-4 text-white" />
-          <span className="text-[11px] font-sans tracking-widest uppercase text-white font-semibold">
-            LEXA EDITORIAL JOURNAL
-          </span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <Feather className="w-4 h-4 text-white" />
+              <span className="text-[11px] font-sans tracking-widest uppercase text-white font-semibold">
+                LEXA EDITORIAL &amp; RESEARCH JOURNAL
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#F2F2F2] tracking-tight">
+              Legal English Insights &amp; Live Research
+            </h1>
+            <p className="text-sm sm:text-base text-[#A8A8A8] font-sans mt-2 max-w-3xl leading-relaxed">
+              Scholarly essays, linguistic analyses, and live legal research grounded in Indonesian statutory frameworks and Mahkamah Agung jurisprudence.
+            </p>
+          </div>
+
+          {/* Mode Switcher */}
+          <div className="flex items-center gap-2 bg-[#121212] p-1.5 rounded-full border border-white/[0.08] shrink-0">
+            <button
+              onClick={() => setActiveTabMode('essays')}
+              className={`px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTabMode === 'essays'
+                  ? 'bg-white text-black shadow-xs'
+                  : 'text-[#A8A8A8] hover:text-white'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Editorial Essays</span>
+            </button>
+            <button
+              onClick={() => setActiveTabMode('searchGrounding')}
+              className={`px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTabMode === 'searchGrounding'
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'text-[#A8A8A8] hover:text-white'
+              }`}
+            >
+              <Globe className="w-3.5 h-3.5 text-[#93C5FD]" />
+              <span>Live Legal Research</span>
+            </button>
+          </div>
         </div>
-        <h1 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#F2F2F2] tracking-tight">
-          Legal English Insights & Articles
-        </h1>
-        <p className="text-sm sm:text-base text-[#A8A8A8] font-sans mt-2 max-w-3xl leading-relaxed">
-          Scholarly essays, linguistic analyses, and drafting guides exploring the philosophy, traps, and precision demands of transnational law practice.
-        </p>
       </div>
 
-      {/* Main Grid: Articles Menu (4 cols) + Editorial Article Reader (8 cols) */}
+      {activeTabMode === 'searchGrounding' ? (
+        <div className="space-y-6">
+          <GroundedLegalSearch
+            title="Transnational Legal Intelligence Terminal"
+            subtitle="Explore real-time Indonesian Supreme Court (Mahkamah Agung) jurisprudence, regulatory frameworks, SIAC international arbitration awards, and comparative contract doctrine."
+            category="Indonesian & Transnational Commercial Law"
+          />
+        </div>
+      ) : (
+      /* Main Grid: Articles Menu (4 cols) + Editorial Article Reader (8 cols) */
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left Column: Article List */}
@@ -151,6 +192,17 @@ export const InsightsView: React.FC = () => {
             })}
           </div>
 
+          {/* Article-Specific Legal Research Grounding */}
+          <div className="pt-6 border-t border-white/[0.08]">
+            <GroundedLegalSearch
+              initialQuery={`What are the recent Indonesian Supreme Court decisions and contemporary legal practice regarding: "${activeArticle.title}"?`}
+              category={activeArticle.category}
+              compact={true}
+              title={`Live Research: ${activeArticle.title}`}
+              subtitle="Query Indonesian case law, commentary, and statutory references matching this essay."
+            />
+          </div>
+
           {/* Footer of Article */}
           <div className="pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-xs font-sans text-[#A8A8A8]">
@@ -168,6 +220,7 @@ export const InsightsView: React.FC = () => {
         </div>
 
       </div>
+      )}
 
     </div>
   );

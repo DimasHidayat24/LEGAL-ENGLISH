@@ -20,8 +20,10 @@ import {
   Copy,
   Check,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Globe
 } from 'lucide-react';
+import { GroundedLegalSearch } from './GroundedLegalSearch';
 
 export const TermDetailModal: React.FC = () => {
   const { 
@@ -38,7 +40,7 @@ export const TermDetailModal: React.FC = () => {
 
   const [personalNoteInput, setPersonalNoteInput] = useState<string>('');
   const [isEditingNote, setIsEditingNote] = useState<boolean>(false);
-  const [activeContextTab, setActiveContextTab] = useState<'contracts' | 'courtDecisions' | 'legalOpinions'>('contracts');
+  const [activeContextTab, setActiveContextTab] = useState<'contracts' | 'courtDecisions' | 'legalOpinions' | 'groundedSearch'>('contracts');
   const [modalAccent, setModalAccent] = useState<SpeechAccent>('en-US');
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
@@ -391,19 +393,42 @@ export const TermDetailModal: React.FC = () => {
                   <FileCode className="w-3 h-3" />
                   Legal Opinions
                 </button>
+                <button
+                  onClick={() => setActiveContextTab('groundedSearch')}
+                  className={`px-3 py-1 text-xs font-sans rounded-full cursor-pointer flex items-center gap-1.5 transition-all ${
+                    activeContextTab === 'groundedSearch'
+                      ? 'bg-[#1D2B45] text-[#93C5FD] font-semibold border border-blue-500/30 shadow-xs'
+                      : 'text-white/60 dark:text-white/60 text-black/60 hover:text-white dark:hover:text-white hover:text-black'
+                  }`}
+                >
+                  <Globe className="w-3 h-3 text-[#5A9EFE]" />
+                  Research Grounding
+                </button>
               </div>
 
-              <div className="text-xs sm:text-sm font-serif text-[#F2F2F2] dark:text-[#F2F2F2] text-[#151515] bg-black/25 dark:bg-black/35 bg-black/[0.03] p-3 rounded-xl leading-[1.7] border border-white/[0.06] dark:border-white/[0.06] border-black/[0.05]">
-                {activeContextTab === 'contracts' && (
-                  <p>{term.contextExamples.contracts || 'Standard operational covenants and warranty provisions.'}</p>
-                )}
-                {activeContextTab === 'courtDecisions' && (
-                  <p>{term.contextExamples.courtDecisions || 'Judicial interpretation and standard of review applied by appellate tribunals.'}</p>
-                )}
-                {activeContextTab === 'legalOpinions' && (
-                  <p>{term.contextExamples.legalOpinions || 'Comparative regulatory structuring and foreign investment risk qualification.'}</p>
-                )}
-              </div>
+              {activeContextTab === 'groundedSearch' ? (
+                <div className="pt-1">
+                  <GroundedLegalSearch
+                    initialTerm={term.term}
+                    category="Mahkamah Agung Jurisprudence & Practice"
+                    compact={true}
+                    title={`Live Research: ${term.term}`}
+                    subtitle="Grounded legal analysis with gemini-3.8-flash examining Indonesian Supreme Court precedents, statutory frameworks, and contract practice."
+                  />
+                </div>
+              ) : (
+                <div className="text-xs sm:text-sm font-serif text-[#F2F2F2] dark:text-[#F2F2F2] text-[#151515] bg-black/25 dark:bg-black/35 bg-black/[0.03] p-3 rounded-xl leading-[1.7] border border-white/[0.06] dark:border-white/[0.06] border-black/[0.05]">
+                  {activeContextTab === 'contracts' && (
+                    <p>{term.contextExamples.contracts || 'Standard operational covenants and warranty provisions.'}</p>
+                  )}
+                  {activeContextTab === 'courtDecisions' && (
+                    <p>{term.contextExamples.courtDecisions || 'Judicial interpretation and standard of review applied by appellate tribunals.'}</p>
+                  )}
+                  {activeContextTab === 'legalOpinions' && (
+                    <p>{term.contextExamples.legalOpinions || 'Comparative regulatory structuring and foreign investment risk qualification.'}</p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

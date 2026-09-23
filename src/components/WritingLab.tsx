@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { writingModulesList } from '../data/writingData';
 import { PenTool, Copy, Check, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
+import { GroundedLegalSearch } from './GroundedLegalSearch';
 
 export const WritingLab: React.FC = () => {
   const [selectedModuleId, setSelectedModuleId] = useState<string>(writingModulesList[0].id);
@@ -265,6 +266,17 @@ export const WritingLab: React.FC = () => {
           </div>
         </div>
 
+      </div>
+
+      {/* Live Grounding for Drafting Verification */}
+      <div className="pt-6 border-t border-white/[0.08]">
+        <GroundedLegalSearch
+          initialQuery={`What are the current Indonesian statutory requirements and international best practices for drafting a "${activeModule.title}"?`}
+          category="Legal Drafting & Regulatory Verification"
+          compact={false}
+          title={`Live Drafting Benchmark: ${activeModule.documentType}`}
+          subtitle="Ground your legal drafting with real-time statutory references and market standard phrasing using gemini-3.8-flash."
+        />
       </div>
 
     </div>
