@@ -302,7 +302,7 @@ export const MyStudyDashboard: React.FC = () => {
                         <p className="font-sans font-bold text-sm text-[#F2F2F2]">
                           {term.indonesianMeaning}
                         </p>
-                        <p className="text-xs text-[#A8A8A8] mt-0.5 line-clamp-2 font-sans">
+                        <p className="text-xs text-[#A8A8A8] mt-0.5 leading-relaxed font-sans">
                           {term.indonesianLegalConcept}
                         </p>
                       </div>

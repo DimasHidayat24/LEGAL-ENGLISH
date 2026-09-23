@@ -116,7 +116,7 @@ export const VocabularyDictionary: React.FC = () => {
           </span>
         </div>
         <h1 className="text-2xl sm:text-4xl font-sans font-extrabold text-white tracking-tight">
-          Legal English Lexicon & Knowledge Graph
+          Legal English & Knowledge Graph
         </h1>
         <p className="text-sm sm:text-base text-[#A8A8A8] font-sans mt-2 max-w-4xl leading-relaxed">
           The definitive Legal English dictionary crafted for Indonesian law students and practitioners. Explore common law terminology, drafting connectors, procedural concepts, and precise civil law / KUHPerdata conceptual mappings.
@@ -354,7 +354,7 @@ export const VocabularyDictionary: React.FC = () => {
                     </div>
 
                     {/* Term Title */}
-                    <h3 className="font-sans font-extrabold text-xl text-white group-hover:text-[#DCDCDC] transition-colors pt-1">
+                    <h3 className="font-sans font-extrabold text-xl sm:text-2xl text-white dark:text-white text-black group-hover:text-[#DCDCDC] dark:group-hover:text-[#DCDCDC] group-hover:text-black/80 transition-colors pt-1.5 break-words leading-tight">
                       {term.term}
                     </h3>
                   </div>
@@ -381,94 +381,89 @@ export const VocabularyDictionary: React.FC = () => {
                       }}
                       className={`min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] p-2 border transition-all cursor-pointer rounded-full flex items-center justify-center ${
                         isSaved
-                          ? 'bg-[#242424] text-white border-white/20 shadow-xs'
-                          : 'bg-[#151515] text-[#A8A8A8] border-white/[0.08] hover:text-white hover:bg-[#1C1C1C]'
+                          ? 'bg-[#242424] dark:bg-[#242424] bg-black/[0.12] text-white dark:text-white text-black border-white/20 dark:border-white/20 border-black/15 shadow-xs'
+                          : 'bg-[#151515] dark:bg-[#151515] bg-black/[0.04] text-[#A8A8A8] dark:text-[#A8A8A8] text-black/70 border-white/[0.08] dark:border-white/[0.08] border-black/[0.08] hover:text-white dark:hover:text-white hover:text-black hover:bg-[#1C1C1C] dark:hover:bg-[#1C1C1C] hover:bg-black/[0.08]'
                       }`}
                       aria-label={isSaved ? `Remove ${term.term} from saved terms` : `Save ${term.term} to My Study`}
                       title={isSaved ? "Saved to My Study" : "Save to My Study"}
                     >
-                      {isSaved ? <BookmarkCheck className="w-3.5 h-3.5 text-[#DCDCDC]" /> : <Bookmark className="w-3.5 h-3.5" />}
+                      {isSaved ? <BookmarkCheck className="w-3.5 h-3.5 text-[#DCDCDC] dark:text-[#DCDCDC] text-black" /> : <Bookmark className="w-3.5 h-3.5" />}
                     </button>
                   </div>
                 </div>
 
                 {/* Phonetic Pronunciation IPA */}
                 {term.pronunciation && (
-                  <div className="text-xs font-mono font-medium text-[#A8A8A8] tracking-wide mb-2.5">
+                  <div className="text-xs font-mono font-medium text-[#A8A8A8] dark:text-[#A8A8A8] text-black/60 tracking-wide mb-3">
                     {term.pronunciation}
                   </div>
                 )}
 
                 {/* Indonesian Meaning & Concept */}
-                <div className="p-3.5 rounded-2xl bg-[#0C0C0C] border border-white/[0.08] mb-3 space-y-1">
-                  <p className="font-sans font-bold text-sm text-[#F2F2F2]">
+                <div className="p-4 rounded-2xl bg-[#0C0C0C] dark:bg-[#0C0C0C] bg-black/[0.03] border border-white/[0.08] dark:border-white/[0.08] border-black/[0.06] mb-3.5 space-y-1.5">
+                  <p className="font-sans font-bold text-sm sm:text-base text-[#F2F2F2] dark:text-[#F2F2F2] text-[#111111] leading-snug">
                     {term.indonesianMeaning}
                   </p>
-                  <p className="text-xs text-[#A8A8A8] leading-snug line-clamp-2 font-sans">
+                  <p className="text-xs sm:text-[13px] text-[#A8A8A8] dark:text-[#A8A8A8] text-black/75 leading-relaxed font-sans">
                     {term.indonesianLegalConcept}
                   </p>
                 </div>
 
                 {/* Conceptual Distinction Banner if applicable */}
                 {term.isDistinctConcept && (
-                  <div className="mb-3 p-2.5 rounded-xl bg-[#151515] border border-white/[0.08] flex items-start gap-2 text-xs">
-                    <AlertTriangle className="w-3.5 h-3.5 text-[#DCDCDC] shrink-0 mt-0.5" />
-                    <div className="text-[11px] text-[#A8A8A8] leading-tight font-sans">
-                      <span className="font-bold text-white">Distinct Concept:</span> No exact civil law equivalent.
+                  <div className="mb-3.5 p-3 rounded-xl bg-[#151515] dark:bg-[#151515] bg-black/[0.04] border border-white/[0.08] dark:border-white/[0.08] border-black/[0.06] flex items-start gap-2.5 text-xs">
+                    <AlertTriangle className="w-3.5 h-3.5 text-[#DCDCDC] dark:text-[#DCDCDC] text-black/70 shrink-0 mt-0.5" />
+                    <div className="text-xs text-[#A8A8A8] dark:text-[#A8A8A8] text-black/75 leading-relaxed font-sans">
+                      <span className="font-bold text-white dark:text-white text-black">Distinct Concept:</span> No exact civil law equivalent.
                     </div>
                   </div>
                 )}
 
                 {/* Plain English & Black's Law Summary */}
-                <div className="text-xs text-[#A8A8A8] font-sans leading-relaxed line-clamp-2 mb-3">
-                  <strong className="text-white font-semibold">Plain English:</strong> {term.plainEnglish || term.legalDefinition}
+                <div className="text-xs sm:text-[13px] text-[#A8A8A8] dark:text-[#A8A8A8] text-black/75 font-sans leading-relaxed mb-3.5">
+                  <strong className="text-white dark:text-white text-black font-semibold">Plain English:</strong> {term.plainEnglish || term.legalDefinition}
                 </div>
 
                 {/* Context Clause / Example Preview */}
                 {(term.authenticClauseExcerpt || term.exampleSentenceEn) && (
-                  <div className="text-xs font-serif italic text-[#A8A8A8] line-clamp-2 mb-3 pl-2.5 border-l-2 border-white/20 bg-[#0C0C0C] py-1.5 pr-2 rounded-r-xl">
+                  <div className="text-xs sm:text-[13px] font-serif italic text-[#DCDCDC] dark:text-[#DCDCDC] text-black/85 mb-3.5 pl-3.5 border-l-2 border-white/30 dark:border-white/30 border-black/30 bg-[#0C0C0C] dark:bg-[#0C0C0C] bg-black/[0.03] py-2.5 pr-3 rounded-r-xl leading-relaxed break-words">
                     &ldquo;{term.authenticClauseExcerpt || term.exampleSentenceEn}&rdquo;
                   </div>
                 )}
 
                 {/* Common Collocations preview */}
                 {term.commonCollocations && term.commonCollocations.length > 0 && (
-                  <div className="mb-3">
-                    <span className="text-[10px] font-sans text-[#707070] font-medium block mb-1">Common Collocations:</span>
-                    <div className="flex flex-wrap gap-1">
-                      {term.commonCollocations.slice(0, 3).map((col, idx) => (
-                        <span key={idx} className="text-[10px] font-sans px-2.5 py-0.5 bg-[#0C0C0C] border border-white/[0.08] text-[#A8A8A8] rounded-full font-normal">
+                  <div className="mb-3.5">
+                    <span className="text-[10px] font-sans uppercase tracking-wider text-[#707070] dark:text-[#707070] text-black/50 font-semibold block mb-1.5">Common Collocations:</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {term.commonCollocations.map((col, idx) => (
+                        <span key={idx} className="text-[11px] font-sans px-2.5 py-1 bg-[#0C0C0C] dark:bg-[#0C0C0C] bg-black/[0.04] border border-white/[0.08] dark:border-white/[0.08] border-black/[0.06] text-[#A8A8A8] dark:text-[#A8A8A8] text-black/80 rounded-full font-normal">
                           {col}
                         </span>
                       ))}
-                      {term.commonCollocations.length > 3 && (
-                        <span className="text-[10px] font-sans text-[#707070] px-1 py-0.5">
-                          +{term.commonCollocations.length - 3} more
-                        </span>
-                      )}
                     </div>
                   </div>
                 )}
               </div>
 
               {/* Footer */}
-              <div className="pt-3 border-t border-white/[0.08] space-y-2">
+              <div className="pt-3.5 border-t border-white/[0.08] dark:border-white/[0.08] border-black/[0.06] space-y-2 mt-auto">
                 {/* Connected Document link if present */}
                 {term.connectedDocIds && term.connectedDocIds.length > 0 && (
-                  <div className="flex items-center gap-1.5 text-[11px] font-sans text-[#707070]">
-                    <FileText className="w-3 h-3 text-[#DCDCDC] shrink-0" />
-                    <span className="truncate text-[#A8A8A8]">
+                  <div className="flex items-center gap-1.5 text-xs font-sans text-[#707070] dark:text-[#707070] text-black/60">
+                    <FileText className="w-3.5 h-3.5 text-[#DCDCDC] dark:text-[#DCDCDC] text-black/70 shrink-0" />
+                    <span className="text-[#A8A8A8] dark:text-[#A8A8A8] text-black/70 break-words">
                       In: {term.connectedDocIds[0].title}
                     </span>
                   </div>
                 )}
 
-                <div className="flex items-center justify-between text-xs font-sans text-[#A8A8A8]">
-                  <span className="text-[10px] text-[#707070] italic line-clamp-1 max-w-[170px]">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-sans text-[#A8A8A8] dark:text-[#A8A8A8] text-black/70">
+                  <span className="text-xs text-[#A8A8A8] dark:text-[#A8A8A8] text-black/60 italic leading-snug">
                     {term.civilLawEquivalent || 'KUHPerdata mapping'}
                   </span>
-                  <span className="font-bold flex items-center gap-1 group-hover:text-white text-[#F2F2F2]">
-                    Inspect Entry <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                  <span className="font-bold flex items-center gap-1 group-hover:text-white dark:group-hover:text-white group-hover:text-black text-[#F2F2F2] dark:text-[#F2F2F2] text-black shrink-0 ml-auto">
+                    Inspect Entry <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </div>
               </div>
