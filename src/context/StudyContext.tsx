@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { LanguageMode, ThemeMode, SavedTermRecord, UserStudyState, ExamResultRecord } from '../types';
-import { legalVocabularyList } from '../data/vocabularyData';
 
 interface StudyContextType {
   theme: ThemeMode;
@@ -42,6 +41,14 @@ interface StudyContextType {
 }
 
 const STORAGE_KEY = 'lexa_study_state_v1';
+
+export const VALID_TABS = ['home', 'learn', 'documents', 'vocabulary', 'comparative', 'practice', 'write', 'insights', 'mystudy'];
+
+function readTabFromHash(): string {
+  if (typeof window === 'undefined') return 'home';
+  const raw = window.location.hash.replace(/^#\/?/, '').split(/[/?]/)[0].toLowerCase();
+  return VALID_TABS.includes(raw) ? raw : 'home';
+}
 const THEME_STORAGE_KEY = 'lexa_theme_mode';
 
 const initialStudyState: UserStudyState = {
@@ -68,34 +75,18 @@ const initialStudyState: UserStudyState = {
 const StudyContext = createContext<StudyContextType | undefined>(undefined);
 
 export const StudyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  // Light is the default theme; a saved choice (light/dark) always wins.
   const [theme, setThemeState] = useState<ThemeMode>(() => {
     try {
       const stored = localStorage.getItem(THEME_STORAGE_KEY);
       if (stored === 'light' || stored === 'dark') {
         return stored;
       }
-      if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-        return 'light';
-      }
     } catch (e) {
       console.warn('Failed to read theme preference:', e);
     }
-    return 'dark';
+    return 'light';
   });
-
-  // Listen to OS system color-scheme changes (light/dark)
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return;
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
-    const handleSystemChange = (e: MediaQueryListEvent) => {
-      const stored = localStorage.getItem(THEME_STORAGE_KEY);
-      if (!stored || stored === 'system') {
-        setThemeState(e.matches ? 'light' : 'dark');
-      }
-    };
-    mediaQuery.addEventListener('change', handleSystemChange);
-    return () => mediaQuery.removeEventListener('change', handleSystemChange);
-  }, []);
 
   const [languageMode, setLanguageMode] = useState<LanguageMode>('EN');
   const [studyState, setStudyState] = useState<UserStudyState>(() => {
@@ -112,7 +103,29 @@ export const StudyProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [activeLookupTermId, setActiveLookupTermId] = useState<string | null>(null);
-  const [selectedTab, setSelectedTab] = useState<string>('home');
+  const [selectedTab, setSelectedTabState] = useState<string>(() => readTabFromHash());
+
+  // Hash routing (#/learn, #/documents …) — no router dependency, works from file://
+  const setSelectedTab = (tab: string) => {
+    const target = VALID_TABS.includes(tab) ? tab : 'home';
+    setSelectedTabState(target);
+    const nextHash = target === 'home' ? '#/' : `#/${target}`;
+    const current = typeof window !== 'undefined' ? window.location.hash : '';
+    const alreadyThere = target === 'home' ? current === '#/' : (current === nextHash || current.startsWith(`${nextHash}/`));
+    if (typeof window !== 'undefined' && !alreadyThere) {
+      window.history.pushState(null, '', nextHash);
+    }
+  };
+
+  useEffect(() => {
+    const onRoute = () => setSelectedTabState(readTabFromHash());
+    window.addEventListener('popstate', onRoute);
+    window.addEventListener('hashchange', onRoute);
+    return () => {
+      window.removeEventListener('popstate', onRoute);
+      window.removeEventListener('hashchange', onRoute);
+    };
+  }, []);
   const [activeDocId, setActiveDocId] = useState<string | null>(null);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [activeArticleId, setActiveArticleId] = useState<string | null>(null);
