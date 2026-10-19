@@ -139,7 +139,7 @@ export const TermDetailModal: React.FC = () => {
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/40 dark:bg-black/40 bg-black/20 backdrop-blur-md transition-opacity duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/40 backdrop-blur-md transition-opacity duration-200"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           setActiveLookupTermId(null);
@@ -147,64 +147,56 @@ export const TermDetailModal: React.FC = () => {
       }}
     >
       <div 
-        className="liquid-glass-modal text-[#F2F2F2] dark:text-[#F2F2F2] text-[#111111] w-full max-w-3xl max-h-[92vh] sm:max-h-[88vh] flex flex-col rounded-2xl sm:rounded-3xl overflow-hidden relative animate-in fade-in zoom-in-95 duration-200"
+        className="liquid-glass-modal text-ink w-full max-w-3xl max-h-[92vh] sm:max-h-[88vh] flex flex-col rounded-2xl sm:rounded-2xl overflow-hidden relative animate-in fade-in zoom-in-95 duration-200"
         role="dialog"
         aria-modal="true"
         aria-labelledby="term-detail-title"
       >
-        {/* Optical Liquid Specular Sheen (matching navigation bar) */}
-        <div className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none overflow-hidden z-30" aria-hidden="true">
-          <div className={`absolute top-0 inset-x-8 h-[1px] ${
-            theme === 'dark'
-              ? 'bg-gradient-to-r from-transparent via-white/25 to-transparent'
-              : 'bg-gradient-to-r from-transparent via-white/60 to-transparent'
-          }`} />
-          <div className={`absolute top-0 inset-x-0 h-1/4 rounded-t-2xl sm:rounded-t-3xl ${
-            theme === 'dark'
-              ? 'bg-gradient-to-b from-white/[0.04] via-white/[0.005] to-transparent'
-              : 'bg-gradient-to-b from-white/[0.15] via-white/[0.02] to-transparent'
-          }`} />
-        </div>
-
         {/* Pinned / Sticky Header Bar */}
-        <header className="flex-shrink-0 border-b border-white/[0.08] dark:border-white/[0.08] border-black/[0.06] bg-white/[0.03] dark:bg-white/[0.03] bg-white/40 backdrop-blur-xl z-20 px-5 sm:px-7 py-4 sm:py-5">
+        <header className="flex-shrink-0 border-b border-line bg-surface z-20 px-5 sm:px-7 py-4 sm:py-5">
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-2 min-w-0">
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[10px] font-sans font-semibold tracking-wider uppercase px-2.5 py-0.5 bg-white/[0.08] dark:bg-white/[0.08] bg-black/[0.05] text-white dark:text-white text-black/90 border border-white/10 dark:border-white/10 border-black/[0.08] rounded-full">
-                  {term.category}
-                </span>
-                {term.termType && (
-                  <span className="text-[10px] font-sans font-semibold px-2.5 py-0.5 bg-white/[0.05] dark:bg-white/[0.05] bg-black/[0.04] text-[#A8A8A8] dark:text-[#A8A8A8] text-black/70 border border-white/10 dark:border-white/10 border-black/[0.08] rounded-full">
+                {term.category?.trim() && (
+                  <span className="text-xs font-sans font-medium px-2.5 py-0.5 badge-accent rounded-full">
+                    {term.category}
+                  </span>
+                )}
+                {term.termType?.trim() && (
+                  <span className="text-[11px] font-sans font-semibold px-2.5 py-0.5 bg-surface-2 text-muted border border-line rounded-full">
                     {term.termType}
                   </span>
                 )}
-                {term.jurisdiction && (
-                  <span className="text-[10px] font-sans font-normal px-2.5 py-0.5 bg-white/[0.04] dark:bg-white/[0.04] bg-black/[0.03] text-[#A8A8A8] dark:text-[#A8A8A8] text-black/70 border border-white/10 dark:border-white/10 border-black/[0.08] rounded-full flex items-center gap-1">
-                    <Globe2 className="w-3 h-3 text-white/80 dark:text-white/80 text-black/70" />
+                {term.jurisdiction?.trim() && (
+                  <span className="text-[11px] font-sans font-normal px-2.5 py-0.5 bg-surface-2 text-muted border border-line rounded-full flex items-center gap-1">
+                    <Globe2 className="w-3 h-3 text-ink-2" />
                     {term.jurisdiction}
                   </span>
                 )}
-                <span className="text-[10px] font-sans text-[#707070] font-normal px-1">
-                  {term.partOfSpeech}
-                </span>
-                <span className="text-[10px] px-2.5 py-0.5 bg-white/[0.07] dark:bg-white/[0.07] bg-black/[0.04] text-white dark:text-white text-black/90 border border-white/10 dark:border-white/10 border-black/[0.08] font-sans font-semibold rounded-full">
-                  {term.difficulty}
-                </span>
+                {term.partOfSpeech?.trim() && (
+                  <span className="text-xs font-sans text-muted font-normal px-1">
+                    {term.partOfSpeech}
+                  </span>
+                )}
+                {term.difficulty?.trim() && (
+                  <span className="text-[11px] px-2.5 py-0.5 bg-surface-2 text-ink border border-line font-sans font-semibold rounded-full">
+                    {term.difficulty}
+                  </span>
+                )}
               </div>
 
               <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-0.5">
-                <h2 id="term-detail-title" className="text-xl sm:text-2xl md:text-3xl font-sans font-extrabold tracking-tight text-white dark:text-white text-black">
+                <h2 id="term-detail-title" className="text-xl sm:text-2xl md:text-3xl font-serif font-semibold tracking-tight text-ink">
                   {term.term}
                 </h2>
-                {term.pronunciation && (
-                  <span className="text-xs sm:text-sm font-mono font-medium text-white dark:text-white text-black bg-white/[0.06] dark:bg-white/[0.06] bg-black/[0.04] px-2.5 py-0.5 sm:py-1 rounded-full border border-white/10 dark:border-white/10 border-black/[0.08]">
+                {term.pronunciation?.trim() && (
+                  <span className="text-xs sm:text-sm font-mono font-medium text-ink bg-surface-2 px-2.5 py-0.5 sm:py-1 rounded-full border border-line">
                     {term.pronunciation}
                   </span>
                 )}
 
                 {/* Pronunciation Audio Button with Accent Selector */}
-                <div className="flex items-center gap-1 bg-white/[0.06] dark:bg-white/[0.06] bg-black/[0.04] p-0.5 sm:p-1 rounded-full border border-white/10 dark:border-white/10 border-black/[0.08]">
+                <div className="flex items-center gap-1 bg-surface-2 p-0.5 sm:p-1 rounded-full border border-line">
                   <AudioPronounceButton 
                     term={term.term}
                     accent={modalAccent}
@@ -214,7 +206,7 @@ export const TermDetailModal: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setModalAccent(prev => prev === 'en-US' ? 'en-GB' : 'en-US')}
-                    className="px-1.5 sm:px-2 py-0.5 text-[10px] font-sans font-bold text-white/90 dark:text-white/90 text-black/80 hover:text-white dark:hover:text-white hover:text-black cursor-pointer rounded-full"
+                    className="px-1.5 sm:px-2 py-0.5 text-[11px] font-sans font-bold text-ink hover:text-ink cursor-pointer rounded-full"
                     title="Toggle US / UK Accent"
                   >
                     {modalAccent === 'en-US' ? 'US' : 'UK'}
@@ -228,9 +220,9 @@ export const TermDetailModal: React.FC = () => {
               <button
                 onClick={handleCopyDefinition}
                 title="Copy Term & Definition to Clipboard"
-                className="px-2.5 sm:px-3 py-1.5 border transition-all flex items-center gap-1 text-xs font-sans cursor-pointer rounded-full shadow-xs bg-white/[0.06] dark:bg-white/[0.06] bg-black/[0.04] text-white/80 dark:text-white/80 text-black/80 border-white/10 dark:border-white/10 border-black/[0.08] hover:bg-white/[0.12] dark:hover:bg-white/[0.12] hover:bg-black/[0.08] hover:text-white dark:hover:text-white hover:text-black"
+                className="px-2.5 sm:px-3 py-1.5 border transition-all flex items-center gap-1 text-xs font-sans cursor-pointer rounded-full shadow-xs bg-surface-2 text-ink-2 border-line hover:bg-surface-3 hover:text-ink"
               >
-                {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {isCopied ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
                 <span className="hidden sm:inline">{isCopied ? 'Copied!' : 'Copy'}</span>
               </button>
 
@@ -240,21 +232,23 @@ export const TermDetailModal: React.FC = () => {
                 title={isSaved ? "Saved to My Lexicon" : "Save to My Lexicon"}
                 className={`px-2.5 sm:px-3.5 py-1.5 border transition-all flex items-center gap-1.5 text-xs font-sans cursor-pointer rounded-full shadow-xs ${
                   isSaved 
-                    ? 'bg-white/[0.18] dark:bg-white/[0.18] bg-black/[0.10] text-white dark:text-white text-black border-white/25 dark:border-white/25 border-black/15 font-bold' 
-                    : 'bg-white/[0.06] dark:bg-white/[0.06] bg-black/[0.04] text-white/80 dark:text-white/80 text-black/80 border-white/10 dark:border-white/10 border-black/[0.08] hover:bg-white/[0.12] dark:hover:bg-white/[0.12] hover:bg-black/[0.08] hover:text-white dark:hover:text-white hover:text-black'
+                    ? 'bg-surface-3 text-ink border-line-strong font-bold' 
+                    : 'bg-surface-2 text-ink-2 border-line hover:bg-surface-3 hover:text-ink  '
                 }`}
               >
-                {isSaved ? <BookmarkCheck className="w-3.5 h-3.5 text-white dark:text-white text-black" /> : <Bookmark className="w-3.5 h-3.5" />}
+                {isSaved ? <BookmarkCheck className="w-3.5 h-3.5 text-ink" /> : <Bookmark className="w-3.5 h-3.5" />}
                 <span className="hidden sm:inline">{isSaved ? 'Saved' : 'Save'}</span>
               </button>
 
               {/* Close Button */}
               <button
                 onClick={() => setActiveLookupTermId(null)}
-                className="p-1.5 text-white/70 dark:text-white/70 text-black/60 hover:text-white dark:hover:text-white hover:text-black hover:bg-white/[0.10] dark:hover:bg-white/[0.10] hover:bg-black/[0.06] transition-colors cursor-pointer rounded-full"
-                aria-label="Close modal"
+                className="pl-2 pr-3 py-1.5 text-sm font-medium text-ink border border-line-strong hover:bg-surface-3 transition-colors cursor-pointer rounded-full flex items-center gap-1"
+                aria-label="Close term details"
+                title="Close (Esc)"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
+                <span>Close</span>
               </button>
             </div>
           </div>
@@ -268,20 +262,20 @@ export const TermDetailModal: React.FC = () => {
           
           {/* Indonesian Meaning & Conceptual Foundation */}
           <div className="p-4 rounded-2xl liquid-modal-tile space-y-2">
-            <div className="text-[10px] font-sans uppercase tracking-wider text-[#A8A8A8] dark:text-[#A8A8A8] text-black/60 flex items-center gap-1.5 font-bold">
-              <Scale className="w-3.5 h-3.5 text-white dark:text-white text-black" />
+            <div className="text-[11px] font-sans text-muted flex items-center gap-1.5 font-bold">
+              <Scale className="w-3.5 h-3.5 text-ink" />
               Padanan Bahasa Indonesia & Konstruksi Hukum
             </div>
-            <p className="text-base sm:text-lg font-sans font-extrabold text-white dark:text-white text-black">
+            <p className="text-base sm:text-lg font-sans font-extrabold text-ink">
               {term.indonesianMeaning}
             </p>
-            <p className="text-xs sm:text-sm text-[#A8A8A8] dark:text-[#A8A8A8] text-black/75 leading-relaxed font-sans font-normal">
+            <p className="text-xs sm:text-sm text-muted leading-relaxed font-sans font-normal">
               {term.indonesianLegalConcept}
             </p>
-            {term.civilLawEquivalent && (
-              <div className="text-xs font-sans text-[#A8A8A8] dark:text-[#A8A8A8] text-black/70 pt-2 border-t border-white/[0.08] dark:border-white/[0.08] border-black/[0.06]">
-                <span className="text-[#707070] dark:text-[#707070] text-black/50">Civil Law / KUHPerdata Counterpart:</span>{' '}
-                <span className="text-white dark:text-white text-black font-bold">{term.civilLawEquivalent}</span>
+            {term.civilLawEquivalent?.trim() && (
+              <div className="text-xs font-sans text-muted pt-2 border-t border-line">
+                <span className="text-muted">Civil law / KUHPerdata counterpart:</span>{' '}
+                <span className="text-ink font-bold">{term.civilLawEquivalent}</span>
               </div>
             )}
           </div>
@@ -289,11 +283,11 @@ export const TermDetailModal: React.FC = () => {
           {/* Conceptual Distinction Note if applicable */}
           {(term.isDistinctConcept || term.conceptualNote) && (
             <div className="p-4 rounded-2xl liquid-modal-tile space-y-2">
-              <div className="flex items-center gap-2 text-white dark:text-white text-black text-xs font-sans font-bold uppercase tracking-wider">
-                <AlertTriangle className="w-4 h-4 text-white dark:text-white text-black shrink-0" />
+              <div className="flex items-center gap-2 text-ink text-xs font-sans font-bold uppercase tracking-wider">
+                <AlertTriangle className="w-4 h-4 text-ink shrink-0" />
                 Catatan Konseptual Komparatif (Common Law vs Civil Law)
               </div>
-              <p className="text-xs sm:text-sm text-[#A8A8A8] dark:text-[#A8A8A8] text-black/75 leading-relaxed font-sans font-normal">
+              <p className="text-xs sm:text-sm text-muted leading-relaxed font-sans font-normal">
                 {term.conceptualNote || 
                   'Istilah ini merupakan konsep khas Common Law yang tidak memiliki padanan langsung 1:1 dalam sistem hukum Indonesia (Civil Law). Terjemahan di atas merupakan padanan fungsional terdekat yang harus dipahami dalam konteks yuridisnya.'}
               </p>
@@ -303,19 +297,19 @@ export const TermDetailModal: React.FC = () => {
           {/* Plain English vs Legal Definition */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div className="p-4 rounded-2xl liquid-modal-tile space-y-1.5">
-              <span className="text-[10px] font-sans uppercase tracking-wider text-[#A8A8A8] dark:text-[#A8A8A8] text-black/60 block font-bold">
+              <span className="text-[11px] font-sans text-muted block font-bold">
                 Plain English Explanation
               </span>
-              <p className="text-xs sm:text-sm text-[#A8A8A8] dark:text-[#A8A8A8] text-black/75 font-sans font-normal leading-relaxed">
+              <p className="text-xs sm:text-sm text-muted font-sans font-normal leading-relaxed">
                 {term.plainEnglish || term.legalDefinition}
               </p>
             </div>
 
             <div className="p-4 rounded-2xl liquid-modal-tile space-y-1.5">
-              <span className="text-[10px] font-sans uppercase tracking-wider text-[#A8A8A8] dark:text-[#A8A8A8] text-black/60 block font-bold">
+              <span className="text-[11px] font-sans text-muted block font-bold">
                 Black&apos;s Law / Formal Legal Definition
               </span>
-              <p className="text-xs sm:text-sm text-[#A8A8A8] dark:text-[#A8A8A8] text-black/75 font-sans font-normal leading-relaxed">
+              <p className="text-xs sm:text-sm text-muted font-sans font-normal leading-relaxed">
                 {term.legalDefinition}
               </p>
             </div>
@@ -323,10 +317,10 @@ export const TermDetailModal: React.FC = () => {
 
           {/* Why Lawyers Use This (Legal Function) */}
           <div className="p-4 rounded-2xl liquid-modal-tile space-y-1.5">
-            <span className="text-[10px] font-sans uppercase tracking-wider text-white dark:text-white text-black block font-bold">
+            <span className="text-[11px] font-sans uppercase tracking-wider text-ink block font-bold">
               Why Lawyers Use This in Practice (Legal Function)
             </span>
-            <p className="text-xs sm:text-sm text-[#A8A8A8] dark:text-[#A8A8A8] text-black/75 font-sans font-normal leading-relaxed">
+            <p className="text-xs sm:text-sm text-muted font-sans font-normal leading-relaxed">
               {term.legalFunction}
             </p>
           </div>
@@ -335,17 +329,17 @@ export const TermDetailModal: React.FC = () => {
           {term.authenticClauseExcerpt && (
             <div className="liquid-modal-tile p-4 space-y-2">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-sans uppercase tracking-wider text-white dark:text-white text-black flex items-center gap-1.5 font-semibold">
-                  <FileText className="w-3.5 h-3.5 text-white dark:text-white text-black" />
+                <span className="text-[11px] font-sans uppercase tracking-wider text-ink flex items-center gap-1.5 font-semibold">
+                  <FileText className="w-3.5 h-3.5 text-ink" />
                   Authentic Contract Clause Excerpt
                 </span>
                 {term.authenticClauseSource && (
-                  <span className="text-[10px] font-sans text-[#707070] dark:text-[#707070] text-black/50 italic">
+                  <span className="text-[11px] font-sans text-faint italic">
                     Source: {term.authenticClauseSource}
                   </span>
                 )}
               </div>
-              <blockquote className="font-serif italic text-xs sm:text-sm text-[#F2F2F2] dark:text-[#F2F2F2] text-[#151515] pl-3 border-l-2 border-white/60 dark:border-white/60 border-black/40 my-2 leading-[1.7] bg-black/25 dark:bg-black/35 bg-black/[0.03] p-3 rounded-xl border border-white/[0.06] dark:border-white/[0.06] border-black/[0.05]">
+              <blockquote className="font-legal italic text-xs sm:text-sm text-ink pl-3 my-2 leading-[1.7] bg-surface-2 p-3 rounded-xl border border-line border-l-2 border-l-accent">
                 &ldquo;{term.authenticClauseExcerpt}&rdquo;
               </blockquote>
             </div>
@@ -354,17 +348,17 @@ export const TermDetailModal: React.FC = () => {
           {/* Context Examples Tabs (Contracts / Court Decisions / Legal Opinions) */}
           {term.contextExamples && (
             <div className="liquid-modal-tile p-4 space-y-3">
-              <span className="text-[10px] font-sans uppercase tracking-wider text-[#A8A8A8] dark:text-[#A8A8A8] text-black/60 block font-semibold">
+              <span className="text-[11px] font-sans text-muted block font-semibold">
                 Contextual Usage in Real Legal Materials
               </span>
               
-              <div className="flex items-center gap-1.5 border-b border-white/[0.08] dark:border-white/[0.08] border-black/[0.06] pb-2">
+              <div className="flex items-center gap-1.5 border-b border-line pb-2">
                 <button
                   onClick={() => setActiveContextTab('contracts')}
                   className={`px-3 py-1 text-xs font-sans rounded-full cursor-pointer flex items-center gap-1.5 transition-all ${
                     activeContextTab === 'contracts'
-                      ? 'bg-white/[0.14] dark:bg-white/[0.14] bg-black/[0.08] text-white dark:text-white text-black font-semibold border border-white/20 dark:border-white/20 border-black/15'
-                      : 'text-white/60 dark:text-white/60 text-black/60 hover:text-white dark:hover:text-white hover:text-black'
+                      ? 'bg-surface-3 text-ink font-semibold border border-line-strong  '
+                      : 'text-muted hover:text-ink  '
                   }`}
                 >
                   <Briefcase className="w-3 h-3" />
@@ -374,8 +368,8 @@ export const TermDetailModal: React.FC = () => {
                   onClick={() => setActiveContextTab('courtDecisions')}
                   className={`px-3 py-1 text-xs font-sans rounded-full cursor-pointer flex items-center gap-1.5 transition-all ${
                     activeContextTab === 'courtDecisions'
-                      ? 'bg-white/[0.14] dark:bg-white/[0.14] bg-black/[0.08] text-white dark:text-white text-black font-semibold border border-white/20 dark:border-white/20 border-black/15'
-                      : 'text-white/60 dark:text-white/60 text-black/60 hover:text-white dark:hover:text-white hover:text-black'
+                      ? 'bg-surface-3 text-ink font-semibold border border-line-strong  '
+                      : 'text-muted hover:text-ink  '
                   }`}
                 >
                   <Gavel className="w-3 h-3" />
@@ -385,8 +379,8 @@ export const TermDetailModal: React.FC = () => {
                   onClick={() => setActiveContextTab('legalOpinions')}
                   className={`px-3 py-1 text-xs font-sans rounded-full cursor-pointer flex items-center gap-1.5 transition-all ${
                     activeContextTab === 'legalOpinions'
-                      ? 'bg-white/[0.14] dark:bg-white/[0.14] bg-black/[0.08] text-white dark:text-white text-black font-semibold border border-white/20 dark:border-white/20 border-black/15'
-                      : 'text-white/60 dark:text-white/60 text-black/60 hover:text-white dark:hover:text-white hover:text-black'
+                      ? 'bg-surface-3 text-ink font-semibold border border-line-strong  '
+                      : 'text-muted hover:text-ink  '
                   }`}
                 >
                   <FileCode className="w-3 h-3" />
@@ -394,7 +388,7 @@ export const TermDetailModal: React.FC = () => {
                 </button>
               </div>
 
-                <div className="text-xs sm:text-sm font-serif text-[#F2F2F2] dark:text-[#F2F2F2] text-[#151515] bg-black/25 dark:bg-black/35 bg-black/[0.03] p-3 rounded-xl leading-[1.7] border border-white/[0.06] dark:border-white/[0.06] border-black/[0.05]">
+                <div className="text-xs sm:text-sm font-legal text-ink bg-surface-2 p-3 rounded-xl leading-[1.7] border border-line">
                   {activeContextTab === 'contracts' && (
                     <p>{term.contextExamples.contracts || 'Standard operational covenants and warranty provisions.'}</p>
                   )}
@@ -410,14 +404,14 @@ export const TermDetailModal: React.FC = () => {
 
           {/* Sample Sentence & Indonesian Translation */}
           <div className="space-y-2">
-            <span className="text-[10px] font-sans uppercase tracking-wider text-[#A8A8A8] dark:text-[#A8A8A8] text-black/60 block font-semibold">
+            <span className="text-[11px] font-sans text-muted block font-semibold">
               Standard Bilingual Sentence Example
             </span>
             <div className="p-3.5 liquid-modal-tile space-y-1.5 rounded-2xl">
-              <p className="text-sm font-semibold text-white dark:text-white text-black font-sans">
+              <p className="text-sm font-semibold text-ink font-sans">
                 {term.exampleSentenceEn}
               </p>
-              <p className="text-xs text-[#A8A8A8] dark:text-[#A8A8A8] text-black/70 font-sans italic border-t border-white/[0.08] dark:border-white/[0.08] border-black/[0.06] pt-1.5">
+              <p className="text-xs text-muted font-sans italic border-t border-line pt-1.5">
                 {term.exampleSentenceId}
               </p>
             </div>
@@ -426,14 +420,14 @@ export const TermDetailModal: React.FC = () => {
           {/* Common Collocations */}
           {term.commonCollocations && term.commonCollocations.length > 0 && (
             <div>
-              <span className="text-[10px] font-sans uppercase tracking-wider text-[#A8A8A8] dark:text-[#A8A8A8] text-black/60 block mb-2 font-semibold">
+              <span className="text-[11px] font-sans text-muted block mb-2 font-semibold">
                 Common Legal Collocations
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {term.commonCollocations.map((col, idx) => (
                   <span
                     key={idx}
-                    className="text-xs font-sans px-3 py-1 bg-white/[0.06] dark:bg-white/[0.06] bg-black/[0.04] text-white/80 dark:text-white/80 text-black/80 border border-white/[0.08] dark:border-white/[0.08] border-black/[0.06] rounded-full font-medium"
+                    className="text-xs font-sans px-3 py-1 bg-surface-2 text-ink-2 border border-line rounded-full font-medium"
                   >
                     {col}
                   </span>
@@ -445,8 +439,8 @@ export const TermDetailModal: React.FC = () => {
           {/* Related Documents with clickable cross-reference links */}
           {term.connectedDocIds && term.connectedDocIds.length > 0 && (
             <div className="p-4 rounded-2xl liquid-modal-tile space-y-2">
-              <div className="text-[10px] font-sans uppercase tracking-wider text-white dark:text-white text-black flex items-center gap-1.5 font-semibold">
-                <FileText className="w-3.5 h-3.5 text-white dark:text-white text-black" />
+              <div className="text-[11px] font-sans uppercase tracking-wider text-ink flex items-center gap-1.5 font-semibold">
+                <FileText className="w-3.5 h-3.5 text-ink" />
                 Where to Find This Term in LEXA Document Library
               </div>
               <div className="flex flex-wrap gap-2 pt-1">
@@ -454,10 +448,10 @@ export const TermDetailModal: React.FC = () => {
                   <button
                     key={docRef.docId}
                     onClick={() => handleNavigateToDoc(docRef.docId)}
-                    className="text-xs font-sans px-3 py-1.5 bg-white/[0.08] dark:bg-white/[0.08] bg-black/[0.05] hover:bg-white/[0.15] dark:hover:bg-white/[0.15] hover:bg-black/[0.09] border border-white/[0.08] dark:border-white/[0.08] border-black/[0.06] hover:border-white/25 text-white dark:text-white text-black font-medium rounded-full cursor-pointer flex items-center gap-1.5 transition-all shadow-xs"
+                    className="text-xs font-sans px-3 py-1.5 bg-surface-2 hover:bg-surface-3 border border-line hover:border-line-strong text-ink font-medium rounded-full cursor-pointer flex items-center gap-1.5 transition-all shadow-xs"
                   >
-                    <span>Read in: <span className="text-[#DCDCDC] dark:text-[#DCDCDC] text-black/70 font-semibold">{docRef.title || docRef.docId.replace(/-/g, ' ')}</span></span>
-                    <ExternalLink className="w-3 h-3 text-white dark:text-white text-black" />
+                    <span>Read in: <span className="text-ink-2 font-semibold">{docRef.title || docRef.docId.replace(/-/g, ' ')}</span></span>
+                    <ExternalLink className="w-3 h-3 text-ink" />
                   </button>
                 ))}
               </div>
@@ -467,7 +461,7 @@ export const TermDetailModal: React.FC = () => {
           {/* Personal Note Section for Spaced Repetition */}
           <div className="p-4 rounded-2xl liquid-modal-tile space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-sans uppercase tracking-wider text-[#A8A8A8] dark:text-[#A8A8A8] text-black/60 font-semibold">
+              <span className="text-[11px] font-sans text-muted font-semibold">
                 Your Personal Study Notes ({savedRecord?.notes ? 'Saved' : 'Empty'})
               </span>
               {!isEditingNote && (
@@ -476,7 +470,7 @@ export const TermDetailModal: React.FC = () => {
                     setPersonalNoteInput(savedRecord?.notes || '');
                     setIsEditingNote(true);
                   }}
-                  className="text-xs font-sans text-white dark:text-white text-black hover:text-[#DCDCDC] dark:hover:text-[#DCDCDC] hover:text-black/70 cursor-pointer font-medium underline"
+                  className="text-xs font-sans text-ink hover:text-ink-2 cursor-pointer font-medium underline"
                 >
                   {savedRecord?.notes ? 'Edit Note' : '+ Add Note'}
                 </button>
@@ -489,18 +483,18 @@ export const TermDetailModal: React.FC = () => {
                   value={personalNoteInput}
                   onChange={(e) => setPersonalNoteInput(e.target.value)}
                   placeholder="E.g., Catatan pribadi: sering muncul dalam klausul dispute resolution, padankan dengan Pasal 1243 KUHPerdata..."
-                  className="w-full text-xs font-sans p-3 bg-black/25 dark:bg-black/35 bg-white/60 border border-white/15 dark:border-white/15 border-black/15 text-[#F2F2F2] dark:text-[#F2F2F2] text-black placeholder:text-white/40 dark:placeholder:text-white/40 placeholder:text-black/40 rounded-xl focus:outline-none focus:border-white dark:focus:border-white focus:border-black resize-none h-20"
+                  className="w-full text-xs font-sans p-3 bg-surface-2 border border-line-strong text-ink placeholder:text-faint rounded-xl focus:outline-none focus:border-accent resize-none h-20"
                 />
                 <div className="flex items-center justify-end gap-2">
                   <button
                     onClick={() => setIsEditingNote(false)}
-                    className="px-3 py-1 text-xs text-[#A8A8A8] dark:text-[#A8A8A8] text-black/60 hover:text-white dark:hover:text-white hover:text-black cursor-pointer"
+                    className="px-3 py-1 text-xs text-muted hover:text-ink cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSaveNote}
-                    className="btn-primary px-3 py-1 text-xs font-bold !text-[#050505] !bg-white hover:!bg-[#E8E8E8]"
+                    className="btn-primary px-3 py-1 text-xs font-medium !text-on-accent !bg-accent hover:!bg-accent-hover"
                   >
                     Save Note
                   </button>
@@ -508,7 +502,7 @@ export const TermDetailModal: React.FC = () => {
               </div>
             ) : (
               savedRecord?.notes && (
-                <p className="text-xs font-sans text-white/80 dark:text-white/80 text-black/80 italic bg-black/25 dark:bg-black/35 bg-black/[0.03] p-3 rounded-xl border border-white/[0.06] dark:border-white/[0.06] border-black/[0.05]">
+                <p className="text-xs font-sans text-ink-2 italic bg-surface-2 p-3 rounded-xl border border-line">
                   &ldquo;{savedRecord.notes}&rdquo;
                 </p>
               )
@@ -516,7 +510,7 @@ export const TermDetailModal: React.FC = () => {
           </div>
 
           {/* Footer info and Previous / Next Navigation - at bottom of scrollable content */}
-          <div className="pt-6 pb-4 border-t border-white/[0.08] dark:border-white/[0.08] border-black/[0.06] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-sans text-[#707070] dark:text-[#707070] text-black/50">
+          <div className="pt-6 pb-4 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-sans text-faint">
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -524,7 +518,7 @@ export const TermDetailModal: React.FC = () => {
                 onClick={() => prevTerm && setActiveLookupTermId(prevTerm.id)}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-full border transition-all ${
                   prevTerm
-                    ? 'bg-white/[0.06] dark:bg-white/[0.06] bg-black/[0.04] text-white/80 dark:text-white/80 text-black/80 border-white/[0.08] dark:border-white/[0.08] border-black/[0.06] hover:text-white dark:hover:text-white hover:text-black hover:bg-white/[0.12] dark:hover:bg-white/[0.12] hover:bg-black/[0.08] cursor-pointer'
+                    ? 'bg-surface-2 text-ink-2 border-line hover:text-ink hover:bg-surface-3 cursor-pointer'
                     : 'opacity-40 cursor-not-allowed border-transparent'
                 }`}
                 title={prevTerm ? `Previous: ${prevTerm.term} (← Left Arrow)` : undefined}
@@ -539,7 +533,7 @@ export const TermDetailModal: React.FC = () => {
                 onClick={() => nextTerm && setActiveLookupTermId(nextTerm.id)}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-full border transition-all ${
                   nextTerm
-                    ? 'bg-white/[0.06] dark:bg-white/[0.06] bg-black/[0.04] text-white/80 dark:text-white/80 text-black/80 border-white/[0.08] dark:border-white/[0.08] border-black/[0.06] hover:text-white dark:hover:text-white hover:text-black hover:bg-white/[0.12] dark:hover:bg-white/[0.12] hover:bg-black/[0.08] cursor-pointer'
+                    ? 'bg-surface-2 text-ink-2 border-line hover:text-ink hover:bg-surface-3 cursor-pointer'
                     : 'opacity-40 cursor-not-allowed border-transparent'
                 }`}
                 title={nextTerm ? `Next: ${nextTerm.term} (→ Right Arrow)` : undefined}
@@ -554,7 +548,7 @@ export const TermDetailModal: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveLookupTermId(null)}
-                className="text-white dark:text-white text-black hover:text-[#DCDCDC] font-semibold cursor-pointer px-2 py-1 underline"
+                className="text-ink hover:text-ink-2 font-semibold cursor-pointer px-2 py-1 underline"
               >
                 Close Window (Esc)
               </button>
