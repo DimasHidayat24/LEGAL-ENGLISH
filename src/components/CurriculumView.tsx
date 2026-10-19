@@ -317,11 +317,21 @@ export const CurriculumView: React.FC = () => {
               Module ID: {activeLesson.id} • Estimated Study Time: {activeLesson.durationMinutes} mins
             </span>
             <button
-              onClick={() => markLessonComplete(activeLesson.id)}
+              onClick={() => {
+                markLessonComplete(activeLesson.id);
+                const idx = curriculumLessons.findIndex(l => l.id === activeLesson.id);
+                const next = curriculumLessons[idx + 1];
+                if (next) {
+                  setActiveLessonId(next.id);
+                  setSelectedQuizAnswer(null);
+                  setShowQuizExplanation(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
               className="btn-primary px-6 py-3 text-xs uppercase tracking-wider font-semibold"
             >
               <Check className="w-4 h-4" />
-              <span>Complete & Advance to Next Module</span>
+              <span>{curriculumLessons.findIndex(l => l.id === activeLesson.id) < curriculumLessons.length - 1 ? 'Complete & Advance to Next Module' : 'Complete Final Module'}</span>
             </button>
           </div>
 
