@@ -290,22 +290,61 @@ export interface ExerciseItem {
   clauseExample?: string;
 }
 
+/** A citation shown under "Sources" in the Writing Lab. Only pages actually checked are listed. */
+export interface SourceRef {
+  label: string;
+  url: string;
+  /** What the source supports, in one line. */
+  note?: string;
+}
+
+/** A marginal "why it is written this way" note anchored to an exact quote in a section's sample text. */
+export interface WritingNote {
+  /** Exact substring of the section's sampleText (without layout markers). */
+  quote: string;
+  why: string;
+}
+
+export interface WritingPhrase {
+  en: string;
+  id: string;
+  notes: string;
+}
+
+export interface WritingSection {
+  sectionName: string;
+  indonesianName: string;
+  purpose: string;
+  standardPhrases: WritingPhrase[];
+  /**
+   * The section as it appears in the model document. Light layout markers, one per line:
+   * "# " centred heading, "## " run-in bold heading, "^" right-aligned, ">" indented, "LABEL: value" memo header rows.
+   */
+  sampleText: string;
+  /** The same section as a fill-in template ([square brackets] = blanks). */
+  templateText?: string;
+  tips: string[];
+  notes?: WritingNote[];
+  sources?: SourceRef[];
+}
+
 export interface WritingModule {
   id: string;
   title: string;
   subtitle: string;
   documentType: string;
+  documentTypeId?: string;
   purposeEn: string;
   purposeId: string;
-  sections: {
-    sectionName: string;
-    indonesianName: string;
-    purpose: string;
-    standardPhrases: { en: string; id: string; notes: string }[];
-    sampleText: string;
-    tips: string[];
-  }[];
+  sections: WritingSection[];
+  /** Plain-text version of the whole model document (generated from the sections). */
   fullExample: string;
+  /** Real published documents this example is modelled on. */
+  modelledOn: SourceRef[];
+  /** Legal authorities and writing guides behind the content. */
+  sources: SourceRef[];
+  /** Short line shown on the paper, e.g. that names and numbers are fictional. */
+  disclaimer?: string;
 }
 
 export interface EditorialArticle {
