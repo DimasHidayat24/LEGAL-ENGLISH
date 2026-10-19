@@ -37,18 +37,18 @@ export const WritingLab: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8">
       
       {/* Header */}
-      <div className="border-b border-white/[0.08] pb-6">
+      <div className="border-b border-line pb-6">
         <div className="flex items-center gap-2 mb-1.5">
-          <PenTool className="w-4 h-4 text-[#DCDCDC]" />
-          <span className="text-[11px] font-sans tracking-widest uppercase text-[#A8A8A8] font-semibold">
-            LEGAL DRAFTING & IRAC WORKBENCH
+          <PenTool className="w-4 h-4 text-ink-2" />
+          <span className="text-[11px] font-sans text-muted font-semibold">
+            Writing lab
           </span>
         </div>
-        <h1 className="text-2xl sm:text-4xl font-sans font-extrabold text-white tracking-tight">
-          Write Like a Lawyer
+        <h1 className="text-3xl sm:text-[44px] font-medium text-ink tracking-[-0.035em] leading-[1.1]">
+          Write like a lawyer
         </h1>
-        <p className="text-sm sm:text-base text-[#A8A8A8] font-sans mt-2 max-w-3xl leading-relaxed">
-          Master international corporate and litigation drafting. Explore standardized IRAC memoranda, cross-border legal opinions, and enforceable English demand letters (somasi).
+        <p className="text-sm sm:text-base text-muted font-sans mt-2 max-w-3xl leading-relaxed">
+          Practise corporate and litigation drafting: IRAC memos, legal opinions, and demand letters (somasi).
         </p>
 
         {/* Module Picker */}
@@ -62,8 +62,8 @@ export const WritingLab: React.FC = () => {
               }}
               className={`px-4 py-2 whitespace-nowrap transition-all border cursor-pointer rounded-full text-xs font-medium ${
                 selectedModuleId === mod.id
-                  ? 'bg-[#242424] text-white border-white/20 font-semibold shadow-xs'
-                  : 'bg-[#151515] text-[#A8A8A8] border-white/[0.08] hover:bg-[#1C1C1C] hover:text-white'
+                  ? 'bg-accent text-on-accent border-accent font-semibold shadow-xs'
+                  : 'bg-surface text-muted border-line hover:bg-surface-3 hover:text-ink'
               }`}
             >
               {mod.documentType}: {mod.title.split('How to ')[1] || mod.title}
@@ -79,18 +79,18 @@ export const WritingLab: React.FC = () => {
         <div className="lg:col-span-7 space-y-6">
           
           {/* Module Banner */}
-          <div className="p-6 rounded-3xl lexa-card space-y-2">
-            <span className="badge-navy text-[10px] font-sans uppercase px-2.5 py-0.5 rounded-full font-semibold">
+          <div className="p-6 rounded-2xl lexa-card space-y-2">
+            <span className="badge-navy text-[11px] font-sans uppercase px-2.5 py-0.5 rounded-full font-semibold">
               {activeModule.documentType}
             </span>
-            <h2 className="text-xl sm:text-2xl font-sans font-extrabold text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-serif font-semibold text-ink tracking-tight">
               {activeModule.title}
             </h2>
-            <p className="text-xs sm:text-sm text-[#A8A8A8] font-sans">
+            <p className="text-xs sm:text-sm text-muted font-sans">
               {activeModule.subtitle}
             </p>
-            <div className="pt-2 border-t border-white/[0.08] text-xs font-sans text-[#A8A8A8] italic">
-              <strong className="text-[#F2F2F2] font-semibold">Tujuan Praktis:</strong> {activeModule.purposeId}
+            <div className="pt-2 border-t border-line text-xs font-sans text-muted italic">
+              <strong className="text-ink font-semibold">Tujuan Praktis:</strong> {activeModule.purposeId}
             </div>
           </div>
 
@@ -102,8 +102,8 @@ export const WritingLab: React.FC = () => {
                 onClick={() => setActiveSectionIdx(idx)}
                 className={`px-3.5 py-1.5 whitespace-nowrap border transition-all cursor-pointer rounded-full font-medium ${
                   activeSectionIdx === idx
-                    ? 'bg-[#242424] text-white border-white/20 font-semibold shadow-xs'
-                    : 'bg-[#151515] text-[#A8A8A8] border-white/[0.08] hover:bg-[#1C1C1C] hover:text-white'
+                    ? 'bg-accent text-on-accent border-accent font-semibold shadow-xs'
+                    : 'bg-surface text-muted border-line hover:bg-surface-3 hover:text-ink'
                 }`}
               >
                 {idx + 1}. {sec.sectionName.split('(')[0].trim()}
@@ -112,49 +112,49 @@ export const WritingLab: React.FC = () => {
           </div>
 
           {/* Active Section Card */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-[#101010] border border-white/[0.08] space-y-6">
-            <div className="border-b border-white/[0.08] pb-4 space-y-1">
-              <span className="text-[10px] font-sans uppercase tracking-wider text-[#DCDCDC] font-semibold">
-                SECTION {activeSectionIdx + 1} OF {activeModule.sections.length}
+          <div className="p-6 sm:p-8 rounded-2xl bg-surface border border-line space-y-6">
+            <div className="border-b border-line pb-4 space-y-1">
+              <span className="text-[11px] font-sans uppercase tracking-wider text-ink-2 font-semibold">
+                Section {activeSectionIdx + 1} of {activeModule.sections.length}
               </span>
-              <h3 className="text-xl font-sans font-extrabold text-white">
+              <h3 className="text-xl font-serif font-semibold text-ink">
                 {activeSection.sectionName}
               </h3>
-              <p className="text-xs font-sans italic text-[#A8A8A8]">
+              <p className="text-xs font-sans italic text-muted">
                 Padanan Indonesia: {activeSection.indonesianName}
               </p>
-              <p className="text-xs sm:text-sm text-[#A8A8A8] font-sans pt-1 leading-relaxed">
+              <p className="text-xs sm:text-sm text-muted font-sans pt-1 leading-relaxed">
                 {activeSection.purpose}
               </p>
             </div>
 
             {/* Standard Legal Phrases Table */}
             <div className="space-y-2.5">
-              <span className="text-xs font-sans uppercase tracking-wider text-[#DCDCDC] font-semibold block">
+              <span className="text-xs font-sans uppercase tracking-wider text-ink-2 font-semibold block">
                 Standard Legal Formulae & Stock Phrases
               </span>
               <div className="space-y-2">
                 {activeSection.standardPhrases.map((phrase, pIdx) => (
-                  <div key={pIdx} className="p-4 rounded-2xl bg-[#0C0C0C] border border-white/[0.08] space-y-1 group relative">
-                    <div className="flex items-center justify-between text-xs font-sans text-white font-semibold gap-2">
-                      <span className="text-[#F2F2F2]">&ldquo;{phrase.en}&rdquo;</span>
+                  <div key={pIdx} className="p-4 rounded-2xl bg-surface border border-line space-y-1 group relative">
+                    <div className="flex items-center justify-between text-xs font-sans text-ink font-semibold gap-2">
+                      <span className="text-ink">&ldquo;{phrase.en}&rdquo;</span>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-[10px] text-[#707070] font-normal">{phrase.notes}</span>
+                        <span className="text-[11px] text-faint font-normal">{phrase.notes}</span>
                         <button
                           type="button"
                           onClick={() => handleCopyPhrase(phrase.en, pIdx)}
-                          className="p-1 text-[#A8A8A8] hover:text-white cursor-pointer rounded-full transition-colors"
+                          className="p-1 text-muted hover:text-ink cursor-pointer rounded-full transition-colors"
                           title="Copy phrase to clipboard"
                         >
                           {copiedPhraseIdx === pIdx ? (
-                            <Check className="w-3.5 h-3.5 text-white" />
+                            <Check className="w-3.5 h-3.5 text-ink" />
                           ) : (
                             <Copy className="w-3.5 h-3.5" />
                           )}
                         </button>
                       </div>
                     </div>
-                    <div className="text-xs text-[#A8A8A8] font-sans italic">
+                    <div className="text-xs text-muted font-sans italic">
                       Terjemahan: {phrase.id}
                     </div>
                   </div>
@@ -165,30 +165,30 @@ export const WritingLab: React.FC = () => {
             {/* Sample Section Text */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-sans uppercase tracking-wider text-[#DCDCDC] font-semibold block">
+                <span className="text-xs font-sans uppercase tracking-wider text-ink-2 font-semibold block">
                   Exemplary Professional Drafting
                 </span>
                 <button
                   type="button"
                   onClick={handleCopySectionSample}
-                  className="px-2.5 py-1 text-[11px] rounded-full border border-white/[0.08] text-[#A8A8A8] hover:text-white hover:bg-[#1C1C1C] cursor-pointer transition-all flex items-center gap-1 font-medium"
+                  className="px-2.5 py-1 text-[11px] rounded-full border border-line text-muted hover:text-ink hover:bg-surface-3 cursor-pointer transition-all flex items-center gap-1 font-medium"
                 >
-                  {copiedSection ? <Check className="w-3 h-3 text-white" /> : <Copy className="w-3 h-3" />}
+                  {copiedSection ? <Check className="w-3 h-3 text-ink" /> : <Copy className="w-3 h-3" />}
                   <span>{copiedSection ? 'Copied Clause' : 'Copy Clause'}</span>
                 </button>
               </div>
-              <pre className="font-serif text-xs sm:text-sm text-[#F2F2F2] bg-[#0C0C0C] p-4 border-l-2 border-white/20 whitespace-pre-wrap leading-[1.7] rounded-2xl border border-white/[0.08]">
+              <pre className="font-legal text-xs sm:text-sm text-ink bg-surface p-4 border-l-2 border-line-strong whitespace-pre-wrap leading-[1.7] rounded-2xl border ">
                 {activeSection.sampleText}
               </pre>
             </div>
 
             {/* Drafting Tips */}
             {activeSection.tips && (
-              <div className="p-4 rounded-2xl bg-[#0C0C0C] border border-white/[0.08] space-y-1 text-xs font-sans">
-                <span className="font-sans font-bold uppercase tracking-wider text-white block">
+              <div className="p-4 rounded-2xl bg-surface border border-line space-y-1 text-xs font-sans">
+                <span className="font-sans font-bold uppercase tracking-wider text-ink block">
                   Partner&apos;s Practice Tips:
                 </span>
-                <ul className="list-disc list-inside font-sans space-y-0.5 text-[#A8A8A8]">
+                <ul className="list-disc list-inside font-sans space-y-0.5 text-muted">
                   {activeSection.tips.map((tip, tIdx) => (
                     <li key={tIdx}>{tip}</li>
                   ))}
@@ -197,21 +197,21 @@ export const WritingLab: React.FC = () => {
             )}
 
             {/* Step Navigation Controls */}
-            <div className="flex items-center justify-between pt-4 border-t border-white/[0.08]">
+            <div className="flex items-center justify-between pt-4 border-t border-line">
               <button
                 disabled={!canGoPrev}
                 onClick={() => canGoPrev && setActiveSectionIdx(prev => prev - 1)}
                 className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full border text-xs font-sans transition-all ${
                   canGoPrev
-                    ? 'bg-[#151515] text-[#A8A8A8] border-white/[0.08] hover:text-white hover:bg-[#1C1C1C] cursor-pointer font-medium'
-                    : 'opacity-40 cursor-not-allowed border-transparent text-[#707070]'
+                    ? 'bg-surface text-muted border-line hover:text-ink hover:bg-surface-3 cursor-pointer font-medium'
+                    : 'opacity-40 cursor-not-allowed border-transparent text-faint'
                 }`}
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
                 <span>Previous Section</span>
               </button>
 
-              <span className="text-[11px] font-sans text-[#707070]">
+              <span className="text-[11px] font-sans text-faint">
                 Step {activeSectionIdx + 1} of {activeModule.sections.length}
               </span>
 
@@ -220,8 +220,8 @@ export const WritingLab: React.FC = () => {
                 onClick={() => canGoNext && setActiveSectionIdx(prev => prev + 1)}
                 className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full border text-xs font-sans transition-all ${
                   canGoNext
-                    ? 'bg-[#151515] text-[#A8A8A8] border-white/[0.08] hover:text-white hover:bg-[#1C1C1C] cursor-pointer font-medium'
-                    : 'opacity-40 cursor-not-allowed border-transparent text-[#707070]'
+                    ? 'bg-surface text-muted border-line hover:text-ink hover:bg-surface-3 cursor-pointer font-medium'
+                    : 'opacity-40 cursor-not-allowed border-transparent text-faint'
                 }`}
               >
                 <span>Next Section</span>
@@ -233,30 +233,30 @@ export const WritingLab: React.FC = () => {
 
         {/* Right Column: Full Document Template & Copy Workbench */}
         <div className="lg:col-span-5 sticky top-24 space-y-4">
-          <div className="p-4 rounded-3xl bg-[#101010] border border-white/[0.08] flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-surface border border-line flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-[#DCDCDC]" />
-              <span className="font-sans font-extrabold text-sm tracking-wide uppercase text-[#F2F2F2]">
-                FULL AUTHENTIC TEMPLATE
+              <FileText className="w-4 h-4 text-ink-2" />
+              <span className="font-sans font-extrabold text-sm tracking-wide uppercase text-ink">
+                Full template
               </span>
             </div>
             <button
               onClick={handleCopyFullExample}
-              className="btn-primary px-3.5 py-1.5 text-xs rounded-full uppercase tracking-wider flex items-center gap-1.5 font-semibold"
+              className="btn-primary px-3.5 py-1.5 text-xs flex items-center gap-1.5 font-medium"
             >
               {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copied ? 'Copied!' : 'Copy Template'}</span>
             </button>
           </div>
 
-          <div className="p-5 rounded-3xl bg-[#101010] border border-white/[0.08] max-h-[75vh] overflow-y-auto no-scrollbar">
-            <pre className="font-serif text-xs sm:text-sm text-[#F2F2F2] whitespace-pre-wrap leading-[1.7]">
+          <div className="p-5 rounded-2xl bg-surface border border-line max-h-[75vh] overflow-y-auto no-scrollbar">
+            <pre className="font-legal text-xs sm:text-sm text-ink whitespace-pre-wrap leading-[1.7]">
               {activeModule.fullExample}
             </pre>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#0C0C0C] border border-white/[0.08] text-xs font-sans text-[#A8A8A8] space-y-1">
-            <span className="font-sans font-semibold text-[#F2F2F2] block">
+          <div className="p-4 rounded-2xl bg-surface border border-line text-xs font-sans text-muted space-y-1">
+            <span className="font-sans font-semibold text-ink block">
               Academic & Professional Standard:
             </span>
             <p className="leading-relaxed">
