@@ -4,6 +4,7 @@ import { sampleLegalDocuments } from '../data/documentsData';
 import type { LegalTerm } from '../types';
 import { ArrowRight, ChevronRight, Bookmark, BookOpen } from 'lucide-react';
 import { AnnotatedPage } from './AnnotatedPage';
+import { ReadLoop, UnderstandLoop, DeconstructLoop, ApplyLoop } from './ChapterLoops';
 
 const PREVIEW_TERM_IDS = ['whereas', 'pursuant-to', 'hereby', 'shall', 'notwithstanding', 'breach', 'indemnity', 'liability'];
 
@@ -46,27 +47,6 @@ const comparisons = [
   { source: 'Pasal 1320 KUHPerdata', id: 'Kausa yang halal', en: 'Consideration & legality' },
 ];
 
-// Drafting verbs — the "Deconstruct" snippet.
-const modalVerbs = [
-  { word: 'shall', fn: 'Imposes a duty', id: 'wajib' },
-  { word: 'may', fn: 'Grants a discretion', id: 'dapat / berhak' },
-  { word: 'shall not', fn: 'Prohibits', id: 'dilarang' },
-];
-
-/** Highlight selected phrases inside a plain string (mini snippets only). */
-const highlight = (text: string, phrases: string[]) => {
-  const re = new RegExp(`(${phrases.map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'g');
-  return text.split(re).map((part, i) =>
-    phrases.includes(part) ? (
-      <span key={i} className="doc-term-highlight">
-        {part}
-      </span>
-    ) : (
-      <React.Fragment key={i}>{part}</React.Fragment>
-    ),
-  );
-};
-
 const SectionHeader: React.FC<{
   eyebrow?: string;
   title: React.ReactNode;
@@ -107,7 +87,9 @@ export const HeroSection: React.FC = () => {
   const indemnity = previewTerms['indemnity'];
   const firstDoc = sampleLegalDocuments[0];
   const recital = firstDoc.paragraphs.find((p) => p.paragraphNumber === 'RECITALS') ?? firstDoc.paragraphs[0];
-  const recitalText = recital.text.length > 210 ? `${recital.text.slice(0, 210).trimEnd()}…` : recital.text;
+  const cut = recital.text.indexOf('hereto,');
+  const recitalText = cut > 0 ? `${recital.text.slice(0, cut + 6)}…` : recital.text.length > 240 ? `${recital.text.slice(0, 240).trimEnd()}…` : recital.text;
+  const flowTerms = ['indemnity', 'breach', 'shall'].map((id) => previewTerms[id]).filter(Boolean);
 
   const openDoc = (id: string) => {
     setActiveDocId(id);
@@ -120,77 +102,28 @@ export const HeroSection: React.FC = () => {
       name: 'Read',
       line: 'Model contracts and award excerpts, annotated clause by clause.',
       tab: 'documents',
-      snippet: (
-        <div className="paper-card p-5 text-left">
-          <div className="flex items-center justify-between gap-3 pb-3 mb-3 border-b border-line">
-            <span className="text-xs text-muted truncate">{firstDoc.documentType} · {firstDoc.governingLaw}</span>
-            <span className="text-xs text-muted shrink-0">{recital.paragraphNumber}</span>
-          </div>
-          <p className="font-legal text-[15px] leading-[1.75] text-ink">{highlight(recitalText, ['WHEREAS', 'pursuant to'])}</p>
-        </div>
-      ),
+      snippet: <ReadLoop meta={`${firstDoc.documentType} · ${firstDoc.governingLaw}`} no={recital.paragraphNumber} text={recitalText} phrases={['WHEREAS', 'pursuant to', 'hereto']} />,
     },
     {
       n: '2.0',
       name: 'Understand',
       line: 'Every term explained against the Indonesian concept it maps to.',
       tab: 'vocabulary',
-      snippet: (
-        <div className="paper-card p-5 text-left">
-          {indemnity ? (
-            <>
-              <div className="flex items-center justify-between gap-3">
-                <span className="font-legal text-xl font-semibold text-ink">{indemnity.term}</span>
-                <span className="text-xs text-muted">{indemnity.partOfSpeech}</span>
-              </div>
-              <div className="mt-3 flex items-start gap-2 text-sm">
-                <span className="shrink-0 px-1.5 py-0.5 rounded-md bg-surface-3 text-[11px] font-medium text-ink-2">ID</span>
-                <span className="text-ink font-medium">{indemnity.indonesianMeaning}</span>
-              </div>
-              <p className="mt-2 text-sm text-muted leading-relaxed line-clamp-3">{indemnity.indonesianLegalConcept}</p>
-            </>
-          ) : (
-            <div className="h-24 rounded-lg bg-surface-3 animate-pulse" />
-          )}
-        </div>
-      ),
+      snippet: <UnderstandLoop terms={flowTerms} />,
     },
     {
       n: '3.0',
       name: 'Deconstruct',
       line: 'Why a drafter picks one word over another — and what it binds.',
       tab: 'learn',
-      snippet: (
-        <div className="paper-card text-left overflow-hidden">
-          {modalVerbs.map((v, i) => (
-            <div key={v.word} className={`grid grid-cols-[88px_1fr_auto] items-center gap-3 px-5 py-3.5 text-sm ${i ? 'border-t border-line' : ''}`}>
-              <span className="font-legal font-semibold text-ink text-base">{v.word}</span>
-              <span className="text-ink-2">{v.fn}</span>
-              <span className="text-muted text-xs">{v.id}</span>
-            </div>
-          ))}
-        </div>
-      ),
+      snippet: <DeconstructLoop />,
     },
     {
       n: '4.0',
       name: 'Apply',
       line: 'Draft memos, opinions and somasi with standard phrases.',
       tab: 'write',
-      snippet: (
-        <div className="paper-card p-5 text-left">
-          <div className="flex items-center gap-2 pb-3 mb-3 border-b border-line">
-            <span className="text-xs text-muted">Legal memorandum · Question presented</span>
-          </div>
-          <p className="font-legal text-[15px] leading-[1.75] text-ink">
-            Whether <span className="px-1 rounded bg-surface-3 text-muted">[Party A]</span> has a lawful right to{' '}
-            <span className="px-1 rounded bg-surface-3 text-muted">[action]</span> under{' '}
-            <span className="px-1 rounded bg-surface-3 text-muted">[Law/Contract]</span> where{' '}
-            <span className="px-1 rounded bg-surface-3 text-muted">[Facts]</span>?
-          </p>
-          <p className="mt-3 text-xs text-muted">Apakah [Pihak A] memiliki hak sah untuk [tindakan]…</p>
-        </div>
-      ),
+      snippet: <ApplyLoop />,
     },
   ];
 
