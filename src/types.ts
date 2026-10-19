@@ -73,7 +73,20 @@ export type LegalCategory =
   | 'Corporate & Commercial'
   | 'International & Arbitration'
   | 'Latin Maxims'
-  | 'Remedies & Tort';
+  | 'Remedies & Tort'
+  | 'Banking, Finance & Insurance'
+  | 'Capital Markets, M&A & Investment'
+  | 'Corporate Law'
+  | 'Competition & Consumer Law'
+  | 'Litigation & Dispute Resolution'
+  | 'Data Protection & Privacy'
+  | 'Employment Law'
+  | 'Environmental, Energy & Mining'
+  | 'International Law & Human Rights'
+  | 'Trade & Maritime Law'
+  | 'Latin Terms & Maxims'
+  | 'Legal Drafting'
+  | 'Legal Writing & Communication';
 
 export type DifficultyLevel = 'Fundamental' | 'Intermediate' | 'Advanced';
 
