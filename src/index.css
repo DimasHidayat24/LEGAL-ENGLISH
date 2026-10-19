@@ -1,5 +1,18 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+@theme {
+  --color-brand-50: oklch(97% 0.0109 112.18);
+  --color-brand-100: oklch(93.2% 0.0228 112.18);
+  --color-brand-200: oklch(87.9% 0.041 112.18);
+  --color-brand-300: oklch(80.11% 0.0637 112.18);
+  --color-brand-400: oklch(69.81% 0.0819 112.18);
+  --color-brand-500: oklch(61.51% 0.091 112.18);
+  --color-brand-600: oklch(53.71% 0.091 112.18);
+  --color-brand-700: oklch(46.66% 0.0801 112.18);
+  --color-brand-800: oklch(40.11% 0.0683 112.18);
+  --color-brand-900: oklch(35.05% 0.0564 112.18);
+  --color-brand-950: oklch(26% 0.0437 112.18);
+}
 
 /* ==========================================================================
    LEXA DESIGN SYSTEM — semantic tokens
@@ -39,21 +52,21 @@
 :root,
 html.light,
 [data-theme="light"] {
-  --bg: #EEF7FD;           /* sky base (Gamma #C6E6FA family) */
+  --bg: var(--color-brand-50);
   --surface: #FFFFFF;
-  --surface-2: #F3FAFE;    /* sky mist */
-  --surface-3: #DCEFFB;    /* sky tint */
-  --text: #0B1220;         /* ink */
-  --text-2: #1E293B;
-  --text-muted: #556070;   /* 6.3:1 on white */
-  --text-faint: #5E6878;
-  --border: #D3E7F5;
-  --border-strong: #CBD5E1;
-  --accent: #002253;       /* Gamma blue buttons */
-  --accent-hover: #0A3270;
+  --surface-2: oklch(98.6% 0.005 112.18);
+  --surface-3: var(--color-brand-100);
+  --text: var(--color-brand-950);
+  --text-2: var(--color-brand-900);
+  --text-muted: var(--color-brand-700);
+  --text-faint: var(--color-brand-600);
+  --border: var(--color-brand-200);
+  --border-strong: var(--color-brand-300);
+  --accent: var(--color-brand-900);
+  --accent-hover: var(--color-brand-800);
   --accent-contrast: #FFFFFF;
-  --accent-soft: #E3F2FC;  /* sky wash */
-  --link: #002253;         /* Gamma blue, 15:1 on white */
+  --accent-soft: var(--color-brand-100);
+  --link: var(--color-brand-800);
   --link-contrast: #FFFFFF;
   --success: #2F7A52;
   --success-soft: #E7F5EC;
@@ -62,7 +75,7 @@ html.light,
   --warning: #A64B12;
   --warning-soft: #FFF1E6;
   --glass: rgba(255, 255, 255, 0.82);
-  --glass-border: #D3E7F5;
+  --glass-border: var(--color-brand-200);
   --shadow-card: none;
   --shadow-float: 0 1px 2px rgba(10, 10, 10, 0.05), 0 16px 40px -12px rgba(10, 10, 10, 0.18);
   --shadow-pop: 0 24px 60px -16px rgba(10, 10, 10, 0.22);
@@ -1261,13 +1274,37 @@ html.dark .wd-cmt-note.is-hot { background: #3A3020; }
   html.wd-printing .wd-field:empty::before { background: none; color: #000; font: inherit; padding: 0; content: '[' attr(data-ph) ']'; }
 }
 
-/* Sky palette: hero wash (light only) */
-html:not(.dark) #hero-banner { background:
-  radial-gradient(45% 38% at 6% 88%, rgba(255,196,224,.85) 0%, rgba(255,196,224,0) 70%),
-  radial-gradient(40% 34% at 96% 72%, rgba(255,226,206,.75) 0%, rgba(255,226,206,0) 70%),
-  radial-gradient(38% 30% at 82% 22%, rgba(255,255,255,.95) 0%, rgba(255,255,255,0) 72%),
-  radial-gradient(30% 22% at 18% 30%, rgba(255,255,255,.7) 0%, rgba(255,255,255,0) 72%),
-  radial-gradient(60% 40% at 50% 100%, rgba(203,214,255,.8) 0%, rgba(203,214,255,0) 70%),
-  linear-gradient(180deg, #8FCBF3 0%, #B4DDF8 30%, #D2EBFB 62%, #EEF7FD 100%); }
-html:not(.dark) body { background: linear-gradient(180deg, #EEF7FD 0%, #F6FAFE 40%, #EAF4FC 75%, #DCEEFB 100%) fixed; }
-html:not(.dark) .chapter-card, html:not(.dark) .ch-card { background-color: #FFFFFF; }
+/* ==========================================================================
+   Brand palette only (light): every colour below comes from --color-brand-*.
+   Chapters step through the scale; no outside accents.
+   ========================================================================== */
+html:not(.dark) {
+  --surface: var(--color-brand-50);
+  --surface-2: var(--color-brand-50);
+  --surface-3: var(--color-brand-100);
+  --bg: var(--color-brand-50);
+  --paper: var(--color-brand-50);
+  --glass: color-mix(in oklch, var(--color-brand-50) 88%, transparent);
+  --pop: #76C893;
+  --accent: var(--color-brand-900);
+  --accent-hover: var(--color-brand-800);
+  --accent-contrast: var(--color-brand-50);
+  --marker: color-mix(in oklch, #76C893 26%, transparent);
+  --marker-hot: color-mix(in oklch, #76C893 45%, transparent);
+  --pencil: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M1 4.2 C 18 2 34 5.4 52 3.4 S 86 4.6 99 2.4' fill='none' stroke='%236F732F' stroke-width='2' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+}
+html:not(.dark) .chap-row { --ch: #76C893; --ch-soft: var(--color-brand-100); --ch-ink: var(--color-brand-800); }
+html:not(.dark) .chap-row .chapter-mark { -webkit-text-stroke: 1.25px var(--ch); color: transparent; }
+.chap-dot { background: var(--ch, var(--text)); box-shadow: 0 0 0 4px color-mix(in oklch, var(--ch, var(--text)) 18%, transparent); }
+.chap-chip { display: inline-block; font-family: var(--font-mono); font-size: 12px; padding: 2px 8px; border-radius: 999px; color: var(--ch-ink, var(--text-muted)); background: var(--ch-soft, var(--surface-3)); }
+html.dark .chap-chip { color: var(--text-muted); background: var(--surface-3); }
+html:not(.dark) .chap-row h3 { background-image: linear-gradient(var(--ch), var(--ch)); background-size: 28px 3px; background-repeat: no-repeat; background-position: 0 100%; padding-bottom: 10px; }
+html:not(.dark) .chap-row .btn-ghost { color: var(--ch-ink); }
+html:not(.dark) .chap-stage { border-radius: 16px; padding: 14px; background: var(--color-brand-100); }
+html:not(.dark) .h1-serif { color: var(--color-brand-600); }
+html:not(.dark) .badge-accent, html:not(.dark) .badge-navy { background: var(--color-brand-100); color: var(--color-brand-800); border-color: var(--color-brand-200); }
+html:not(.dark) .progress-fill { background: #76C893; }
+html:not(.dark) .btn-secondary { background: var(--color-brand-50); border-color: var(--color-brand-300); }
+html:not(.dark) .chapter-card, html:not(.dark) .ch-card { background-color: var(--color-brand-50); }
+html:not(.dark) #hero-banner { background: radial-gradient(50% 45% at 50% 0%, color-mix(in oklch, #76C893 16%, transparent) 0%, transparent 70%), linear-gradient(180deg, var(--color-brand-100) 0%, var(--color-brand-50) 100%); }
+html:not(.dark) body { background: var(--color-brand-50); }
