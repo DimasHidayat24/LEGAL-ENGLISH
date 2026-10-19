@@ -979,7 +979,7 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                     : 'bg-[#151515] text-[#A8A8A8] border-white/[0.08]'
                 }`}
               >
-                Incorrect ({activeQuestions.length - currentResult.correctAnswers})
+                Incorrect / Unanswered ({activeQuestions.length - currentResult.correctAnswers})
               </button>
               <button
                 onClick={() => { setReviewFilter('FLAGGED'); setReviewQuestionIdx(0); }}
