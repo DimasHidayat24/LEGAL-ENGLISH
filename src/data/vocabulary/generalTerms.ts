@@ -216,6 +216,7 @@ export const generalLegalTerms: LegalTerm[] = [
   {
     id: 'authority',
     term: 'AUTHORITY',
+    pronunciation: '/əˈθɔːrəti/',
     indonesianMeaning: 'Kewenangan / Otoritas hukum / Yurisprudensi rujukan',
     partOfSpeech: 'Noun',
     category: 'General Legal Terms',
