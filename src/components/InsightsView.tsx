@@ -14,31 +14,31 @@ export const InsightsView: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8">
       
       {/* Header */}
-      <div className="border-b border-white/[0.08] pb-6">
+      <div className="border-b border-line pb-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <Feather className="w-4 h-4 text-white" />
-              <span className="text-[11px] font-sans tracking-widest uppercase text-white font-semibold">
-                LEXA EDITORIAL JOURNAL
+              <Feather className="w-4 h-4 text-ink" />
+              <span className="text-[11px] font-sans tracking-widest uppercase text-ink font-semibold">
+                Lexa Insights
               </span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#F2F2F2] tracking-tight">
+            <h1 className="text-3xl sm:text-[44px] font-medium text-ink tracking-[-0.035em] leading-[1.1]">
               Legal English Insights
             </h1>
-            <p className="text-sm sm:text-base text-[#A8A8A8] font-sans mt-2 max-w-3xl leading-relaxed">
-              Scholarly essays and linguistic analyses grounded in Indonesian statutory frameworks and Mahkamah Agung jurisprudence.
+            <p className="text-sm sm:text-base text-muted font-sans mt-2 max-w-3xl leading-relaxed">
+              Short essays on legal language, grounded in Indonesian statutes and Mahkamah Agung decisions.
             </p>
           </div>
         </div>
       </div>
 
-      /* Main Grid: Articles Menu (4 cols) + Editorial Article Reader (8 cols) */
+      {/* Main Grid: Articles Menu (4 cols) + Editorial Article Reader (8 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left Column: Article List */}
         <div className="lg:col-span-4 space-y-3">
-          <span className="text-xs font-sans uppercase tracking-wider text-[#A8A8A8] block mb-1 px-1 font-semibold">
+          <span className="text-xs font-sans text-muted block mb-1 px-1 font-semibold">
             Featured Essays ({editorialArticlesList.length})
           </span>
 
@@ -51,22 +51,22 @@ export const InsightsView: React.FC = () => {
                   onClick={() => setSelectedArticleId(article.id)}
                   className={`p-4.5 border transition-all cursor-pointer rounded-2xl ${
                     isSelected
-                      ? 'bg-[#1C1C1C] border-white/30 shadow-[0_10px_25px_rgba(0,0,0,0.5)] font-medium'
-                      : 'lexa-card hover:border-white/[0.14]'
+                      ? 'bg-surface-3 border-line-strong font-medium'
+                      : 'lexa-card hover:border-line-strong'
                   }`}
                 >
-                  <div className="flex items-center justify-between text-[10px] font-sans text-[#A8A8A8] mb-1.5 font-medium">
+                  <div className="flex items-center justify-between text-[11px] font-sans text-muted mb-1.5 font-medium">
                     <span className="uppercase px-2 py-0.5 badge-navy rounded-full font-semibold">
                       {article.category}
                     </span>
                     <span>{article.readTime}</span>
                   </div>
 
-                  <h3 className="font-sans font-bold text-sm text-[#F2F2F2] leading-snug">
+                  <h3 className="font-serif font-semibold text-sm text-ink leading-snug">
                     {article.title}
                   </h3>
 
-                  <p className="text-xs text-[#A8A8A8] font-sans italic mt-1 line-clamp-2">
+                  <p className="text-xs text-muted font-sans italic mt-1 line-clamp-2">
                     {article.titleId}
                   </p>
                 </div>
@@ -76,49 +76,49 @@ export const InsightsView: React.FC = () => {
         </div>
 
         {/* Right Column: Editorial Reading Layout */}
-        <div className="lg:col-span-8 p-6 sm:p-12 rounded-3xl glass-panel-deep liquid-lens space-y-8">
+        <div className="lg:col-span-8 p-6 sm:p-12 rounded-2xl glass-panel-deep liquid-lens space-y-8">
           
           {/* Article Header */}
-          <div className="border-b border-white/[0.08] pb-8 space-y-4">
-            <div className="flex items-center gap-3 text-xs font-sans text-[#A8A8A8] font-medium">
+          <div className="border-b border-line pb-8 space-y-4">
+            <div className="flex items-center gap-3 text-xs font-sans text-muted font-medium">
               <span className="uppercase px-2.5 py-0.5 badge-accent rounded-full font-medium">
                 {activeArticle.category}
               </span>
               <span className="flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-white" /> {activeArticle.readTime}
+                <Clock className="w-3.5 h-3.5 text-ink" /> {activeArticle.readTime}
               </span>
               <span className="flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5 text-white" /> {activeArticle.publishDate}
+                <Calendar className="w-3.5 h-3.5 text-ink" /> {activeArticle.publishDate}
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#F2F2F2] leading-tight tracking-tight">
+            <h1 className="text-3xl sm:text-[44px] font-medium text-ink tracking-[-0.035em] leading-[1.1]">
               {activeArticle.title}
             </h1>
 
-            <p className="text-base font-sans italic text-[#A8A8A8]">
+            <p className="text-base font-sans italic text-muted">
               {activeArticle.titleId}
             </p>
 
-            <div className="text-xs font-sans text-[#A8A8A8] pt-2 font-medium">
-              <strong className="text-[#F2F2F2] font-semibold">By:</strong> {activeArticle.author}
+            <div className="text-xs font-sans text-muted pt-2 font-medium">
+              <strong className="text-ink font-semibold">By:</strong> {activeArticle.author}
             </div>
 
-            <div className="p-4 rounded-2xl lexa-surface-subtle text-xs sm:text-sm font-sans text-[#A8A8A8] leading-relaxed">
-              <strong className="text-[#F2F2F2] font-semibold">Abstract:</strong> {activeArticle.summary}
+            <div className="p-4 rounded-2xl lexa-surface-subtle text-xs sm:text-sm font-sans text-muted leading-relaxed">
+              <strong className="text-ink font-semibold">Abstract:</strong> {activeArticle.summary}
             </div>
           </div>
 
           {/* Key Takeaways Box */}
-          <div className="p-5 rounded-2xl bg-[#151515]/60 border border-white/[0.08] space-y-3">
-            <span className="text-xs font-sans uppercase tracking-wider text-[#F2F2F2] font-semibold flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-white" />
+          <div className="p-5 rounded-2xl bg-surface/60 border border-line space-y-3">
+            <span className="text-xs font-sans uppercase tracking-wider text-ink font-semibold flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-ink" />
               Key Jurisprudential Takeaways
             </span>
-            <ul className="space-y-1.5 text-xs sm:text-sm font-sans text-[#A8A8A8]">
+            <ul className="space-y-1.5 text-xs sm:text-sm font-sans text-muted">
               {activeArticle.keyTakeaways.map((takeaway, idx) => (
                 <li key={idx} className="flex items-start gap-2">
-                  <span className="text-white font-bold">•</span>
+                  <span className="text-ink font-bold">•</span>
                   <span>{takeaway}</span>
                 </li>
               ))}
@@ -126,18 +126,18 @@ export const InsightsView: React.FC = () => {
           </div>
 
           {/* Article Markdown Rendered Body */}
-          <div className="font-serif text-sm sm:text-base leading-[1.75] text-[#F2F2F2] space-y-6">
+          <div className="font-legal text-sm sm:text-base leading-[1.75] text-ink space-y-6">
             {activeArticle.contentMarkdown.split('\n\n').map((para, pIdx) => {
               if (para.startsWith('### ')) {
                 return (
-                  <h3 key={pIdx} className="font-sans font-extrabold text-xl sm:text-2xl text-[#F2F2F2] pt-4 border-b border-white/[0.08] pb-2 tracking-tight">
+                  <h3 key={pIdx} className="font-sans font-semibold text-xl sm:text-2xl text-ink pt-4 border-b border-line pb-2 tracking-tight">
                     {para.replace('### ', '')}
                   </h3>
                 );
               }
               if (para.startsWith('* ')) {
                 return (
-                  <div key={pIdx} className="pl-4 border-l-2 border-white/40 space-y-1 text-sm text-[#A8A8A8] font-sans">
+                  <div key={pIdx} className="pl-4 border-l-2 border-accent space-y-1 text-sm text-muted font-sans">
                     {para.split('\n').map((line, lIdx) => (
                       <p key={lIdx}>{line.replace('* ', '')}</p>
                     ))}
@@ -145,10 +145,10 @@ export const InsightsView: React.FC = () => {
                 );
               }
               if (para.startsWith('---')) {
-                return <hr key={pIdx} className="border-white/[0.08] my-4" />;
+                return <hr key={pIdx} className="border-line my-4" />;
               }
               return (
-                <p key={pIdx} className="leading-[1.75] text-[#F2F2F2]">
+                <p key={pIdx} className="leading-[1.75] text-ink">
                   {para}
                 </p>
               );
@@ -157,15 +157,15 @@ export const InsightsView: React.FC = () => {
 
 
           {/* Footer of Article */}
-          <div className="pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-xs font-sans text-[#A8A8A8]">
-              Published in <em className="text-[#F2F2F2]">LEXA Journal of International &amp; Comparative Legal Studies</em>
+          <div className="pt-8 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-xs font-sans text-muted">
+              Published in <em className="text-ink">Lexa Insights</em>
             </div>
             <button
               onClick={() => setSelectedTab('learn')}
-              className="btn-primary px-5 py-2.5 text-xs uppercase tracking-wider flex items-center gap-1.5 font-semibold"
+              className="btn-primary px-5 py-2.5 text-xs flex items-center gap-1.5 font-medium"
             >
-              <span>Explore Related Curriculum Lessons</span>
+              <span>Related lessons</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
