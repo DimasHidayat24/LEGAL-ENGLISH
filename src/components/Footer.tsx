@@ -1,100 +1,82 @@
 import React from 'react';
 import { useStudy } from '../context/StudyContext';
 import { LexaMark } from './Navbar';
-import { Sun, Moon } from 'lucide-react';
 import { sampleLegalDocuments } from '../data/documentsData';
 
 const shortDocTitle: Record<string, string> = {
-  'doc-cross-border-sales': 'Sale of Goods Agreement (CISG)',
-  'doc-nda-bilateral': 'Bilateral Non-Disclosure Agreement',
-  'doc-arbitration-award': 'SIAC Arbitral Award Excerpt',
-  'doc-legal-opinion': 'Foreign Investment Legal Opinion',
-  'doc-share-purchase-m-a': 'Share Purchase Agreement (M&A)',
+  'doc-cross-border-sales': 'Sale of Goods (CISG)',
+  'doc-nda-bilateral': 'Bilateral NDA',
+  'doc-arbitration-award': 'SIAC Award Excerpt',
+  'doc-legal-opinion': 'Legal Opinion',
+  'doc-share-purchase-m-a': 'Share Purchase (M&A)',
 };
 
 export const Footer: React.FC = () => {
-  const { setSelectedTab, setActiveDocId, theme, setTheme } = useStudy();
-  // 509 entries in the dictionary (static so the footer does not pull the dictionary into the first bundle)
-  const termCount = 500;
-
-  const linkCls = 'hover:text-ink hover:underline underline-offset-2 text-left cursor-pointer transition-colors';
+  const { setSelectedTab, setActiveDocId } = useStudy();
+  const go = (tab: string) => () => setSelectedTab(tab);
+  const link = 'ft-link text-left cursor-pointer';
 
   return (
-    <footer className="relative border-t border-line bg-bg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          <div className="space-y-3">
-            <span className="flex items-center gap-2 select-none"><LexaMark /><span className="font-brand font-semibold text-[18px] tracking-[-0.045em] text-ink leading-none">lexa</span></span>
-            <p className="text-sm leading-relaxed text-muted">
-              Legal English for Indonesian law students — learned through Indonesian law, side by side.
-            </p>
+    <footer className="lx-footer relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
+        {/* CTA band */}
+        <div className="ft-band rounded-xl px-6 sm:px-9 py-8 sm:py-9 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <h3 className="font-legal text-[26px] sm:text-[30px] leading-tight tracking-[-0.01em]">Read your first clause today.</h3>
+            <p className="ft-muted text-sm mt-2">Annotated contracts, 509 terms, and drafting templates — free for students.</p>
           </div>
+          <div className="flex flex-wrap gap-3">
+            <button onClick={go('learn')} className="ft-btn-solid h-11 px-5 rounded-lg text-[15px] font-medium cursor-pointer">Start learning</button>
+            <button onClick={go('documents')} className="ft-btn-ghost h-11 px-5 rounded-lg text-[15px] font-medium cursor-pointer">Browse documents</button>
+          </div>
+        </div>
 
-          <div className="space-y-3">
-            <h4 className="text-sm font-semibold text-ink">Lessons</h4>
-            <ul className="space-y-2 text-sm text-muted">
-              <li><button onClick={() => setSelectedTab('learn')} className={linkCls}>Foundation & pronominals</button></li>
-              <li><button onClick={() => setSelectedTab('comparative')} className={linkCls}>KUHPerdata vs Common Law</button></li>
-              <li><button onClick={() => setSelectedTab('learn')} className={linkCls}>International arbitration</button></li>
-              <li><button onClick={() => setSelectedTab('write')} className={linkCls}>Legal memo & IRAC</button></li>
-              <li><button onClick={() => setSelectedTab('vocabulary')} className={linkCls}>{termCount}+ legal terms dictionary</button></li>
+        {/* Columns + brand */}
+        <div className="grid grid-cols-2 md:grid-cols-[repeat(3,minmax(0,auto))_1fr] gap-x-12 gap-y-10 mt-16">
+          <div>
+            <h4 className="text-sm font-semibold mb-4">Learn</h4>
+            <ul className="space-y-2.5 text-sm ft-muted">
+              <li><button onClick={go('learn')} className={link}>Lessons</button></li>
+              <li><button onClick={go('vocabulary')} className={link}>Vocabulary</button></li>
+              <li><button onClick={go('comparative')} className={link}>Same Concept</button></li>
+              <li><button onClick={go('practice')} className={link}>Practice</button></li>
+              <li><button onClick={go('write')} className={link}>Writing Lab</button></li>
             </ul>
           </div>
-
-          <div className="space-y-3">
-            <h4 className="text-sm font-semibold text-ink">Document library</h4>
-            <ul className="space-y-2 text-sm text-muted">
+          <div>
+            <h4 className="text-sm font-semibold mb-4">Documents</h4>
+            <ul className="space-y-2.5 text-sm ft-muted">
               {sampleLegalDocuments.map((doc) => (
                 <li key={doc.id}>
-                  <button
-                    onClick={() => {
-                      setActiveDocId(doc.id);
-                      setSelectedTab('documents');
-                    }}
-                    className={linkCls}
-                  >
+                  <button onClick={() => { setActiveDocId(doc.id); setSelectedTab('documents'); }} className={link}>
                     {shortDocTitle[doc.id] ?? doc.title}
                   </button>
                 </li>
               ))}
             </ul>
           </div>
-
-          <div className="space-y-3 md:border-l md:border-line md:pl-6">
-            <h4 className="text-sm font-semibold text-ink">About the material</h4>
-            <p className="text-sm leading-relaxed text-muted">
-              Built on plain legal English principles and Indonesian civil law. Model contracts and award excerpts are written for study, not as legal advice.
-            </p>
-            <p className="pt-1 text-sm text-muted">Made in Malang for Indonesian law students</p>
+          <div>
+            <h4 className="text-sm font-semibold mb-4">Lexa</h4>
+            <ul className="space-y-2.5 text-sm ft-muted">
+              <li><button onClick={go('insights')} className={link}>Insights</button></li>
+              <li><button onClick={go('mystudy')} className={link}>My Study</button></li>
+            </ul>
+          </div>
+          <div className="col-span-2 md:col-span-1 md:justify-self-end md:max-w-[300px]">
+            <span className="flex items-center gap-2 select-none"><LexaMark /><span className="font-brand font-semibold text-[18px] tracking-[-0.045em] leading-none">lexa</span></span>
+            <p className="ft-muted text-sm leading-relaxed mt-3">Legal English for Indonesian law students, learned through Indonesian law. For study, not legal advice.</p>
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-line flex flex-col sm:flex-row items-center justify-between text-sm text-muted gap-4">
-          <p>© {new Date().getFullYear()} Lexa. For educational purposes.</p>
-          <div className="flex items-center gap-5">
-            <button onClick={() => setSelectedTab('insights')} className={linkCls}>Lexa Insights</button>
-            <div className="flex items-center border border-line rounded-full p-0.5 bg-surface" role="group" aria-label="Theme">
-              <button
-                onClick={() => setTheme('light')}
-                aria-pressed={theme === 'light'}
-                className={`px-2.5 py-1 rounded-full flex items-center gap-1 text-xs font-medium cursor-pointer ${
-                  theme === 'light' ? 'bg-accent text-on-accent' : 'text-muted hover:text-ink'
-                }`}
-              >
-                <Sun className="w-3 h-3" /> Light
-              </button>
-              <button
-                onClick={() => setTheme('dark')}
-                aria-pressed={theme === 'dark'}
-                className={`px-2.5 py-1 rounded-full flex items-center gap-1 text-xs font-medium cursor-pointer ${
-                  theme === 'dark' ? 'bg-accent text-on-accent' : 'text-muted hover:text-ink'
-                }`}
-              >
-                <Moon className="w-3 h-3" /> Dark
-              </button>
-            </div>
-          </div>
+        <div className="ft-rule mt-14 pt-6 flex items-center justify-between text-sm">
+          <p>© Lexa · Made in Malang</p>
+          <p>{new Date().getFullYear()}</p>
         </div>
+      </div>
+
+      {/* Oversized wordmark, cropped by the page edge */}
+      <div aria-hidden="true" className="ft-word select-none pointer-events-none max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        lexa
       </div>
     </footer>
   );
