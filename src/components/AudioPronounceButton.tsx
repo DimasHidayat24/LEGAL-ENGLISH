@@ -79,18 +79,18 @@ export const AudioPronounceButton: React.FC<AudioPronounceButtonProps> = ({
       aria-label={`Listen to pronunciation of ${term}`}
       title={tooltipText}
       tabIndex={0}
-      className={`relative inline-flex items-center justify-center rounded-full border transition-all duration-200 cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 ${buttonDimensions} ${
+      className={`relative inline-flex items-center justify-center rounded-full border transition-all duration-200 cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 ${buttonDimensions} ${
         isPlaying
-          ? 'bg-[#242424] text-white border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.15)] scale-105'
-          : 'bg-[#151515] text-[#A8A8A8] border-white/[0.08] hover:text-[#F2F2F2] hover:border-white/[0.2] hover:bg-[#1C1C1C] hover:shadow-xs'
+          ? 'bg-accent text-on-accent border-accent scale-105'
+          : 'bg-surface text-muted border-line hover:text-ink hover:border-line-strong hover:bg-surface-3 hover:shadow-xs'
       } ${className}`}
     >
       <div className="relative flex items-center justify-center">
         {isPlaying ? (
           <div className="relative flex items-center justify-center">
             {/* Subtle audio wave pulse */}
-            <span className="absolute -inset-1 rounded-full bg-white/10 animate-ping" />
-            <Volume2 className={`${iconSize} text-white animate-pulse`} />
+            <span className="absolute -inset-1 rounded-full bg-surface-3 animate-ping" />
+            <Volume2 className={`${iconSize} text-ink animate-pulse`} />
           </div>
         ) : (
           <Volume2 className={`${iconSize} transition-transform duration-150 group-hover:scale-110`} />
@@ -98,7 +98,7 @@ export const AudioPronounceButton: React.FC<AudioPronounceButtonProps> = ({
       </div>
 
       {showLabel && (
-        <span className={`ml-1.5 text-xs font-sans font-medium ${isPlaying ? 'text-white' : 'text-inherit'}`}>
+        <span className={`ml-1.5 text-xs font-sans font-medium ${isPlaying ? 'text-ink' : 'text-inherit'}`}>
           {isPlaying ? 'Playing...' : 'Pronounce'}
         </span>
       )}
