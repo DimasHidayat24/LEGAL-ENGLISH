@@ -82,7 +82,7 @@ export const sampleLegalDocuments: LegalDocument[] = [
     difficulty: 'Fundamental',
     readingTimeMinutes: 12,
     keyTermIds: ['whereas', 'hereby', 'shall', 'injunction', 'breach', 'without-prejudice', 'severability'],
-    abstractEn: 'A high-grade mutual confidentiality contract drafted under English law governing trade secrets protection, proprietary source code exchange, and injunction remedies.',
+    abstractEn: 'A mutual confidentiality contract drafted under English law governing trade secrets protection, proprietary source code exchange, and injunction remedies.',
     abstractId: 'Perjanjian kerahasiaan timbal balik berstandar hukum Inggris yang mengatur perlindungan rahasia dagang, pertukaran data teknologi, dan hak memohon penetapan injunksi pengadilan.',
     parties: ['Horizon AI Technologies Ltd. (Discloser)', 'PT Finansial Solusi Digital (Recipient)'],
     downloadableFilename: 'Mutual_Non_Disclosure_Agreement_Horizon_PTFSD.pdf',
@@ -125,7 +125,7 @@ export const sampleLegalDocuments: LegalDocument[] = [
     governingLaw: 'Singapore International Arbitration Act',
     difficulty: 'Advanced',
     readingTimeMinutes: 22,
-    keyTermIds: ['arbitration', 'plaintiff', 'defendant', 'breach', 'damages', 'bona-fide', 'pacta-sunt-servanda', 'preponderance-of-evidence'],
+    keyTermIds: ['arbitration', 'plaintiff', 'defendant', 'breach', 'damages', 'mala-fide', 'pacta-sunt-servanda', 'preponderance-of-evidence'],
     abstractEn: 'A redacted excerpt from a final binding arbitral award rendered under the SIAC Rules addressing repudiatory breach of contract, cross-border damages valuation, and the doctrine of pacta sunt servanda.',
     abstractId: 'Petikan putusan final arbitrase internasional di bawah Peraturan SIAC mengenai pemutusan kontrak sepihak, perhitungan ganti rugi lintas batas, dan penegakan asas pacta sunt servanda.',
     parties: ['Claimant: Ocean Energy Logistics Ltd.', 'Respondent: PT Tambang Mineral Perkasa'],
@@ -149,7 +149,7 @@ export const sampleLegalDocuments: LegalDocument[] = [
         id: 'arb-3',
         paragraphNumber: 'STANDARD OF PROOF & LIABILITY ¶112',
         text: 'Having examined the expert testimony and contemporaneous email records, the Tribunal concludes that the Claimant has established by a Preponderance of the Evidence that the Respondent acted in bad faith (mala fide) in reallocating the vessel quotas to a third-party purchaser at a higher spot rate.',
-        highlightedTermIds: ['preponderance-of-evidence', 'bona-fide', 'liability'],
+        highlightedTermIds: ['preponderance-of-evidence', 'mala-fide', 'liability'],
         indonesianSummary: 'Penerapan standar beban pembuktian perdata (preponderance of evidence) atas adanya itikad buruk pengalihan kuota kapal.'
       },
       {
