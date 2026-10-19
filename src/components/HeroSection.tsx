@@ -210,7 +210,8 @@ export const HeroSection: React.FC = () => {
             {chapters.map((c, i) => (
               <li
                 key={c.n}
-                className="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_minmax(0,1.2fr)] gap-x-12 border-b border-line lg:border-b-0"
+                data-ch={i + 1}
+                className="chap-row grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_minmax(0,1.2fr)] gap-x-12 border-b border-line lg:border-b-0"
               >
                 {/* Section mark on a vertical rule */}
                 <div className="relative lg:border-r border-line pt-10 lg:py-12 lg:pr-10 flex lg:block items-baseline gap-4">
@@ -218,17 +219,17 @@ export const HeroSection: React.FC = () => {
                     §&thinsp;{i + 1}
                   </span>
                   <span className="lg:hidden text-sm font-mono text-muted">{c.n}</span>
-                  <span className="hidden lg:block absolute -right-[4.5px] top-[60px] w-2 h-2 rounded-full bg-ink" aria-hidden="true" />
+                  <span className="hidden lg:block absolute -right-[4.5px] top-[60px] w-2 h-2 rounded-full chap-dot" aria-hidden="true" />
                 </div>
                 <div className="pt-4 lg:py-12">
-                  <p className="hidden lg:block text-sm font-mono text-muted mb-3">{c.n}</p>
+                  <p className="hidden lg:block mb-3"><span className="chap-chip">{c.n}</span></p>
                   <h3 className="text-2xl sm:text-[28px] font-medium tracking-[-0.03em] text-ink">{c.name}</h3>
                   <p className="text-muted mt-3 leading-relaxed max-w-sm">{c.line}</p>
                   <button onClick={() => setSelectedTab(c.tab)} className="btn-ghost text-sm px-0 mt-5">
                     {c.name} in Lexa <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
-                <div className="pt-6 pb-10 lg:py-12">{c.snippet}</div>
+                <div className="pt-6 pb-10 lg:py-12"><div className="chap-stage">{c.snippet}</div></div>
               </li>
             ))}
           </ol>
