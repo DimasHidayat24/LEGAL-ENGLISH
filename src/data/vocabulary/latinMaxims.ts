@@ -64,6 +64,37 @@ export const latinMaximsTerms: LegalTerm[] = [
     civilLawEquivalent: 'Itikad Baik (Pasal 1338 ayat 3 KUHPerdata)'
   },
   {
+    id: 'mala-fide',
+    term: 'MALA FIDE',
+    pronunciation: '/ˌmælə ˈfaɪdiː/',
+    partOfSpeech: 'Latin phrase / Adjective / Adverb',
+    category: 'Latin Legal Terms',
+    difficulty: 'Fundamental',
+    termType: 'Latin term',
+    jurisdiction: 'General/Common Law',
+    indonesianMeaning: 'Dengan itikad buruk / Beritikad tidak baik (dengan niat menipu atau merugikan)',
+    plainEnglish: 'Done in bad faith: dishonestly, with knowledge of wrongdoing or an intention to deceive or harm.',
+    legalDefinition: 'In bad faith; with intent to deceive, defraud, or act against the legitimate interests of another party.',
+    indonesianLegalConcept: 'Lawan dari asas itikad baik (Pasal 1338 ayat 3 KUHPerdata). Itikad buruk dapat menjadi dasar ganti rugi, pembatalan, atau hilangnya perlindungan hukum (misalnya pembeli beritikad buruk tidak dilindungi).',
+    legalFunction: 'Establishes culpable intent that aggravates liability, defeats good-faith protections, and supports awards of damages.',
+    exampleSentenceEn: 'The Tribunal found that the Respondent acted mala fide when it resold the allocated cargo to a third party.',
+    exampleSentenceId: 'Majelis arbitrase menyatakan bahwa Termohon bertindak dengan itikad buruk ketika menjual kembali kargo yang telah dialokasikan kepada pihak ketiga.',
+    authenticClauseExcerpt: 'Neither Party shall be liable for any act or omission made in good faith, save where such act or omission is shown to have been made mala fide or with wilful misconduct.',
+    authenticClauseSource: 'Model Limitation of Liability Carve-Out',
+    contextExamples: {
+      contracts: 'The exclusion of liability shall not apply to losses caused by fraud or acts committed mala fide.',
+      courtDecisions: 'A purchaser acting mala fide cannot rely on the protection afforded to bona fide purchasers.',
+      legalOpinions: 'Evidence of mala fide conduct in the transfer may expose the directors to personal liability.'
+    },
+    commonMistakesOrNuances: 'Bedakan "Mala fide" (itikad buruk) dengan "Bona fide" (itikad baik). Dalam putusan berbahasa Inggris sering ditulis "bad faith (mala fide)".',
+    commonCollocations: ['acted mala fide', 'mala fide purchaser', 'mala fide intent', 'mala fide conduct'],
+    relatedTerms: ['BONA FIDE', 'GOOD FAITH', 'FRAUD'],
+    relatedPhrases: ['Bad faith', 'Wilful misconduct'],
+    commonlyFoundIn: ['Arbitral Awards', 'Limitation of Liability Clauses', 'Court Judgments'],
+    connectedDocIds: [{ docId: 'doc-arbitration-award', title: 'SIAC Arbitral Award Excerpt' }],
+    civilLawEquivalent: 'Itikad Buruk (Kwade trouw)'
+  },
+  {
     id: 'prima-facie',
     term: 'PRIMA FACIE',
     pronunciation: '/ˌpraɪmə ˈfeɪʃiː/',
