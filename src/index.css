@@ -1308,3 +1308,24 @@ html:not(.dark) .btn-secondary { background: var(--color-brand-50); border-color
 html:not(.dark) .chapter-card, html:not(.dark) .ch-card { background-color: var(--color-brand-50); }
 html:not(.dark) #hero-banner { background: radial-gradient(50% 45% at 50% 0%, color-mix(in oklch, #76C893 16%, transparent) 0%, transparent 70%), linear-gradient(180deg, var(--color-brand-100) 0%, var(--color-brand-50) 100%); }
 html:not(.dark) body { background: var(--color-brand-50); }
+
+/* Footer — dark band in the brand scale (Cointrix-style structure) */
+.lx-footer { --ft-bg: var(--color-brand-950); --ft-fg: var(--color-brand-50); --ft-mut: var(--color-brand-300); --ft-line: color-mix(in oklch, var(--color-brand-50) 12%, transparent);
+  background: var(--ft-bg); color: var(--ft-fg); }
+html.dark .lx-footer { --ft-bg: #0E0E0E; --ft-fg: #EDEDED; --ft-mut: #A1A1A1; border-top: 1px solid #262626; }
+.lx-footer .ft-muted { color: var(--ft-mut); }
+.lx-footer .ft-link { transition: color 150ms ease; }
+.lx-footer .ft-link:hover { color: var(--ft-fg); }
+.lx-footer .ft-band { background: color-mix(in oklch, var(--ft-fg) 7%, transparent); border: 1px solid var(--ft-line); }
+.lx-footer .ft-btn-solid { background: var(--ft-fg); color: var(--ft-bg); }
+.lx-footer .ft-btn-solid:hover { opacity: .9; }
+.lx-footer .ft-btn-ghost { border: 1px solid color-mix(in oklch, var(--ft-fg) 28%, transparent); color: var(--ft-fg); }
+.lx-footer .ft-btn-ghost:hover { background: color-mix(in oklch, var(--ft-fg) 8%, transparent); }
+.lx-footer .ft-icon { width: 36px; height: 36px; display: inline-grid; place-items: center; border-radius: 9px; border: 1px solid var(--ft-line); color: var(--ft-mut); transition: color 150ms, border-color 150ms; }
+.lx-footer .ft-icon:hover, .lx-footer .ft-icon[aria-pressed="true"] { color: var(--ft-fg); border-color: color-mix(in oklch, var(--ft-fg) 35%, transparent); }
+html:not(.dark) .lx-footer .ft-icon[aria-pressed="true"] { color: #76C893; }
+.lx-footer .ft-rule { border-top: 1px solid var(--ft-line); color: var(--ft-mut); }
+.lx-footer .ft-word { font-family: var(--font-brand); font-weight: 600; letter-spacing: -0.07em; line-height: .78; font-size: clamp(120px, 27vw, 400px);
+  color: color-mix(in oklch, var(--ft-fg) 7%, transparent); margin-top: 28px; margin-bottom: -0.2em; white-space: nowrap; }
+.lx-footer .bg-accent { background: var(--ft-fg); color: var(--ft-bg); }
+.lx-footer .ft-word { font-size: clamp(150px, 31vw, 470px); text-align: center; letter-spacing: -0.075em; }
