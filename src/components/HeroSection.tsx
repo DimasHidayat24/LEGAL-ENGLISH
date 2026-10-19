@@ -1,504 +1,448 @@
-import { curriculumLessons } from '../data/curriculumData';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStudy } from '../context/StudyContext';
-import { legalVocabularyList } from '../data/vocabularyData';
 import { sampleLegalDocuments } from '../data/documentsData';
-import { BookOpen, FileText, Scale, ArrowRight, ChevronRight } from 'lucide-react';
-import { AnimatedNavyWaveHeroBackground } from './AnimatedNavyWaveHeroBackground';
+import type { LegalTerm } from '../types';
+import { ArrowRight, ChevronRight, Bookmark, BookOpen } from 'lucide-react';
+import { AnnotatedPage } from './AnnotatedPage';
+
+const PREVIEW_TERM_IDS = ['whereas', 'pursuant-to', 'hereby', 'shall', 'notwithstanding', 'breach', 'indemnity', 'liability'];
+
+const SOURCES = ['KUHPerdata', 'HIR/RBg', 'UU PT', 'CISG', 'SIAC Rules', 'New York Convention 1958', 'UNIDROIT'];
+
+const tracks = [
+  {
+    tab: 'learn',
+    label: 'Track 1',
+    title: 'Foundations',
+    body: 'Legal English vs everyday English, pronominal connectors (hereby, thereof, therein), shall vs may vs must, and core Latin maxims.',
+    cta: 'Start the foundations',
+  },
+  {
+    tab: 'documents',
+    label: 'Track 2',
+    title: 'Contracts & documents',
+    body: 'Read commercial contracts, NDAs, liquidated damages, IP indemnities, and governing-law boilerplate clause by clause.',
+    cta: 'Read documents',
+  },
+  {
+    tab: 'write',
+    label: 'Track 3',
+    title: 'Legal drafting',
+    body: 'Write IRAC memos, legal opinions, demand letters (somasi), and client emails in clear legal English.',
+    cta: 'Open the writing lab',
+  },
+  {
+    tab: 'learn',
+    label: 'Track 4',
+    title: 'Cross-border practice',
+    body: 'International arbitration (SIAC / ICC), the New York Convention 1958, cross-border M&A, and foreign investment in Indonesia.',
+    cta: 'See advanced lessons',
+  },
+];
+
+const comparisons = [
+  { source: 'KUHPerdata', id: 'Wanprestasi', en: 'Breach of contract / default' },
+  { source: 'Pasal 1365 KUHPerdata', id: 'Perbuatan Melawan Hukum', en: 'Tort / negligence' },
+  { source: 'Pasal 1320 KUHPerdata', id: 'Kausa yang halal', en: 'Consideration & legality' },
+];
+
+// Drafting verbs — the "Deconstruct" snippet.
+const modalVerbs = [
+  { word: 'shall', fn: 'Imposes a duty', id: 'wajib' },
+  { word: 'may', fn: 'Grants a discretion', id: 'dapat / berhak' },
+  { word: 'shall not', fn: 'Prohibits', id: 'dilarang' },
+];
+
+/** Highlight selected phrases inside a plain string (mini snippets only). */
+const highlight = (text: string, phrases: string[]) => {
+  const re = new RegExp(`(${phrases.map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'g');
+  return text.split(re).map((part, i) =>
+    phrases.includes(part) ? (
+      <span key={i} className="doc-term-highlight">
+        {part}
+      </span>
+    ) : (
+      <React.Fragment key={i}>{part}</React.Fragment>
+    ),
+  );
+};
+
+const SectionHeader: React.FC<{
+  eyebrow?: string;
+  title: React.ReactNode;
+  body?: string;
+  action?: React.ReactNode;
+}> = ({ eyebrow, title, body, action }) => (
+  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 sm:mb-14">
+    <div className="max-w-2xl">
+      {eyebrow && <p className="text-sm text-muted mb-3">{eyebrow}</p>}
+      <h2 className="display-h2 text-[32px] sm:text-[44px] text-ink">{title}</h2>
+      {body && <p className="text-base sm:text-lg text-muted mt-4 leading-relaxed">{body}</p>}
+    </div>
+    {action}
+  </div>
+);
 
 export const HeroSection: React.FC = () => {
-  const { setSelectedTab, setActiveLookupTermId, setActiveDocId, languageMode, theme } = useStudy();
-  const [hoveredTermId, setHoveredTermId] = useState<string | null>('whereas');
+  const { setSelectedTab, setActiveLookupTermId, setActiveDocId, languageMode } = useStudy();
+  const [previewTerms, setPreviewTerms] = useState<Record<string, LegalTerm>>({});
 
-  const activeHoverTerm = legalVocabularyList.find(t => t.id === hoveredTermId) || legalVocabularyList[0];
+  // Vocabulary is large — load it on demand so it stays out of the initial bundle.
+  useEffect(() => {
+    let alive = true;
+    import('../data/vocabularyData').then(({ legalVocabularyList }) => {
+      if (!alive) return;
+      const map: Record<string, LegalTerm> = {};
+      PREVIEW_TERM_IDS.forEach((id) => {
+        const t = legalVocabularyList.find((x) => x.id === id);
+        if (t) map[id] = t;
+      });
+      setPreviewTerms(map);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const indemnity = previewTerms['indemnity'];
+  const firstDoc = sampleLegalDocuments[0];
+  const recital = firstDoc.paragraphs.find((p) => p.paragraphNumber === 'RECITALS') ?? firstDoc.paragraphs[0];
+  const recitalText = recital.text.length > 210 ? `${recital.text.slice(0, 210).trimEnd()}…` : recital.text;
+
+  const openDoc = (id: string) => {
+    setActiveDocId(id);
+    setSelectedTab('documents');
+  };
+
+  const chapters = [
+    {
+      n: '1.0',
+      name: 'Read',
+      line: 'Model contracts and award excerpts, annotated clause by clause.',
+      tab: 'documents',
+      snippet: (
+        <div className="paper-card p-5 text-left">
+          <div className="flex items-center justify-between gap-3 pb-3 mb-3 border-b border-line">
+            <span className="text-xs text-muted truncate">{firstDoc.documentType} · {firstDoc.governingLaw}</span>
+            <span className="text-xs text-muted shrink-0">{recital.paragraphNumber}</span>
+          </div>
+          <p className="font-legal text-[15px] leading-[1.75] text-ink">{highlight(recitalText, ['WHEREAS', 'pursuant to'])}</p>
+        </div>
+      ),
+    },
+    {
+      n: '2.0',
+      name: 'Understand',
+      line: 'Every term explained against the Indonesian concept it maps to.',
+      tab: 'vocabulary',
+      snippet: (
+        <div className="paper-card p-5 text-left">
+          {indemnity ? (
+            <>
+              <div className="flex items-center justify-between gap-3">
+                <span className="font-legal text-xl font-semibold text-ink">{indemnity.term}</span>
+                <span className="text-xs text-muted">{indemnity.partOfSpeech}</span>
+              </div>
+              <div className="mt-3 flex items-start gap-2 text-sm">
+                <span className="shrink-0 px-1.5 py-0.5 rounded-md bg-surface-3 text-[11px] font-medium text-ink-2">ID</span>
+                <span className="text-ink font-medium">{indemnity.indonesianMeaning}</span>
+              </div>
+              <p className="mt-2 text-sm text-muted leading-relaxed line-clamp-3">{indemnity.indonesianLegalConcept}</p>
+            </>
+          ) : (
+            <div className="h-24 rounded-lg bg-surface-3 animate-pulse" />
+          )}
+        </div>
+      ),
+    },
+    {
+      n: '3.0',
+      name: 'Deconstruct',
+      line: 'Why a drafter picks one word over another — and what it binds.',
+      tab: 'learn',
+      snippet: (
+        <div className="paper-card text-left overflow-hidden">
+          {modalVerbs.map((v, i) => (
+            <div key={v.word} className={`grid grid-cols-[88px_1fr_auto] items-center gap-3 px-5 py-3.5 text-sm ${i ? 'border-t border-line' : ''}`}>
+              <span className="font-legal font-semibold text-ink text-base">{v.word}</span>
+              <span className="text-ink-2">{v.fn}</span>
+              <span className="text-muted text-xs">{v.id}</span>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      n: '4.0',
+      name: 'Apply',
+      line: 'Draft memos, opinions and somasi with standard phrases.',
+      tab: 'write',
+      snippet: (
+        <div className="paper-card p-5 text-left">
+          <div className="flex items-center gap-2 pb-3 mb-3 border-b border-line">
+            <span className="text-xs text-muted">Legal memorandum · Question presented</span>
+          </div>
+          <p className="font-legal text-[15px] leading-[1.75] text-ink">
+            Whether <span className="px-1 rounded bg-surface-3 text-muted">[Party A]</span> has a lawful right to{' '}
+            <span className="px-1 rounded bg-surface-3 text-muted">[action]</span> under{' '}
+            <span className="px-1 rounded bg-surface-3 text-muted">[Law/Contract]</span> where{' '}
+            <span className="px-1 rounded bg-surface-3 text-muted">[Facts]</span>?
+          </p>
+          <p className="mt-3 text-xs text-muted">Apakah [Pihak A] memiliki hak sah untuk [tindakan]…</p>
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <div className="space-y-24 pb-20">
-      {/* 1. Main Hero Spatial Editorial Section with Animated Navy Wave Background (Hero Section Only) */}
-      <section id="hero-banner" className={`relative -mt-20 sm:-mt-28 pt-20 sm:pt-36 pb-16 sm:pb-20 overflow-hidden border-b transition-colors duration-300 ${
-        theme === 'dark' ? 'border-white/[0.08] bg-[#050505]' : 'border-black/[0.08] bg-[#F5F5F5]'
-      }`}>
-        {/* Full-bleed Animated Navy Wave Background System - Hero Section Only */}
-        <AnimatedNavyWaveHeroBackground theme={theme} />
+    <div>
+      {/* ============================== Hero ============================== */}
+      <section id="hero-banner" className="pt-14 sm:pt-20 lg:pt-24 pb-14 lg:pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-5xl mx-auto">
+            <h1 className="display-h1 text-[40px] sm:text-[64px] lg:text-[80px] text-ink">
+              Read the law like a <em className="h1-serif">lawyer</em>.
+              <br />
+              <span className="text-muted">In English.</span>
+            </h1>
 
-        {/* Content Container (z-10 above background) */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            
-            {/* Left Column: Typography & Floating Pill CTAs */}
-            <div className="lg:col-span-7 space-y-6 sm:space-y-7">
-              {/* Visual Anchor Headline */}
-              <h1 className="text-[40px] sm:text-5xl lg:text-6xl font-sans font-extrabold text-[#0C0C0C] dark:text-[#F2F2F2] tracking-[-0.04em] leading-[1.02] sm:leading-[1.05] lg:leading-[1.04] transition-colors">
-                Understand the Legal English Meanings
-              </h1>
-
-              <p className="text-base sm:text-lg text-[#444444] dark:text-[#A8A8A8] font-sans font-normal leading-relaxed max-w-2xl transition-colors">
-                Learn the language of law through documents, doctrine, and practice.
-              </p>
-
-              {/* Floating Pill CTAs */}
-              <div className="flex flex-wrap items-center gap-3.5 pt-2">
-                {/* Primary CTA: Premium floating button with rotating monochrome neon border beam and layered glow */}
-                <div className="relative inline-flex group items-center justify-center rounded-full p-[2px] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]">
-                  {/* Layer 1: Wide atmospheric soft bloom glow */}
-                  <div 
-                    className="absolute -inset-2.5 sm:-inset-3 rounded-full overflow-hidden blur-xl opacity-60 dark:opacity-75 pointer-events-none group-hover:opacity-95 group-hover:blur-2xl transition-all duration-300"
-                    aria-hidden="true"
-                  >
-                    <div className="absolute inset-[-200%] m-auto aspect-square animate-border-beam bg-monochrome-neon-glow" />
-                  </div>
-
-                  {/* Layer 2: Tight vibrant perimeter halo */}
-                  <div 
-                    className="absolute -inset-1 rounded-full overflow-hidden blur-[6px] opacity-80 dark:opacity-90 pointer-events-none group-hover:opacity-100 transition-opacity duration-300"
-                    aria-hidden="true"
-                  >
-                    <div className="absolute inset-[-200%] m-auto aspect-square animate-border-beam bg-monochrome-neon-beam" />
-                  </div>
-
-                  {/* Base border track */}
-                  <div 
-                    className="absolute inset-0 rounded-full overflow-hidden bg-white/20 dark:bg-white/20 bg-black/10 pointer-events-none"
-                    aria-hidden="true"
-                  >
-                    {/* Rotating continuous border beam */}
-                    <div className="absolute inset-[-200%] m-auto aspect-square animate-border-beam bg-monochrome-neon-beam" />
-                  </div>
-
-                  {/* Button surface */}
-                  <button
-                    onClick={() => setSelectedTab('learn')}
-                    className="relative z-10 btn-primary px-5 py-2.5 sm:px-6 sm:py-3 text-xs flex items-center gap-2 tracking-wider uppercase font-bold !border-0 cursor-pointer shadow-[0_0_15px_rgba(255,255,255,0.20)] dark:shadow-[0_0_24px_rgba(255,255,255,0.35)]"
-                  >
-                    <BookOpen className="w-4 h-4" />
-                    <span>Start Learning</span>
-                    <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
-                  </button>
-                </div>
-
-                {/* Secondary CTA: Transparent dark glass (Section 5) */}
-                <button
-                  onClick={() => setSelectedTab('documents')}
-                  className="btn-secondary px-5 py-2.5 sm:px-6 sm:py-3 text-xs flex items-center gap-2 font-medium"
-                >
-                  <FileText className="w-4 h-4 opacity-80" />
-                  <span>Explore Legal Documents</span>
-                </button>
-
-                {/* Tertiary Link */}
-                <button
-                  onClick={() => setSelectedTab('comparative')}
-                  className="px-3 py-2 text-xs font-sans font-medium text-[#555555] dark:text-[#A0A0A0] hover:text-[#0A0A0A] dark:hover:text-[#F5F5F5] flex items-center gap-1.5 cursor-pointer rounded-full hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition-colors"
-                >
-                  <span>KUHPerdata vs US Civil Law</span>
-                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
-                </button>
-              </div>
-
-              {/* Method Cards: 4 Floating Glass Tiles */}
-              <div className="pt-6 border-t border-black/[0.08] dark:border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-3.5 text-xs font-sans">
-                <div className="p-4 lexa-card liquid-lens flex flex-col justify-between">
-                  <div>
-                    <span className="text-[10px] text-[#555555] dark:text-[#A8A8A8] font-bold tracking-wider block mb-1">01. METHOD</span>
-                    <span className="font-extrabold text-sm text-[#0C0C0C] dark:text-[#F2F2F2] block">READ</span>
-                    <p className="text-[11px] text-[#555555] dark:text-[#909090] mt-1 font-normal leading-snug">Authentic contracts & SIAC awards</p>
-                  </div>
-                </div>
-
-                <div className="p-4 lexa-card liquid-lens flex flex-col justify-between">
-                  <div>
-                    <span className="text-[10px] text-[#555555] dark:text-[#A8A8A8] font-bold tracking-wider block mb-1">02. METHOD</span>
-                    <span className="font-extrabold text-sm text-[#0C0C0C] dark:text-[#F2F2F2] block">UNDERSTAND</span>
-                    <p className="text-[11px] text-[#555555] dark:text-[#909090] mt-1 font-normal leading-snug">Bilingual civil & common context</p>
-                  </div>
-                </div>
-
-                <div className="p-4 lexa-card liquid-lens flex flex-col justify-between">
-                  <div>
-                    <span className="text-[10px] text-[#555555] dark:text-[#A8A8A8] font-bold tracking-wider block mb-1">03. METHOD</span>
-                    <span className="font-extrabold text-sm text-[#0C0C0C] dark:text-[#F2F2F2] block">DECONSTRUCT</span>
-                    <p className="text-[11px] text-[#555555] dark:text-[#909090] mt-1 font-normal leading-snug">Why legal draftspersons choose terms</p>
-                  </div>
-                </div>
-
-                <div className="p-4 lexa-card liquid-lens flex flex-col justify-between">
-                  <div>
-                    <span className="text-[10px] text-[#555555] dark:text-[#A8A8A8] font-bold tracking-wider block mb-1">04. METHOD</span>
-                    <span className="font-extrabold text-sm text-[#0C0C0C] dark:text-[#F2F2F2] block">APPLY</span>
-                    <p className="text-[11px] text-[#555555] dark:text-[#909090] mt-1 font-normal leading-snug">Draft clauses & formal legal opinions</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Floating Glass-Framed Physical Legal Document (Section 6) */}
-            <div className="lg:col-span-5 space-y-4">
-              {/* Glass Frame Container: 24px rounded subtle glass frame */}
-              <div className="p-4 sm:p-5 doc-glass-frame transition-all duration-300">
-                
-                {/* Physical Opaque Parchment Document */}
-                <div className="legal-paper-canvas p-6 relative rounded-2xl shadow-[0_12px_35px_rgba(0,0,0,0.35)]">
-                  
-                  {/* Document Header */}
-                  <div className="doc-header pb-3.5 mb-3.5 flex items-center justify-between border-b border-[#DCD4C6]">
-                    <div>
-                      <span className="text-[10px] font-sans font-bold tracking-[0.06em] uppercase text-[#505B6D] block">
-                        DEED OF COMMERCIAL AGREEMENT
-                      </span>
-                      <span className="text-xs font-serif font-bold text-[#111722]">
-                        Schedule A: Master Purchase & Indemnity
-                      </span>
-                    </div>
-                    <span className="text-[10px] font-sans font-medium px-2.5 py-0.5 bg-black/[0.06] text-[#18202C] border border-black/10 rounded-full uppercase tracking-wider">
-                      Physical Preview
-                    </span>
-                  </div>
-
-                  {/* Contract Clauses with Restrained Steel Blue Annotation Highlights */}
-                  <div className="font-serif text-[15px] sm:text-[15.5px] leading-[1.8] text-[#18202C] space-y-3">
-                    <p>
-                      <span
-                        onMouseEnter={() => setHoveredTermId('whereas')}
-                        onClick={() => setActiveLookupTermId('whereas')}
-                        className={`doc-term-highlight ${hoveredTermId === 'whereas' ? 'active' : ''}`}
-                      >
-                        WHEREAS
-                      </span>
-                      , the Seller agrees to fabricate and deliver industrial machinery{' '}
-                      <span
-                        onMouseEnter={() => setHoveredTermId('pursuant-to')}
-                        onClick={() => setActiveLookupTermId('pursuant-to')}
-                        className={`doc-term-highlight ${hoveredTermId === 'pursuant-to' ? 'active' : ''}`}
-                      >
-                        PURSUANT TO
-                      </span>{' '}
-                      the technical specifications herein;
-                    </p>
-
-                    <p>
-                      NOW THEREFORE, the Parties{' '}
-                      <span
-                        onMouseEnter={() => setHoveredTermId('hereby')}
-                        onClick={() => setActiveLookupTermId('hereby')}
-                        className={`doc-term-highlight ${hoveredTermId === 'hereby' ? 'active' : ''}`}
-                      >
-                        HEREBY
-                      </span>{' '}
-                      agree that the Seller{' '}
-                      <span
-                        onMouseEnter={() => setHoveredTermId('shall')}
-                        onClick={() => setActiveLookupTermId('shall')}
-                        className={`doc-term-highlight ${hoveredTermId === 'shall' ? 'active' : ''}`}
-                      >
-                        SHALL
-                      </span>{' '}
-                      deliver the goods without delay.
-                    </p>
-
-                    <p>
-                      <span
-                        onMouseEnter={() => setHoveredTermId('notwithstanding')}
-                        onClick={() => setActiveLookupTermId('notwithstanding')}
-                        className={`doc-term-highlight ${hoveredTermId === 'notwithstanding' ? 'active' : ''}`}
-                      >
-                        NOTWITHSTANDING
-                      </span>{' '}
-                      any contrary term, any failure shall constitute a material{' '}
-                      <span
-                        onMouseEnter={() => setHoveredTermId('breach')}
-                        onClick={() => setActiveLookupTermId('breach')}
-                        className={`doc-term-highlight ${hoveredTermId === 'breach' ? 'active' : ''}`}
-                      >
-                        BREACH
-                      </span>
-                      , and the Seller shall provide a full{' '}
-                      <span
-                        onMouseEnter={() => setHoveredTermId('indemnity')}
-                        onClick={() => setActiveLookupTermId('indemnity')}
-                        className={`doc-term-highlight ${hoveredTermId === 'indemnity' ? 'active' : ''}`}
-                      >
-                        INDEMNITY
-                      </span>{' '}
-                      for any direct{' '}
-                      <span
-                        onMouseEnter={() => setHoveredTermId('liability')}
-                        onClick={() => setActiveLookupTermId('liability')}
-                        className={`doc-term-highlight ${hoveredTermId === 'liability' ? 'active' : ''}`}
-                      >
-                        LIABILITY
-                      </span>
-                      .
-                    </p>
-                  </div>
-
-                  <div className="mt-4 pt-3 border-t border-[#DCD4C6] flex items-center justify-between text-[11px] font-sans text-[#505B6D]">
-                    <span>Hover or click annotated terms</span>
-                    <span className="text-[#111111] font-semibold">Live Term Inspector ↓</span>
-                  </div>
-                </div>
-
-                {/* Floating Glass Term Inspector Panel */}
-                {activeHoverTerm && (
-                  <div className="mt-3 p-4 rounded-2xl lexa-card liquid-lens text-xs font-sans transition-all">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="font-sans font-extrabold text-base text-[#0C0C0C] dark:text-[#F2F2F2] tracking-tight">
-                        {activeHoverTerm.term}
-                      </span>
-                      <span className="badge-accent text-[10px] font-sans font-semibold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                        {activeHoverTerm.category}
-                      </span>
-                    </div>
-
-                    <p className="font-sans font-bold text-[#111111] dark:text-[#F2F2F2] mb-1 text-sm">
-                      {activeHoverTerm.indonesianMeaning}
-                    </p>
-
-                    <p className="text-[12px] text-[#444444] dark:text-[#A8A8A8] line-clamp-2 leading-relaxed font-normal">
-                      {activeHoverTerm.indonesianLegalConcept}
-                    </p>
-
-                    <div className="mt-3 pt-2.5 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between">
-                      <span className="text-[11px] font-sans text-[#666666] dark:text-[#707070]">
-                        Equivalent: <span className="font-medium text-[#111111] dark:text-[#A8A8A8]">{activeHoverTerm.civilLawEquivalent || 'KUHPerdata context'}</span>
-                      </span>
-                      <button
-                        onClick={() => setActiveLookupTermId(activeHoverTerm.id)}
-                        className="relative z-10 text-[11px] font-sans text-[#0A0A0A] dark:text-white font-bold hover:underline flex items-center gap-1 cursor-pointer"
-                      >
-                        View Full Analysis & Clause <ArrowRight className="w-3 h-3 text-[#0A0A0A] dark:text-white" />
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* 2. Structured Curriculum Tracks Overview (Floating Glass Tiles) */}
-      <section id="section-learn-preview" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 pb-3 border-b border-black/[0.08] dark:border-white/[0.08]">
-          <div>
-            <span className="text-xs font-sans uppercase tracking-wider text-[#555555] dark:text-[#A8A8A8] block font-bold">
-              ACADEMIC ROADMAP
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#0A0A0A] dark:text-[#FFFFFF] tracking-[-0.03em] mt-1">
-              Structured Legal English Curriculum
-            </h2>
-          </div>
-          <button
-            onClick={() => setSelectedTab('learn')}
-            className="text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium hover:text-[#000000] dark:hover:text-[#FFFFFF] flex items-center gap-1 mt-2 sm:mt-0 cursor-pointer transition-colors"
-          >
-            <span>View All {curriculumLessons.length} Lessons</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#0A0A0A] dark:text-white" />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-          {/* Track 1 */}
-          <div 
-            onClick={() => setSelectedTab('learn')}
-            className="p-6 lexa-card cursor-pointer group flex flex-col justify-between"
-          >
-            <div>
-              <span className="badge-navy text-[10px] font-sans uppercase px-2.5 py-0.5 inline-block mb-3 font-semibold tracking-wider">
-                Track 01
-              </span>
-              <h3 className="font-sans font-bold text-lg text-[#0A0A0A] dark:text-[#F2F2F2] group-hover:text-black dark:group-hover:text-white mb-2 transition-colors">
-                Foundation & Architecture
-              </h3>
-              <p className="text-xs text-[#555555] dark:text-[#A8A8A8] font-sans font-normal leading-relaxed">
-                Legal English vs General English, compound spatial connectors (hereby, thereof, therein), shall vs may vs must, and essential Latin maxims.
-              </p>
-            </div>
-            <div className="mt-6 pt-3 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium group-hover:text-black dark:group-hover:text-white">
-              <span>Explore Foundation</span>
-              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Track 2 */}
-          <div 
-            onClick={() => setSelectedTab('documents')}
-            className="p-6 lexa-card cursor-pointer group flex flex-col justify-between"
-          >
-            <div>
-              <span className="badge-navy text-[10px] font-sans uppercase px-2.5 py-0.5 inline-block mb-3 font-semibold tracking-wider">
-                Track 02
-              </span>
-              <h3 className="font-sans font-bold text-lg text-[#0A0A0A] dark:text-[#F2F2F2] group-hover:text-black dark:group-hover:text-white mb-2 transition-colors">
-                Legal Documents & Contracts
-              </h3>
-              <p className="text-xs text-[#555555] dark:text-[#A8A8A8] font-sans font-normal leading-relaxed">
-                Deconstructing commercial contracts, bilateral NDAs, delay liquidated damages, IP indemnities, and governing law boilerplate.
-              </p>
-            </div>
-            <div className="mt-6 pt-3 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium group-hover:text-black dark:group-hover:text-white">
-              <span>Read Documents</span>
-              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Track 3 */}
-          <div 
-            onClick={() => setSelectedTab('write')}
-            className="p-6 lexa-card cursor-pointer group flex flex-col justify-between"
-          >
-            <div>
-              <span className="badge-navy text-[10px] font-sans uppercase px-2.5 py-0.5 inline-block mb-3 font-semibold tracking-wider">
-                Track 03
-              </span>
-              <h3 className="font-sans font-bold text-lg text-[#0A0A0A] dark:text-[#F2F2F2] group-hover:text-black dark:group-hover:text-white mb-2 transition-colors">
-                Practical Legal Drafting
-              </h3>
-              <p className="text-xs text-[#555555] dark:text-[#A8A8A8] font-sans font-normal leading-relaxed">
-                Write like an international lawyer: IRAC legal memoranda, formal legal opinions, pre-litigation demand notices (somasi), and client emails.
-              </p>
-            </div>
-            <div className="mt-6 pt-3 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium group-hover:text-black dark:group-hover:text-white">
-              <span>Open Writing Lab</span>
-              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Track 4 */}
-          <div 
-            onClick={() => setSelectedTab('learn')}
-            className="p-6 lexa-card cursor-pointer group flex flex-col justify-between"
-          >
-            <div>
-              <span className="badge-navy text-[10px] font-sans uppercase px-2.5 py-0.5 inline-block mb-3 font-semibold tracking-wider">
-                Track 04
-              </span>
-              <h3 className="font-sans font-bold text-lg text-[#0A0A0A] dark:text-[#F2F2F2] group-hover:text-black dark:group-hover:text-white mb-2 transition-colors">
-                Transnational Practice
-              </h3>
-              <p className="text-xs text-[#555555] dark:text-[#A8A8A8] font-sans font-normal leading-relaxed">
-                International commercial arbitration (SIAC / ICC), New York Convention 1958, cross-border M&A equity pacts, and FDI regulations in Indonesia.
-              </p>
-            </div>
-            <div className="mt-6 pt-3 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium group-hover:text-black dark:group-hover:text-white">
-              <span>View Advanced</span>
-              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Featured Spotlight: "Same Concept. Different Language." */}
-      <section id="section-comparative-preview" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl glass-panel-deep liquid-lens p-8 sm:p-10 relative overflow-hidden">
-          <div className="max-w-3xl space-y-5 relative z-10">
-            <span className="text-[11px] font-sans uppercase tracking-wider text-[#555555] dark:text-[#A8A8A8] flex items-center gap-2 font-bold">
-              <Scale className="w-4 h-4 text-[#0A0A0A] dark:text-white" />
-              SPECIAL FEATURE FOR INDONESIAN JURISTS
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#0A0A0A] dark:text-[#FFFFFF] tracking-[-0.03em]">
-              Same Concept. Different Language.
-            </h2>
-            <p className="text-sm sm:text-base text-[#444444] dark:text-[#A8A8A8] font-sans font-normal leading-relaxed">
-              Compare civil law doctrines (<em>KUHPerdata</em>, <em>HIR/RBg</em>, <em>UU Perseroan Terbatas</em>) with Common Law legal terminology. Understand why legal concepts do not always have 1-to-1 exact equivalents across jurisdictions.
+            <p className="text-base sm:text-lg text-muted leading-relaxed max-w-[34rem] mx-auto mt-6">
+              Legal English explained through Indonesian law — contracts, doctrine, and drafting, side by side.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-3 font-sans text-xs">
-              <div className="p-4 lexa-card liquid-lens">
-                <span className="text-[#666666] dark:text-[#A8A8A8] block text-[10px] font-bold uppercase tracking-wider">KUHPerdata</span>
-                <span className="font-extrabold text-[#0A0A0A] dark:text-[#F2F2F2] text-sm block mt-0.5">Wanprestasi</span>
-                <span className="text-[#555555] dark:text-[#707070] block text-[11px] mt-1 font-normal">⟷ Breach of Contract / Default</span>
-              </div>
-              <div className="p-4 lexa-card liquid-lens">
-                <span className="text-[#666666] dark:text-[#A8A8A8] block text-[10px] font-bold uppercase tracking-wider">Pasal 1365 KUHPerdata</span>
-                <span className="font-extrabold text-[#0A0A0A] dark:text-[#F2F2F2] text-sm block mt-0.5">PMH (Onrechtmatige Daad)</span>
-                <span className="text-[#555555] dark:text-[#707070] block text-[11px] mt-1 font-normal">⟷ Tort / Negligence</span>
-              </div>
-              <div className="p-4 lexa-card liquid-lens">
-                <span className="text-[#666666] dark:text-[#A8A8A8] block text-[10px] font-bold uppercase tracking-wider">Pasal 1320 KUHPerdata</span>
-                <span className="font-extrabold text-[#0A0A0A] dark:text-[#F2F2F2] text-sm block mt-0.5">Kausa yang Halal</span>
-                <span className="text-[#555555] dark:text-[#707070] block text-[11px] mt-1 font-normal">⟷ Consideration & Legality</span>
-              </div>
+            <div className="flex flex-wrap justify-center items-center gap-3 mt-8">
+              <button onClick={() => setSelectedTab('learn')} className="btn-primary h-11 px-5 text-[15px]">
+                Start learning
+              </button>
+              <button onClick={() => setSelectedTab('documents')} className="btn-secondary h-11 px-5 text-[15px]">
+                Browse documents
+              </button>
             </div>
 
-            <div className="pt-2">
-              <button
-                onClick={() => setSelectedTab('comparative')}
-                className={`btn-primary px-5 py-2.5 text-xs flex items-center gap-2 uppercase tracking-wider font-bold transition-colors ${
-                  theme === 'dark'
-                    ? '!text-[#050505] !bg-white hover:!bg-[#E8E8E8]'
-                    : '!text-white !bg-[#0A0A0A] hover:!bg-[#262626]'
-                }`}
+            <p className="mt-6 text-sm text-muted">
+              Free for students ·{' '}
+              <a
+                href="#/vocabulary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setSelectedTab('vocabulary');
+                }}
+                className="text-ink underline decoration-line-strong underline-offset-4 hover:decoration-current"
               >
-                <span>Explore Comparative Law Matrix</span>
-                <ArrowRight className={`w-3.5 h-3.5 ${theme === 'dark' ? 'text-[#050505]' : 'text-white'}`} />
+                509 terms with Indonesian equivalents
+              </a>
+            </p>
+          </div>
+
+          <div className="mt-12 sm:mt-16 lg:mt-20">
+            <AnnotatedPage terms={previewTerms} onOpenTerm={setActiveLookupTermId} onOpenReader={() => openDoc(firstDoc.id)} />
+          </div>
+        </div>
+      </section>
+
+      {/* ============== Sources — set like a book's running head ============== */}
+      <section aria-label="Legal sources taught" className="pb-4 lg:pb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="running-head font-legal text-center">
+            <span className="text-muted">Drawn from </span>
+            {SOURCES.map((s, i) => (
+              <React.Fragment key={s}>
+                {i > 0 && (
+                  <>
+                    {' '}
+                    <span className="text-muted px-1" aria-hidden="true">·</span>{' '}
+                  </>
+                )}
+                <span className="whitespace-nowrap text-ink-2">{s}</span>
+              </React.Fragment>
+            ))}
+          </p>
+        </div>
+      </section>
+
+      {/* ======================= Numbered chapters ======================= */}
+      <section id="section-method" className="section-pad">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            eyebrow="How Lexa teaches"
+            title={
+              <>
+                A method, not a word list.
+              </>
+            }
+            body="Four steps that take you from reading a clause to drafting one."
+          />
+
+          <ol className="border-t border-line">
+            {chapters.map((c, i) => (
+              <li
+                key={c.n}
+                className="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_minmax(0,1.2fr)] gap-x-12 border-b border-line lg:border-b-0"
+              >
+                {/* Section mark on a vertical rule */}
+                <div className="relative lg:border-r border-line pt-10 lg:py-12 lg:pr-10 flex lg:block items-baseline gap-4">
+                  <span className="chapter-mark" aria-hidden="true">
+                    §&thinsp;{i + 1}
+                  </span>
+                  <span className="lg:hidden text-sm font-mono text-muted">{c.n}</span>
+                  <span className="hidden lg:block absolute -right-[4.5px] top-[60px] w-2 h-2 rounded-full bg-ink" aria-hidden="true" />
+                </div>
+                <div className="pt-4 lg:py-12">
+                  <p className="hidden lg:block text-sm font-mono text-muted mb-3">{c.n}</p>
+                  <h3 className="text-2xl sm:text-[28px] font-medium tracking-[-0.03em] text-ink">{c.name}</h3>
+                  <p className="text-muted mt-3 leading-relaxed max-w-sm">{c.line}</p>
+                  <button onClick={() => setSelectedTab(c.tab)} className="btn-ghost text-sm px-0 mt-5">
+                    {c.name} in Lexa <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="pt-6 pb-10 lg:py-12">{c.snippet}</div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* ============ Same Concept. Different Language. ============ */}
+      <section id="section-comparative-preview" className="section-pad border-t border-line">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            <div className="lg:col-span-5">
+              <p className="text-sm text-muted mb-3">Civil law ⟷ common law</p>
+              <h2 className="display-h2 text-[36px] sm:text-[52px] text-ink">
+                Same concept.
+                <br />
+                <span className="text-muted">Different language.</span>
+              </h2>
+              <p className="text-base sm:text-lg text-muted leading-relaxed mt-5">
+                Compare civil law doctrine (<em>KUHPerdata</em>, <em>HIR/RBg</em>, <em>UU Perseroan Terbatas</em>) with common law
+                terminology — and see why legal concepts rarely have exact one-to-one equivalents.
+              </p>
+              <button onClick={() => setSelectedTab('comparative')} className="btn-primary h-10 px-4 text-sm mt-8">
+                Compare the concepts
+              </button>
+            </div>
+            <div className="lg:col-span-7">
+              <div className="rounded-2xl border border-line overflow-hidden bg-surface">
+                <div className="hidden sm:grid grid-cols-[1fr_32px_1fr] px-6 py-3 border-b border-line bg-surface-2 text-xs text-muted">
+                  <span>Indonesian civil law</span>
+                  <span />
+                  <span>Common law</span>
+                </div>
+                {comparisons.map((c, i) => (
+                  <div
+                    key={c.id}
+                    className={`grid grid-cols-1 sm:grid-cols-[1fr_32px_1fr] items-center gap-1 sm:gap-0 px-6 py-5 ${i ? 'border-t border-line' : ''}`}
+                  >
+                    <div>
+                      <span className="block text-xs font-mono text-muted">{c.source}</span>
+                      <span className="block font-legal text-lg font-semibold text-ink mt-0.5">{c.id}</span>
+                    </div>
+                    <span className="text-muted hidden sm:inline" aria-hidden="true">
+                      →
+                    </span>
+                    <div className="pt-2 sm:pt-0">
+                      <span className="block text-xs font-mono text-muted sm:hidden">Common law</span>
+                      <span className="block text-lg font-medium tracking-[-0.01em] text-ink">{c.en}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================ Lesson tracks ============================ */}
+      <section id="section-learn-preview" className="section-pad border-t border-line">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            eyebrow="Lessons"
+            title="Step by step, four tracks."
+            body="From first principles to cross-border practice."
+            action={
+              <button onClick={() => setSelectedTab('learn')} className="btn-secondary h-10 px-4 text-sm self-start md:self-auto">
+                <BookOpen className="w-4 h-4" /> View all lessons
+              </button>
+            }
+          />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {tracks.map((t) => (
+              <button
+                key={t.title}
+                onClick={() => setSelectedTab(t.tab)}
+                className="lexa-card p-6 text-left cursor-pointer group flex flex-col justify-between hover:bg-surface-2"
+              >
+                <div>
+                  <span className="text-xs font-mono text-muted">{t.label}</span>
+                  <h3 className="font-medium text-lg tracking-[-0.02em] text-ink mt-3 mb-2">{t.title}</h3>
+                  <p className="text-sm text-muted leading-relaxed">{t.body}</p>
+                </div>
+                <span className="mt-8 flex items-center gap-1 text-sm font-medium text-ink">
+                  {t.cta}
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================== Documents ============================== */}
+      <section id="section-documents-preview" className="section-pad border-t border-line">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            eyebrow="Documents"
+            title="Real documents to study."
+            body="Model contracts, an opinion, and award excerpts — annotated with Indonesian analysis."
+            action={
+              <button onClick={() => setSelectedTab('documents')} className="btn-secondary h-10 px-4 text-sm self-start md:self-auto">
+                All {sampleLegalDocuments.length} documents <ArrowRight className="w-4 h-4" />
+              </button>
+            }
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {sampleLegalDocuments.slice(0, 3).map((doc) => (
+              <button
+                key={doc.id}
+                onClick={() => openDoc(doc.id)}
+                className="lexa-card p-6 text-left cursor-pointer group flex flex-col justify-between hover:bg-surface-2"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-5">
+                    <span className="badge-accent text-xs font-medium px-2 py-0.5 rounded-md">{doc.documentType}</span>
+                    <span className="text-xs text-muted">{doc.readingTimeMinutes} min read</span>
+                  </div>
+                  <h3 className="font-legal font-semibold text-lg text-ink mb-2 leading-snug">{doc.title}</h3>
+                  <p className="text-sm text-muted leading-relaxed line-clamp-3 mb-4">
+                    {languageMode === 'ID' ? doc.abstractId : doc.abstractEn}
+                  </p>
+                  <p className="text-xs text-muted">
+                    <span className="text-ink-2 font-medium">Governing law:</span> {doc.governingLaw}
+                  </p>
+                </div>
+                <span className="mt-6 pt-4 border-t border-line flex items-center justify-between text-sm font-medium text-ink">
+                  Read with annotations
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Closing CTA */}
+          <div className="mt-24 lg:mt-32 text-center">
+            <h2 className="display-h2 text-[32px] sm:text-[48px] text-ink">Start with one clause today.</h2>
+            <p className="text-muted mt-4 text-base sm:text-lg">Free for students. No account needed — progress saves in your browser.</p>
+            <div className="flex flex-wrap justify-center gap-3 mt-8">
+              <button onClick={() => setSelectedTab('learn')} className="btn-primary h-11 px-5 text-[15px]">
+                Start learning
+              </button>
+              <button onClick={() => setSelectedTab('mystudy')} className="btn-secondary h-11 px-5 text-[15px]">
+                <Bookmark className="w-4 h-4" /> My Study
               </button>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* 4. Document Library Preview */}
-      <section id="section-documents-preview" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-8 pb-3 border-b border-black/[0.08] dark:border-white/[0.08]">
-          <div>
-            <span className="text-xs font-sans uppercase tracking-wider text-[#555555] dark:text-[#A8A8A8] block font-semibold">
-              DIGITAL LAW LIBRARY
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#0A0A0A] dark:text-[#FFFFFF] tracking-[-0.03em] mt-1">
-              Authentic Legal Documents for Study
-            </h2>
-          </div>
-          <button
-            onClick={() => setSelectedTab('documents')}
-            className="text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium hover:text-[#000000] dark:hover:text-[#FFFFFF] flex items-center gap-1 cursor-pointer transition-colors"
-          >
-            <span>View All Documents</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#0A0A0A] dark:text-white" />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {sampleLegalDocuments.slice(0, 3).map((doc) => (
-            <div
-              key={doc.id}
-              onClick={() => {
-                setActiveDocId(doc.id);
-                setSelectedTab('documents');
-              }}
-              className="lexa-card p-6 cursor-pointer group flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="badge-accent text-[10px] font-sans font-medium uppercase px-2.5 py-0.5 tracking-wider">
-                    {doc.documentType}
-                  </span>
-                  <span className="text-[11px] font-sans text-[#666666] dark:text-[#707070] font-medium">
-                    {doc.readingTimeMinutes} min read
-                  </span>
-                </div>
-
-                <h3 className="font-sans font-bold text-base text-[#0A0A0A] dark:text-[#F2F2F2] group-hover:text-black dark:group-hover:text-white mb-2 leading-snug transition-colors">
-                  {doc.title}
-                </h3>
-
-                <p className="text-xs text-[#555555] dark:text-[#A8A8A8] font-sans leading-relaxed line-clamp-3 mb-4 font-normal">
-                  {languageMode === 'ID' ? doc.abstractId : doc.abstractEn}
-                </p>
-
-                <div className="text-[11px] font-sans text-[#666666] dark:text-[#707070] space-y-1 mb-4">
-                  <div><strong className="text-[#111111] dark:text-[#A8A8A8]">Jurisdiction:</strong> {doc.jurisdiction}</div>
-                  <div><strong className="text-[#111111] dark:text-[#A8A8A8]">Governing Law:</strong> {doc.governingLaw}</div>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-xs font-sans text-[#555555] dark:text-[#A8A8A8] font-medium group-hover:text-black dark:group-hover:text-white">
-                <span>Read & Annotate</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-          ))}
         </div>
       </section>
     </div>
