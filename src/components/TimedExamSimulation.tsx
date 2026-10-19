@@ -301,58 +301,58 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8 animate-in fade-in duration-200">
         
         {/* Header */}
-        <div className="border-b border-white/[0.08] pb-6">
+        <div className="border-b border-line pb-6">
           <div className="flex items-center justify-between flex-wrap gap-2 mb-1.5">
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-white" />
-              <span className="text-[11px] font-sans tracking-widest uppercase text-white font-semibold">
-                TIMED EXAM SIMULATION & DIAGNOSTIC LAB
+              <Clock className="w-4 h-4 text-ink" />
+              <span className="text-[11px] font-sans tracking-widest uppercase text-ink font-semibold">
+                Timed exam
               </span>
             </div>
 
             {onBackToPractice && (
               <button
                 onClick={onBackToPractice}
-                className="text-xs font-sans text-[#A8A8A8] hover:text-[#F2F2F2] flex items-center gap-1 cursor-pointer transition-colors"
+                className="text-xs font-sans text-muted hover:text-ink flex items-center gap-1 cursor-pointer transition-colors"
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Back to Practice Bank
               </button>
             )}
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-sans font-extrabold text-[#F2F2F2] tracking-tight">
+          <h1 className="text-3xl sm:text-[44px] font-medium text-ink tracking-[-0.035em] leading-[1.1]">
             Legal English Diagnostic Assessment
           </h1>
-          <p className="text-sm sm:text-base text-[#A8A8A8] font-sans mt-2 leading-relaxed">
+          <p className="text-sm sm:text-base text-muted font-sans mt-2 leading-relaxed">
             Test your legal translation, contract drafting precision, and transactional analysis under authentic timed exam conditions. Receive an instant competency scorecard with category diagnostics.
           </p>
         </div>
 
         {/* Feature Highlights Banner */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="p-4 rounded-2xl lexa-surface-subtle border border-white/[0.08] space-y-1">
-            <div className="flex items-center gap-2 text-[#DCDCDC] text-xs font-bold font-sans">
+          <div className="p-4 rounded-2xl lexa-surface-subtle border border-line space-y-1">
+            <div className="flex items-center gap-2 text-ink-2 text-xs font-bold font-sans">
               <Zap className="w-4 h-4" /> Timed Pressure Engine
             </div>
-            <p className="text-[11px] text-[#A8A8A8] font-sans">
+            <p className="text-[11px] text-muted font-sans">
               Strict real-time countdown. Simulates TOLES, ILEC, and international associate testing.
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl lexa-surface-subtle border border-white/[0.08] space-y-1">
-            <div className="flex items-center gap-2 text-[#DCDCDC] text-xs font-bold font-sans">
+          <div className="p-4 rounded-2xl lexa-surface-subtle border border-line space-y-1">
+            <div className="flex items-center gap-2 text-ink-2 text-xs font-bold font-sans">
               <Flag className="w-4 h-4" /> Review & Flag System
             </div>
-            <p className="text-[11px] text-[#A8A8A8] font-sans">
+            <p className="text-[11px] text-muted font-sans">
               Mark complex clauses for review and jump instantly between questions during testing.
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl lexa-surface-subtle border border-white/[0.08] space-y-1">
-            <div className="flex items-center gap-2 text-[#DCDCDC] text-xs font-bold font-sans">
+          <div className="p-4 rounded-2xl lexa-surface-subtle border border-line space-y-1">
+            <div className="flex items-center gap-2 text-ink-2 text-xs font-bold font-sans">
               <BarChart3 className="w-4 h-4" /> Comprehensive Scorecard
             </div>
-            <p className="text-[11px] text-[#A8A8A8] font-sans">
+            <p className="text-[11px] text-muted font-sans">
               Detailed proficiency tiers and category breakdown across drafting, translation, and vocabulary.
             </p>
           </div>
@@ -361,12 +361,12 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
         {/* Exam Presets Selection */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-sans font-bold text-[#F2F2F2] flex items-center gap-2">
-              <Award className="w-4 h-4 text-white" /> Choose Diagnostic Preset
+            <h2 className="text-lg font-serif font-semibold text-ink flex items-center gap-2">
+              <Award className="w-4 h-4 text-ink" /> Choose Diagnostic Preset
             </h2>
             <button
               onClick={() => setIsCustomMode(!isCustomMode)}
-              className="text-xs font-sans text-[#DCDCDC] hover:text-white font-semibold flex items-center gap-1 cursor-pointer"
+              className="text-xs font-sans text-ink-2 hover:text-ink font-semibold flex items-center gap-1 cursor-pointer"
             >
               <Sliders className="w-3.5 h-3.5" />
               <span>{isCustomMode ? 'Use Standard Presets' : 'Custom Config'}</span>
@@ -381,38 +381,38 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                   <div
                     key={preset.id}
                     onClick={() => setSelectedPresetId(preset.id)}
-                    className={`p-6 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between space-y-4 ${
+                    className={`p-6 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between space-y-4 ${
                       isSelected
-                        ? 'bg-[#1C1C1C] border-white/30 shadow-lg ring-1 ring-white/20'
-                        : 'lexa-surface-subtle hover:border-white/[0.14]'
+                        ? 'bg-surface-3 border-line-strong ring-1 ring-line-strong'
+                        : 'lexa-surface-subtle hover:border-line-strong'
                     }`}
                   >
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className={`text-[10px] font-sans font-bold uppercase px-2.5 py-0.5 rounded-full border ${
+                        <span className={`text-[11px] font-sans font-bold uppercase px-2.5 py-0.5 rounded-full border ${
                           isSelected
-                            ? 'bg-white/10 text-white border-white/30'
-                            : 'bg-[#151515] text-[#A8A8A8] border-white/[0.08]'
+                            ? 'bg-surface-3 text-ink border-line-strong'
+                            : 'bg-surface text-muted border-line'
                         }`}>
                           {preset.badge}
                         </span>
-                        <div className="flex items-center gap-1 text-xs font-sans font-bold text-[#F2F2F2]">
-                          <Clock className="w-3.5 h-3.5 text-white" />
+                        <div className="flex items-center gap-1 text-xs font-sans font-bold text-ink">
+                          <Clock className="w-3.5 h-3.5 text-ink" />
                           <span>{preset.durationMinutes} Min</span>
                         </div>
                       </div>
 
-                      <h3 className="font-sans font-bold text-base text-[#F2F2F2]">
+                      <h3 className="font-serif font-semibold text-base text-ink">
                         {preset.name}
                       </h3>
-                      <p className="text-xs font-sans text-[#A8A8A8] leading-relaxed">
+                      <p className="text-xs font-sans text-muted leading-relaxed">
                         {preset.description}
                       </p>
                     </div>
 
-                    <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between text-xs font-sans">
-                      <span className="text-[#A8A8A8]">{preset.questionCount} Questions</span>
-                      <span className="font-semibold text-white flex items-center gap-1">
+                    <div className="pt-3 border-t border-line flex items-center justify-between text-xs font-sans">
+                      <span className="text-muted">{preset.questionCount} Questions</span>
+                      <span className="font-semibold text-ink flex items-center gap-1">
                         Select Preset <ChevronRight className="w-3.5 h-3.5" />
                       </span>
                     </div>
@@ -421,12 +421,12 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
               })}
             </div>
           ) : (
-            <div className="p-6 rounded-3xl lexa-surface-subtle border border-white/[0.08] space-y-6">
-              <h3 className="font-sans font-bold text-base text-[#F2F2F2]">Custom Simulation Configuration</h3>
+            <div className="p-6 rounded-2xl lexa-surface-subtle border border-line space-y-6">
+              <h3 className="font-serif font-semibold text-base text-ink">Custom Simulation Configuration</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-sans text-[#A8A8A8] block font-semibold">
-                    Question Count: <strong className="text-[#F2F2F2]">{customQuestions} Questions</strong>
+                  <label className="text-xs font-sans text-muted block font-semibold">
+                    Question Count: <strong className="text-ink">{customQuestions} Questions</strong>
                   </label>
                   <input
                     type="range"
@@ -437,7 +437,7 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                     onChange={(e) => setCustomQuestions(Number(e.target.value))}
                     className="w-full accent-white cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-[#A8A8A8]">
+                  <div className="flex justify-between text-[11px] text-muted">
                     <span>5</span>
                     <span>15</span>
                     <span>25</span>
@@ -446,8 +446,8 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-sans text-[#A8A8A8] block font-semibold">
-                    Time Limit: <strong className="text-[#F2F2F2]">{customMinutes} Minutes</strong>
+                  <label className="text-xs font-sans text-muted block font-semibold">
+                    Time Limit: <strong className="text-ink">{customMinutes} Minutes</strong>
                   </label>
                   <input
                     type="range"
@@ -458,7 +458,7 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                     onChange={(e) => setCustomMinutes(Number(e.target.value))}
                     className="w-full accent-white cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-[#A8A8A8]">
+                  <div className="flex justify-between text-[11px] text-muted">
                     <span>5m</span>
                     <span>20m</span>
                     <span>40m</span>
@@ -471,19 +471,19 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
         </div>
 
         {/* Start Button Box */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#151515] to-[#1C1C1C] border border-white/[0.12] flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-surface to-surface-3 border border-line flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="space-y-1 text-center sm:text-left">
-            <h3 className="text-base sm:text-lg font-sans font-extrabold text-[#F2F2F2]">
+            <h3 className="text-base sm:text-lg font-serif font-semibold text-ink">
               Ready to begin diagnostic examination?
             </h3>
-            <p className="text-xs text-[#A8A8A8] font-sans">
+            <p className="text-xs text-muted font-sans">
               Timer starts immediately. Questions are dynamically drawn from our 100-exercise benchmark bank.
             </p>
           </div>
 
           <button
             onClick={handleStartExam}
-            className="btn-primary px-8 py-3 text-sm font-sans font-bold uppercase tracking-wider rounded-full shadow-lg flex items-center gap-2 shrink-0 cursor-pointer"
+            className="btn-primary px-8 py-3 text-sm font-sans font-medium flex items-center gap-2 shrink-0 cursor-pointer"
           >
             <Zap className="w-4 h-4" /> Start Exam Now
           </button>
@@ -492,32 +492,32 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
         {/* Previous Attempts History (if any) */}
         {examHistory && examHistory.length > 0 && (
           <div className="space-y-3 pt-4">
-            <h3 className="text-sm font-sans font-bold text-[#F2F2F2] flex items-center gap-2">
-              <History className="w-4 h-4 text-white" /> Past Diagnostic Attempts ({examHistory.length})
+            <h3 className="text-sm font-serif font-semibold text-ink flex items-center gap-2">
+              <History className="w-4 h-4 text-ink" /> Past Diagnostic Attempts ({examHistory.length})
             </h3>
             <div className="space-y-2">
               {examHistory.slice(0, 3).map((item) => (
                 <div
                   key={item.id}
-                  className="p-4 rounded-2xl lexa-surface-subtle border border-white/[0.08] flex items-center justify-between flex-wrap gap-2 text-xs font-sans"
+                  className="p-4 rounded-2xl lexa-surface-subtle border border-line flex items-center justify-between flex-wrap gap-2 text-xs font-sans"
                 >
                   <div>
-                    <div className="font-bold text-[#F2F2F2]">{item.title}</div>
-                    <div className="text-[#A8A8A8] text-[11px]">
+                    <div className="font-bold text-ink">{item.title}</div>
+                    <div className="text-muted text-[11px]">
                       {item.date} • {item.totalQuestions} Questions • {Math.round(item.timeSpentSeconds / 60)}m spent
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <span className="text-[11px] font-semibold text-[#DCDCDC]">
+                    <span className="text-[11px] font-semibold text-ink-2">
                       {item.proficiencyTier}
                     </span>
                     <div className={`px-3 py-1 rounded-full font-bold text-xs ${
                       item.scorePercentage >= 75
-                        ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-700/60'
+                        ? 'bg-success-soft text-success border border-success'
                         : item.scorePercentage >= 60
-                          ? 'bg-neutral-800 text-[#F2F2F2] border border-white/20'
-                          : 'bg-amber-950/60 text-amber-300 border border-amber-700/60'
+                          ? 'bg-accent text-on-accent border border-accent'
+                          : 'bg-warning-soft text-warning border border-warning'
                     }`}>
                       {item.scorePercentage}% ({item.correctAnswers}/{item.totalQuestions})
                     </div>
@@ -544,22 +544,22 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-6 animate-in fade-in duration-200">
         
         {/* Fixed / Sticky Top Examination Control Bar */}
-        <div className="p-4 rounded-2xl bg-[#101010]/95 backdrop-blur-md border border-white/[0.12] shadow-xl flex items-center justify-between flex-wrap gap-3 sticky top-16 z-30">
+        <div className="p-4 rounded-2xl bg-surface/95 backdrop-blur-md border border-line flex items-center justify-between flex-wrap gap-3 sticky top-24 z-30">
           <div className="flex items-center gap-3">
             {/* Live Timer */}
             <div className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border font-mono font-bold text-sm tracking-wider ${
               isTimeCritical
-                ? 'bg-rose-950/80 text-rose-300 border-rose-600 animate-pulse'
+                ? 'bg-danger-soft text-danger border-danger animate-pulse'
                 : isTimeWarning
-                  ? 'bg-amber-950/60 text-amber-300 border-amber-600'
-                  : 'bg-[#151515] text-[#DCDCDC] border-white/[0.08]'
+                  ? 'bg-warning-soft text-warning border-warning'
+                  : 'bg-surface text-ink-2 border-line'
             }`}>
               <Clock className="w-4 h-4" />
               <span>{formatTime(timeRemainingSeconds)}</span>
             </div>
 
-            <span className="text-xs font-sans text-[#A8A8A8] hidden sm:inline">
-              Answered: <strong className="text-[#F2F2F2]">{answeredCount}</strong> / {activeQuestions.length}
+            <span className="text-xs font-sans text-muted hidden sm:inline">
+              Answered: <strong className="text-ink">{answeredCount}</strong> / {activeQuestions.length}
             </span>
           </div>
 
@@ -574,19 +574,19 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
               }}
               className={`px-3 py-1.5 rounded-full border text-xs font-sans flex items-center gap-1.5 cursor-pointer transition-colors ${
                 isFlagged
-                  ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
-                  : 'bg-[#151515]/80 border-white/[0.08] text-[#A8A8A8] hover:text-[#F2F2F2]'
+                  ? 'bg-warning-soft border-warning text-warning font-bold'
+                  : 'bg-surface/80 border-line text-muted hover:text-ink'
               }`}
               title="Flag this question to review before submitting"
             >
-              <Flag className={`w-3.5 h-3.5 ${isFlagged ? 'fill-amber-400 text-amber-400' : ''}`} />
+              <Flag className={`w-3.5 h-3.5 ${isFlagged ? 'fill-warning text-warning' : ''}`} />
               <span>{isFlagged ? 'Flagged' : 'Flag Question'}</span>
             </button>
 
             {/* End / Submit Exam */}
             <button
               onClick={() => setShowSubmitModal(true)}
-              className="btn-primary px-4 py-1.5 text-xs font-sans font-bold uppercase tracking-wider rounded-full cursor-pointer"
+              className="btn-primary px-4 py-1.5 text-xs font-sans font-medium cursor-pointer"
             >
               Finish & Submit
             </button>
@@ -594,13 +594,13 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
         </div>
 
         {/* Question Palette / Navigator Grid */}
-        <div className="p-3 rounded-2xl lexa-surface-subtle border border-white/[0.08] space-y-2">
-          <div className="flex items-center justify-between text-[11px] font-sans text-[#A8A8A8] px-1">
+        <div className="p-3 rounded-2xl lexa-surface-subtle border border-line space-y-2">
+          <div className="flex items-center justify-between text-[11px] font-sans text-muted px-1">
             <span>Exam Navigator (Click to Jump):</span>
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-white"></span> Answered</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400"></span> Flagged</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-white/20"></span> Remaining</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-accent"></span> Answered</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-warning"></span> Flagged</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-surface-3"></span> Remaining</span>
             </div>
           </div>
 
@@ -616,15 +616,15 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                   onClick={() => setActiveQuestionIdx(idx)}
                   className={`w-7 h-7 shrink-0 rounded-lg text-xs font-sans font-bold transition-all relative flex items-center justify-center cursor-pointer ${
                     isCurrent
-                      ? 'ring-2 ring-white bg-white text-black shadow-md'
+                      ? 'ring-2 ring-accent bg-accent text-on-accent'
                       : isAnswered
-                        ? 'bg-[#242424] text-white border border-white/25'
-                        : 'bg-[#151515] text-[#A8A8A8] border border-white/[0.08] hover:bg-[#202020]'
+                        ? 'bg-accent text-on-accent border border-accent'
+                        : 'bg-surface text-muted border border-line hover:bg-surface-3'
                   }`}
                 >
                   {idx + 1}
                   {isQFlagged && (
-                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full border border-[#050505]" />
+                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-warning rounded-full border border-warning" />
                   )}
                 </button>
               );
@@ -633,20 +633,20 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
         </div>
 
         {/* Active Question Body Card */}
-        <div className="p-6 sm:p-10 rounded-3xl glass-panel-deep space-y-6">
+        <div className="p-6 sm:p-10 rounded-2xl glass-panel-deep space-y-6">
           {/* Metadata Header */}
-          <div className="flex items-center justify-between border-b border-white/[0.08] pb-4 flex-wrap gap-2">
+          <div className="flex items-center justify-between border-b border-line pb-4 flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <span className="badge-navy text-xs font-sans uppercase px-3 py-0.5 rounded-full font-bold">
                 {currentExamQuestion.category || currentExamQuestion.type}
               </span>
-              <span className="text-xs font-sans text-[#A8A8A8]">
+              <span className="text-xs font-sans text-muted">
                 Question {activeQuestionIdx + 1} of {activeQuestions.length}
               </span>
             </div>
 
             {currentExamQuestion.legalConcept && (
-              <span className="text-[11px] font-sans px-2.5 py-0.5 rounded-md bg-[#151515] text-[#DCDCDC] border border-white/[0.08] font-semibold">
+              <span className="text-[11px] font-sans px-2.5 py-0.5 rounded-md bg-surface text-ink-2 border border-line font-semibold">
                 {currentExamQuestion.legalConcept}
               </span>
             )}
@@ -654,30 +654,30 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
 
           {/* Scenario Context (if any) */}
           {currentExamQuestion.scenario && (
-            <div className="p-4 rounded-2xl lexa-surface-subtle text-xs sm:text-sm font-sans text-[#A8A8A8] leading-relaxed">
-              <strong className="text-[#F2F2F2] font-semibold">Context / Factual Matrix:</strong> {currentExamQuestion.scenario}
+            <div className="p-4 rounded-2xl lexa-surface-subtle text-xs sm:text-sm font-sans text-muted leading-relaxed">
+              <strong className="text-ink font-semibold">Context / Factual Matrix:</strong> {currentExamQuestion.scenario}
             </div>
           )}
 
           {/* Reading Passage (if reading category) */}
           {currentExamQuestion.passage && (
-            <div className="p-5 rounded-2xl bg-[#101010]/80 border border-white/[0.08] space-y-2">
-              <div className="flex items-center gap-2 text-white text-xs font-sans font-bold uppercase tracking-wider">
+            <div className="p-5 rounded-2xl bg-surface/80 border border-line space-y-2">
+              <div className="flex items-center gap-2 text-ink text-xs font-sans font-bold uppercase tracking-wider">
                 <BookOpen className="w-4 h-4" /> Legal Instrument Excerpt
               </div>
-              <div className="text-xs sm:text-sm font-sans text-[#DCDCDC] leading-relaxed italic border-l-2 border-white/40 pl-3 py-1">
+              <div className="text-xs sm:text-sm font-sans text-ink-2 leading-relaxed italic border-l-2 border-accent pl-3 py-1">
                 {currentExamQuestion.passage}
               </div>
             </div>
           )}
 
           {/* Question Prompt */}
-          <div className="p-5 rounded-2xl bg-[#151515]/70 border border-white/[0.08] space-y-2">
-            <p className="font-sans font-bold text-base sm:text-lg text-[#F2F2F2] leading-relaxed">
+          <div className="p-5 rounded-2xl bg-surface/70 border border-line space-y-2">
+            <p className="font-sans font-bold text-base sm:text-lg text-ink leading-relaxed">
               {currentExamQuestion.promptEn}
             </p>
             {currentExamQuestion.promptId && (
-              <p className="text-xs sm:text-sm font-sans italic text-[#A8A8A8]">
+              <p className="text-xs sm:text-sm font-sans italic text-muted">
                 {currentExamQuestion.promptId}
               </p>
             )}
@@ -698,15 +698,15 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                   }}
                   className={`w-full text-left p-4 text-xs sm:text-sm font-sans border transition-all flex items-center justify-between cursor-pointer rounded-2xl ${
                     isSelected
-                      ? 'bg-[#1C1C1C] border-white/35 text-[#F2F2F2] font-semibold shadow-md ring-1 ring-white/20'
-                      : 'lexa-surface-subtle text-[#A8A8A8] hover:border-white/[0.16] hover:text-[#F2F2F2]'
+                      ? 'bg-surface-3 border-line-strong text-ink font-semibold ring-1 ring-line-strong'
+                      : 'lexa-surface-subtle text-muted hover:border-line-strong hover:text-ink'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <span className={`w-6 h-6 rounded-full border flex items-center justify-center font-sans text-xs font-bold shrink-0 ${
                       isSelected
-                        ? 'border-white bg-white text-black'
-                        : 'border-white/20 text-[#A8A8A8]'
+                        ? 'border-accent bg-accent text-on-accent'
+                        : 'border-line-strong text-muted'
                     }`}>
                       {String.fromCharCode(65 + optIdx)}
                     </span>
@@ -714,7 +714,7 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                   </div>
 
                   {isSelected && (
-                    <CheckCircle2 className="w-4 h-4 text-white shrink-0 ml-2" />
+                    <CheckCircle2 className="w-4 h-4 text-ink shrink-0 ml-2" />
                   )}
                 </button>
               );
@@ -722,11 +722,11 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
           </div>
 
           {/* Bottom Question Navigation Buttons */}
-          <div className="pt-6 border-t border-white/[0.08] flex items-center justify-between flex-wrap gap-3">
+          <div className="pt-6 border-t border-line flex items-center justify-between flex-wrap gap-3">
             <button
               onClick={() => setActiveQuestionIdx(prev => Math.max(0, prev - 1))}
               disabled={activeQuestionIdx === 0}
-              className="btn-secondary px-4 py-2 text-xs rounded-full disabled:opacity-30 flex items-center gap-1.5 cursor-pointer"
+              className="btn-secondary px-4 py-2 text-xs disabled:opacity-30 flex items-center gap-1.5 cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Previous Question
             </button>
@@ -735,14 +735,14 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
               {activeQuestionIdx < activeQuestions.length - 1 ? (
                 <button
                   onClick={() => setActiveQuestionIdx(prev => prev + 1)}
-                  className="btn-primary px-5 py-2 text-xs rounded-full font-semibold flex items-center gap-1 cursor-pointer"
+                  className="btn-primary px-5 py-2 text-xs font-medium flex items-center gap-1 cursor-pointer"
                 >
                   Next Question <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               ) : (
                 <button
                   onClick={() => setShowSubmitModal(true)}
-                  className="btn-primary px-6 py-2 text-xs rounded-full font-semibold flex items-center gap-1.5 cursor-pointer"
+                  className="btn-primary px-6 py-2 text-xs font-medium flex items-center gap-1.5 cursor-pointer"
                 >
                   <CheckCircle2 className="w-4 h-4" /> Review & Submit Exam
                 </button>
@@ -755,50 +755,50 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
         {/* Confirmation Modal Before Submission */}
         {showSubmitModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
-            <div className="max-w-md w-full p-6 rounded-3xl bg-[#101010] border border-white/[0.12] shadow-2xl space-y-5">
+            <div className="max-w-md w-full p-6 rounded-2xl bg-surface border border-line space-y-5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#181818] flex items-center justify-center text-white">
+                <div className="w-10 h-10 rounded-full bg-surface-3 flex items-center justify-center text-ink">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-sans font-bold text-base text-[#F2F2F2]">
+                  <h3 className="font-serif font-semibold text-base text-ink">
                     Confirm Final Submission
                   </h3>
-                  <p className="text-xs text-[#A8A8A8] font-sans">
+                  <p className="text-xs text-muted font-sans">
                     Once submitted, your answers will be graded and logged.
                   </p>
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-[#151515] border border-white/[0.08] space-y-2 text-xs font-sans">
+              <div className="p-4 rounded-2xl bg-surface border border-line space-y-2 text-xs font-sans">
                 <div className="flex justify-between">
-                  <span className="text-[#A8A8A8]">Total Questions:</span>
-                  <span className="font-bold text-[#F2F2F2]">{activeQuestions.length}</span>
+                  <span className="text-muted">Total Questions:</span>
+                  <span className="font-bold text-ink">{activeQuestions.length}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#A8A8A8]">Answered:</span>
-                  <span className="font-bold text-white">{answeredCount}</span>
+                  <span className="text-muted">Answered:</span>
+                  <span className="font-bold text-ink">{answeredCount}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#A8A8A8]">Unanswered:</span>
-                  <span className={`font-bold ${activeQuestions.length - answeredCount > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                  <span className="text-muted">Unanswered:</span>
+                  <span className={`font-bold ${activeQuestions.length - answeredCount > 0 ? 'text-warning' : 'text-success'}`}>
                     {activeQuestions.length - answeredCount}
                   </span>
                 </div>
                 {flaggedCount > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-[#A8A8A8]">Flagged for review:</span>
-                    <span className="font-bold text-amber-400">{flaggedCount}</span>
+                    <span className="text-muted">Flagged for review:</span>
+                    <span className="font-bold text-warning">{flaggedCount}</span>
                   </div>
                 )}
-                <div className="flex justify-between pt-1 border-t border-white/[0.08]">
-                  <span className="text-[#A8A8A8]">Time Remaining:</span>
-                  <span className="font-mono font-bold text-[#F2F2F2]">{formatTime(timeRemainingSeconds)}</span>
+                <div className="flex justify-between pt-1 border-t border-line">
+                  <span className="text-muted">Time Remaining:</span>
+                  <span className="font-mono font-bold text-ink">{formatTime(timeRemainingSeconds)}</span>
                 </div>
               </div>
 
               {activeQuestions.length - answeredCount > 0 && (
-                <div className="flex items-center gap-2 text-xs text-amber-300 bg-amber-950/40 p-3 rounded-xl border border-amber-800/60">
+                <div className="flex items-center gap-2 text-xs text-warning bg-warning-soft p-3 rounded-xl border border-warning">
                   <AlertTriangle className="w-4 h-4 shrink-0" />
                   <span>You still have {activeQuestions.length - answeredCount} unanswered questions. Unanswered questions will be scored as zero.</span>
                 </div>
@@ -807,13 +807,13 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button
                   onClick={() => setShowSubmitModal(false)}
-                  className="btn-secondary px-4 py-2 text-xs rounded-full cursor-pointer"
+                  className="btn-secondary px-4 py-2 text-xs cursor-pointer"
                 >
                   Return to Exam
                 </button>
                 <button
                   onClick={() => handleFinalSubmission(false)}
-                  className="btn-primary px-5 py-2 text-xs font-bold uppercase rounded-full cursor-pointer"
+                  className="btn-primary px-5 py-2 text-xs font-medium cursor-pointer"
                 >
                   Confirm & Grade
                 </button>
@@ -834,18 +834,18 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8 animate-in fade-in duration-200">
         
         {/* Top Header */}
-        <div className="border-b border-white/[0.08] pb-6 flex items-center justify-between flex-wrap gap-3">
+        <div className="border-b border-line pb-6 flex items-center justify-between flex-wrap gap-3">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              <Award className="w-4 h-4 text-white" />
-              <span className="text-[11px] font-sans tracking-widest uppercase text-white font-semibold">
-                OFFICIAL COMPETENCY SCORECARD
+              <Award className="w-4 h-4 text-ink" />
+              <span className="text-[11px] font-sans tracking-widest uppercase text-ink font-semibold">
+                Your scorecard
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-sans font-extrabold text-[#F2F2F2] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-serif font-semibold text-ink tracking-tight">
               Legal English Diagnostic Report
             </h1>
-            <p className="text-xs sm:text-sm text-[#A8A8A8] font-sans mt-1">
+            <p className="text-xs sm:text-sm text-muted font-sans mt-1">
               Assessment completed on {currentResult.date} • {currentResult.title}
             </p>
           </div>
@@ -853,14 +853,14 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
           <div className="flex items-center gap-2">
             <button
               onClick={() => setMode('LOBBY')}
-              className="btn-secondary px-4 py-2 text-xs rounded-full flex items-center gap-1.5 cursor-pointer font-medium"
+              className="btn-secondary px-4 py-2 text-xs flex items-center gap-1.5 cursor-pointer font-medium"
             >
               <RotateCcw className="w-3.5 h-3.5" /> Retake Another Exam
             </button>
             {onBackToPractice && (
               <button
                 onClick={onBackToPractice}
-                className="btn-primary px-4 py-2 text-xs rounded-full font-semibold cursor-pointer"
+                className="btn-primary px-4 py-2 text-xs font-medium cursor-pointer"
               >
                 Back to Practice Lab
               </button>
@@ -869,55 +869,55 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
         </div>
 
         {/* Hero Scorecard Banner */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#151515] via-[#101010] to-[#0C0C0C] border border-white/[0.12] shadow-xl space-y-6">
+        <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-surface via-surface to-surface border border-line space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-center">
             
             {/* Score Ring / Metric */}
             <div className="flex flex-col items-center sm:items-start space-y-1">
-              <span className="text-xs font-sans uppercase tracking-wider text-[#A8A8A8] font-semibold">
+              <span className="text-xs font-sans text-muted font-semibold">
                 Overall Assessment Score
               </span>
               <div className="flex items-baseline gap-2">
                 <span className={`text-4xl sm:text-5xl font-sans font-extrabold tracking-tight ${
                   currentResult.scorePercentage >= 75
-                    ? 'text-white'
+                    ? 'text-ink'
                     : currentResult.scorePercentage >= 60
-                      ? 'text-[#DCDCDC]'
-                      : 'text-amber-300'
+                      ? 'text-ink-2'
+                      : 'text-warning'
                 }`}>
                   {currentResult.scorePercentage}%
                 </span>
-                <span className="text-sm font-sans text-[#A8A8A8]">
+                <span className="text-sm font-sans text-muted">
                   ({currentResult.correctAnswers}/{currentResult.totalQuestions})
                 </span>
               </div>
-              <span className="text-xs text-[#A8A8A8] font-sans">
+              <span className="text-xs text-muted font-sans">
                 Time Spent: {Math.floor(currentResult.timeSpentSeconds / 60)}m {currentResult.timeSpentSeconds % 60}s
               </span>
             </div>
 
             {/* Proficiency Tier */}
-            <div className="sm:col-span-2 p-4 rounded-2xl bg-[#181818]/70 border border-white/[0.12] space-y-1.5">
-              <div className="flex items-center gap-2 text-xs font-sans text-white font-bold uppercase tracking-wider">
+            <div className="sm:col-span-2 p-4 rounded-2xl bg-surface/70 border border-line space-y-1.5">
+              <div className="flex items-center gap-2 text-xs font-sans text-ink font-bold uppercase tracking-wider">
                 <Sparkles className="w-4 h-4" /> Evaluated Competency Tier
               </div>
-              <div className="text-base sm:text-lg font-sans font-bold text-[#F2F2F2]">
+              <div className="text-base sm:text-lg font-sans font-bold text-ink">
                 {currentResult.proficiencyTier}
               </div>
-              <p className="text-xs font-sans text-[#A8A8A8] leading-relaxed">
+              <p className="text-xs font-sans text-muted leading-relaxed">
                 {currentResult.scorePercentage >= 80 
                   ? 'Demonstrates high fluency in Common Law transactional drafting, bilingual civil law doctrines, and formal legal dispute mechanisms.'
                   : currentResult.scorePercentage >= 60
                     ? 'Demonstrates solid foundational legal vocabulary, but requires focused review of spatial pronominal adverbs, negative pledges, and statutory civil code equivalents.'
-                    : 'Recommend reviewing the core curriculum modules on contractual boilerplate and standard drafting collocations before attempting advanced cross-border negotiation.'}
+                    : 'Recommend reviewing the core lessons on contractual boilerplate and standard drafting collocations before attempting advanced cross-border negotiation.'}
               </p>
             </div>
 
           </div>
 
           {/* Category Breakdown Progress Bars */}
-          <div className="pt-6 border-t border-white/[0.08] space-y-3">
-            <h3 className="text-xs font-sans font-bold uppercase tracking-wider text-[#A8A8A8]">
+          <div className="pt-6 border-t border-line space-y-3">
+            <h3 className="text-xs font-serif font-semibold text-muted">
               Category Competency Breakdown
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -926,21 +926,21 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                 if (score.total === 0) return null;
                 const catName = cat.toUpperCase();
                 return (
-                  <div key={cat} className="p-3 rounded-xl bg-[#151515]/80 border border-white/[0.08] space-y-1.5">
+                  <div key={cat} className="p-3 rounded-xl bg-surface/80 border border-line space-y-1.5">
                     <div className="flex justify-between text-xs font-sans font-semibold">
-                      <span className="text-[#F2F2F2]">{catName}</span>
-                      <span className={score.percentage >= 70 ? 'text-white' : 'text-amber-300'}>
+                      <span className="text-ink">{catName}</span>
+                      <span className={score.percentage >= 70 ? 'text-ink' : 'text-warning'}>
                         {score.correct}/{score.total} ({score.percentage}%)
                       </span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-[#080808] overflow-hidden">
+                    <div className="w-full h-2 rounded-full bg-bg overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${
                           score.percentage >= 75
-                            ? 'bg-white'
+                            ? 'bg-accent'
                             : score.percentage >= 50
-                              ? 'bg-[#A8A8A8]'
-                              : 'bg-amber-500'
+                              ? 'bg-accent'
+                              : 'bg-warning'
                         }`}
                         style={{ width: `${score.percentage}%` }}
                       />
@@ -955,8 +955,8 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
         {/* In-Depth Question-by-Question Review Section */}
         <div className="space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <h2 className="text-lg font-sans font-bold text-[#F2F2F2] flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-white" /> Detailed Item Diagnostics & Explanations
+            <h2 className="text-lg font-serif font-semibold text-ink flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-ink" /> Detailed Item Diagnostics & Explanations
             </h2>
 
             {/* Filter Tabs */}
@@ -965,8 +965,8 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                 onClick={() => { setReviewFilter('ALL'); setReviewQuestionIdx(0); }}
                 className={`px-3 py-1 rounded-full border cursor-pointer transition-colors ${
                   reviewFilter === 'ALL'
-                    ? 'bg-[#242424] text-white border-white/40 font-bold'
-                    : 'bg-[#151515] text-[#A8A8A8] border-white/[0.08]'
+                    ? 'bg-accent text-on-accent border-accent font-bold'
+                    : 'bg-surface text-muted border-line'
                 }`}
               >
                 All ({activeQuestions.length})
@@ -975,8 +975,8 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                 onClick={() => { setReviewFilter('INCORRECT'); setReviewQuestionIdx(0); }}
                 className={`px-3 py-1 rounded-full border cursor-pointer transition-colors ${
                   reviewFilter === 'INCORRECT'
-                    ? 'bg-rose-950/60 text-rose-300 border-rose-700 font-bold'
-                    : 'bg-[#151515] text-[#A8A8A8] border-white/[0.08]'
+                    ? 'bg-danger-soft text-danger border-danger font-bold'
+                    : 'bg-surface text-muted border-line'
                 }`}
               >
                 Incorrect / Unanswered ({activeQuestions.length - currentResult.correctAnswers})
@@ -985,8 +985,8 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                 onClick={() => { setReviewFilter('FLAGGED'); setReviewQuestionIdx(0); }}
                 className={`px-3 py-1 rounded-full border cursor-pointer transition-colors ${
                   reviewFilter === 'FLAGGED'
-                    ? 'bg-amber-950/60 text-amber-300 border-amber-700 font-bold'
-                    : 'bg-[#151515] text-[#A8A8A8] border-white/[0.08]'
+                    ? 'bg-warning-soft text-warning border-warning font-bold'
+                    : 'bg-surface text-muted border-line'
                 }`}
               >
                 Flagged ({currentResult.questionResults.filter(r => r.flagged).length})
@@ -996,15 +996,15 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
 
           {/* Review Question Navigator */}
           {filteredReviewQuestions.length > 0 ? (
-            <div className="p-6 sm:p-8 rounded-3xl glass-panel-deep space-y-6">
+            <div className="p-6 sm:p-8 rounded-2xl glass-panel-deep space-y-6">
               
               {/* Top Selector Bar */}
-              <div className="flex items-center justify-between border-b border-white/[0.08] pb-4 flex-wrap gap-2">
+              <div className="flex items-center justify-between border-b border-line pb-4 flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold font-sans uppercase flex items-center gap-1 ${
                     activeReviewResult?.isCorrect
-                      ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-700/60'
-                      : 'bg-rose-950/60 text-rose-300 border border-rose-700/60'
+                      ? 'bg-success-soft text-success border border-success'
+                      : 'bg-danger-soft text-danger border border-danger'
                   }`}>
                     {activeReviewResult?.isCorrect ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
                     {activeReviewResult?.isCorrect ? 'Correct' : 'Incorrect Choice'}
@@ -1014,7 +1014,7 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                     {activeReviewQuestion.category || activeReviewQuestion.type}
                   </span>
 
-                  <span className="text-xs font-sans text-[#A8A8A8]">
+                  <span className="text-xs font-sans text-muted">
                     Review Item {reviewQuestionIdx + 1} of {filteredReviewQuestions.length}
                   </span>
                 </div>
@@ -1023,14 +1023,14 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                   <button
                     onClick={() => setReviewQuestionIdx(prev => Math.max(0, prev - 1))}
                     disabled={reviewQuestionIdx === 0}
-                    className="btn-secondary px-3 py-1 text-xs rounded-full disabled:opacity-30 cursor-pointer"
+                    className="btn-secondary px-3 py-1 text-xs disabled:opacity-30 cursor-pointer"
                   >
                     Previous
                   </button>
                   <button
                     onClick={() => setReviewQuestionIdx(prev => Math.min(filteredReviewQuestions.length - 1, prev + 1))}
                     disabled={reviewQuestionIdx === filteredReviewQuestions.length - 1}
-                    className="btn-secondary px-3 py-1 text-xs rounded-full disabled:opacity-30 cursor-pointer"
+                    className="btn-secondary px-3 py-1 text-xs disabled:opacity-30 cursor-pointer"
                   >
                     Next
                   </button>
@@ -1039,18 +1039,18 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
 
               {/* Title & Concept */}
               <div className="space-y-2">
-                <h3 className="text-lg sm:text-xl font-sans font-bold text-[#F2F2F2]">
+                <h3 className="text-lg sm:text-xl font-serif font-semibold text-ink">
                   {activeReviewQuestion.title}
                 </h3>
                 {activeReviewQuestion.scenario && (
-                  <div className="p-3.5 rounded-xl lexa-surface-subtle text-xs font-sans text-[#A8A8A8]">
-                    <strong className="text-[#F2F2F2]">Context:</strong> {activeReviewQuestion.scenario}
+                  <div className="p-3.5 rounded-xl lexa-surface-subtle text-xs font-sans text-muted">
+                    <strong className="text-ink">Context:</strong> {activeReviewQuestion.scenario}
                   </div>
                 )}
               </div>
 
               {/* Prompt */}
-              <div className="p-4 rounded-xl bg-[#151515]/70 border border-white/[0.08] text-sm font-sans font-bold text-[#F2F2F2]">
+              <div className="p-4 rounded-xl bg-surface/70 border border-line text-sm font-sans font-bold text-ink">
                 {activeReviewQuestion.promptEn}
               </div>
 
@@ -1065,10 +1065,10 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                       key={idx}
                       className={`p-3.5 rounded-xl border text-xs sm:text-sm font-sans flex items-center justify-between ${
                         isCorrectChoice
-                          ? 'bg-white/10 border-white/30 text-white font-semibold'
+                          ? 'bg-surface-3 border-line-strong text-ink font-semibold'
                           : isUserChoice && !isCorrectChoice
-                            ? 'bg-rose-950/40 border-rose-700 text-rose-300'
-                            : 'lexa-surface-subtle text-[#A8A8A8] opacity-70'
+                            ? 'bg-danger-soft border-danger text-danger'
+                            : 'lexa-surface-subtle text-muted opacity-70'
                       }`}
                     >
                       <div className="flex items-center gap-3">
@@ -1080,12 +1080,12 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
 
                       <div className="flex items-center gap-2">
                         {isCorrectChoice && (
-                          <span className="text-[11px] font-bold text-white flex items-center gap-1">
+                          <span className="text-[11px] font-bold text-ink flex items-center gap-1">
                             <CheckCircle2 className="w-4 h-4" /> Correct Answer
                           </span>
                         )}
                         {isUserChoice && !isCorrectChoice && (
-                          <span className="text-[11px] font-bold text-rose-300 flex items-center gap-1">
+                          <span className="text-[11px] font-bold text-danger flex items-center gap-1">
                             <XCircle className="w-4 h-4" /> Your Choice
                           </span>
                         )}
@@ -1096,24 +1096,24 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
               </div>
 
               {/* Bilingual Explanation */}
-              <div className="p-5 rounded-2xl bg-[#151515]/90 border border-white/[0.12] space-y-3">
-                <div className="text-xs font-sans font-bold uppercase tracking-wider text-white flex items-center justify-between">
+              <div className="p-5 rounded-2xl bg-surface/90 border border-line space-y-3">
+                <div className="text-xs font-sans font-bold uppercase tracking-wider text-ink flex items-center justify-between">
                   <span>Pedagogical Analysis & Civil Law Contrast</span>
                   {activeReviewQuestion.indonesianEquivalent && (
-                    <span className="text-white">
+                    <span className="text-ink">
                       Padanan Baku: <strong>{activeReviewQuestion.indonesianEquivalent}</strong>
                     </span>
                   )}
                 </div>
 
-                <p className="text-xs sm:text-sm font-sans text-[#F2F2F2] leading-relaxed">
+                <p className="text-xs sm:text-sm font-sans text-ink leading-relaxed">
                   {activeReviewQuestion.explanationEn}
                 </p>
 
                 {activeReviewQuestion.explanationId && (
-                  <div className="pt-2 border-t border-white/[0.08]">
-                    <p className="text-xs font-sans italic text-[#A8A8A8]">
-                      <strong className="text-[#F2F2F2] font-semibold">Penjelasan Bahasa Indonesia:</strong> {activeReviewQuestion.explanationId}
+                  <div className="pt-2 border-t border-line">
+                    <p className="text-xs font-sans italic text-muted">
+                      <strong className="text-ink font-semibold">Penjelasan Bahasa Indonesia:</strong> {activeReviewQuestion.explanationId}
                     </p>
                   </div>
                 )}
@@ -1122,7 +1122,7 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                   <div className="pt-2">
                     <button
                       onClick={() => setActiveLookupTermId(activeReviewQuestion.relatedTermId!)}
-                      className="text-xs font-sans text-[#DCDCDC] font-semibold hover:text-white hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-xs font-sans text-ink-2 font-semibold hover:text-ink hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       Inspect Term &ldquo;{activeReviewQuestion.relatedTermId}&rdquo; in Detail Dictionary <ArrowRight className="w-3 h-3" />
                     </button>
@@ -1132,7 +1132,7 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
 
             </div>
           ) : (
-            <div className="p-8 rounded-3xl glass-panel-deep text-center text-xs text-[#A8A8A8]">
+            <div className="p-8 rounded-2xl glass-panel-deep text-center text-xs text-muted">
               No questions matched the current review filter.
             </div>
           )}
