@@ -39,30 +39,30 @@
 :root,
 html.light,
 [data-theme="light"] {
-  --bg: #FFFFFF;
+  --bg: #EEF7FD;           /* sky base (Gamma #C6E6FA family) */
   --surface: #FFFFFF;
-  --surface-2: #FAFAFA;
-  --surface-3: #F3F3F3;
-  --text: #0A0A0A;
-  --text-2: #262626;
-  --text-muted: #6B6B6B;   /* 5.3:1 on white, 4.8:1 on surface-3 */
-  --text-faint: #6B6B6B;
-  --border: #EAEAEA;
-  --border-strong: #D6D6D6;
-  --accent: #0A0A0A;
-  --accent-hover: #2A2A2A;
+  --surface-2: #F3FAFE;    /* sky mist */
+  --surface-3: #DCEFFB;    /* sky tint */
+  --text: #0B1220;         /* ink */
+  --text-2: #1E293B;
+  --text-muted: #556070;   /* 6.3:1 on white */
+  --text-faint: #5E6878;
+  --border: #D3E7F5;
+  --border-strong: #CBD5E1;
+  --accent: #002253;       /* Gamma blue buttons */
+  --accent-hover: #0A3270;
   --accent-contrast: #FFFFFF;
-  --accent-soft: #F3F3F3;
-  --link: #2B59C3;         /* 6.2:1 on white */
+  --accent-soft: #E3F2FC;  /* sky wash */
+  --link: #002253;         /* Gamma blue, 15:1 on white */
   --link-contrast: #FFFFFF;
-  --success: #1E6B47;
-  --success-soft: #E9F5EE;
-  --danger: #A12C2C;
-  --danger-soft: #FCEDED;
-  --warning: #85570A;
-  --warning-soft: #FBF3E2;
-  --glass: rgba(255, 255, 255, 0.86);
-  --glass-border: #EAEAEA;
+  --success: #2F7A52;
+  --success-soft: #E7F5EC;
+  --danger: #B83232;
+  --danger-soft: #FDECEC;
+  --warning: #A64B12;
+  --warning-soft: #FFF1E6;
+  --glass: rgba(255, 255, 255, 0.82);
+  --glass-border: #D3E7F5;
   --shadow-card: none;
   --shadow-float: 0 1px 2px rgba(10, 10, 10, 0.05), 0 16px 40px -12px rgba(10, 10, 10, 0.18);
   --shadow-pop: 0 24px 60px -16px rgba(10, 10, 10, 0.22);
@@ -512,7 +512,7 @@ html.dark,
    Lexa signature: the annotated page (hero) — paper, marginalia, red pencil
    ========================================================================== */
 :root {
-  --paper: #FBFAF7;
+  --paper: #FCFDFF;
   --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3  0 0 0 0 0.25  0 0 0 0 0.2  0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --pencil: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M1 4.2 C 18 2 34 5.4 52 3.4 S 86 4.6 99 2.4' fill='none' stroke='%23C0392B' stroke-width='2' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   --marker: color-mix(in srgb, var(--link) 11%, transparent);
@@ -1260,3 +1260,14 @@ html.dark .wd-cmt-note.is-hot { background: #3A3020; }
   html.wd-printing .wd-field { background: none !important; box-shadow: none !important; }
   html.wd-printing .wd-field:empty::before { background: none; color: #000; font: inherit; padding: 0; content: '[' attr(data-ph) ']'; }
 }
+
+/* Sky palette: hero wash (light only) */
+html:not(.dark) #hero-banner { background:
+  radial-gradient(45% 38% at 6% 88%, rgba(255,196,224,.85) 0%, rgba(255,196,224,0) 70%),
+  radial-gradient(40% 34% at 96% 72%, rgba(255,226,206,.75) 0%, rgba(255,226,206,0) 70%),
+  radial-gradient(38% 30% at 82% 22%, rgba(255,255,255,.95) 0%, rgba(255,255,255,0) 72%),
+  radial-gradient(30% 22% at 18% 30%, rgba(255,255,255,.7) 0%, rgba(255,255,255,0) 72%),
+  radial-gradient(60% 40% at 50% 100%, rgba(203,214,255,.8) 0%, rgba(203,214,255,0) 70%),
+  linear-gradient(180deg, #8FCBF3 0%, #B4DDF8 30%, #D2EBFB 62%, #EEF7FD 100%); }
+html:not(.dark) body { background: linear-gradient(180deg, #EEF7FD 0%, #F6FAFE 40%, #EAF4FC 75%, #DCEEFB 100%) fixed; }
+html:not(.dark) .chapter-card, html:not(.dark) .ch-card { background-color: #FFFFFF; }
