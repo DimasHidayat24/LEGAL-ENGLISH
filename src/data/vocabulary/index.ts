@@ -128,18 +128,91 @@ const rawLegalVocabularyList: LegalTerm[] = [
 const seenIds = new Set<string>();
 const seenTerms = new Set<string>();
 
-export const legalVocabularyList: LegalTerm[] = rawLegalVocabularyList.filter(term => {
-  const normalizedId = term.id.toLowerCase().trim();
-  const normalizedTerm = term.term.toUpperCase().trim();
-  
-  if (seenIds.has(normalizedId) || seenTerms.has(normalizedTerm)) {
-    return false;
-  }
-  
-  seenIds.add(normalizedId);
-  seenTerms.add(normalizedTerm);
-  return true;
-});
+/**
+ * Canonical category map — the data packs use ~55 near-duplicate labels
+ * ("Banking & Finance" vs "Banking, Finance & Fintech" …). Normalise them at
+ * load time so filters show one clean chip per field of law.
+ */
+export const CANONICAL_CATEGORY_MAP: Record<string, string> = {
+  'Administrative & Constitutional Law': 'Administrative & Constitutional Law',
+  'Arbitration & ADR': 'Arbitration & ADR',
+  'International Arbitration': 'Arbitration & ADR',
+  'Banking & Finance': 'Banking, Finance & Insurance',
+  'Banking, Finance & Fintech': 'Banking, Finance & Insurance',
+  'Islamic & Sharia Law': 'Banking, Finance & Insurance',
+  'Insurance Law': 'Banking, Finance & Insurance',
+  'Insurance, Risk & Compliance': 'Banking, Finance & Insurance',
+  'Capital Markets & Securities': 'Capital Markets, M&A & Investment',
+  'M&A and Investment': 'Capital Markets, M&A & Investment',
+  'Mergers, Acquisitions & Joint Ventures': 'Capital Markets, M&A & Investment',
+  'Contract Law': 'Contract Law',
+  'Commercial Contracts & Transactions': 'Contract Law',
+  'Company & Corporate Law': 'Corporate Law',
+  'Corporate & Commercial Law': 'Corporate Law',
+  'Corporate Governance & Compliance': 'Corporate Law',
+  'Competition & Antitrust': 'Competition & Consumer Law',
+  'Competition & Antitrust Law': 'Competition & Consumer Law',
+  'Consumer Protection': 'Competition & Consumer Law',
+  'Construction Law': 'Construction Law',
+  'Construction & Infrastructure Law': 'Construction Law',
+  'Civil Litigation': 'Litigation & Dispute Resolution',
+  'Litigation & Civil Procedure': 'Litigation & Dispute Resolution',
+  'Litigation & Dispute Resolution': 'Litigation & Dispute Resolution',
+  'Litigation & Procedure': 'Litigation & Dispute Resolution',
+  'Courtroom & Advocacy English': 'Litigation & Dispute Resolution',
+  'Criminal Law': 'Criminal Law',
+  'Criminal Law & Procedure': 'Criminal Law',
+  'Data Protection, Privacy & AI': 'Data Protection & Privacy',
+  'Employment & Labor Law': 'Employment Law',
+  'Environmental, Energy & Mining Law': 'Environmental, Energy & Mining',
+  'General Legal Terms': 'General Legal Terms',
+  'Legal Persons & Relationships': 'General Legal Terms',
+  'Legal Collocations': 'General Legal Terms',
+  'Insolvency & Restructuring': 'Insolvency & Restructuring',
+  'Insolvency, Restructuring & Bankruptcy': 'Insolvency & Restructuring',
+  'Intellectual Property': 'Intellectual Property',
+  'International Law': 'International Law & Human Rights',
+  'Public International Law': 'International Law & Human Rights',
+  'Human Rights': 'International Law & Human Rights',
+  'International Trade & Customs': 'Trade & Maritime Law',
+  'Maritime & Shipping Law': 'Trade & Maritime Law',
+  'Maritime, Shipping & Aviation Law': 'Trade & Maritime Law',
+  'Latin Legal Terms': 'Latin Terms & Maxims',
+  'Latin Maxims & Expressions': 'Latin Terms & Maxims',
+  'Legal Drafting & Contract English': 'Legal Drafting',
+  'Legal Drafting Expressions': 'Legal Drafting',
+  'Legal Writing & Research': 'Legal Writing & Communication',
+  'Legal Writing & Terminology': 'Legal Writing & Communication',
+  'Legal Negotiation & Communication': 'Legal Writing & Communication',
+  'Legal Negotiation & Drafting': 'Legal Writing & Communication',
+  'Property Law': 'Property Law',
+  'Property & Real Estate Law': 'Property Law',
+  'Tax Law': 'Tax Law',
+  'Tort Law': 'Tort Law',
+  'Tort & Civil Wrongs': 'Tort Law',
+};
+
+export function canonicalCategory(category: string): string {
+  return CANONICAL_CATEGORY_MAP[category?.trim()] ?? category;
+}
+
+export const legalVocabularyList: LegalTerm[] = rawLegalVocabularyList
+  .filter(term => {
+    const normalizedId = term.id.toLowerCase().trim();
+    const normalizedTerm = term.term.toUpperCase().trim();
+
+    if (seenIds.has(normalizedId) || seenTerms.has(normalizedTerm)) {
+      return false;
+    }
+
+    seenIds.add(normalizedId);
+    seenTerms.add(normalizedTerm);
+    return true;
+  })
+  .map(term => {
+    const category = canonicalCategory(term.category);
+    return category === term.category ? term : { ...term, category: category as LegalTerm["category"] };
+  });
 
 // Helper functions for Lexicon queries and search
 export function getTermsByCategory(category: string): LegalTerm[] {
