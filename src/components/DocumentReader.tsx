@@ -1,59 +1,190 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useStudy } from '../context/StudyContext';
 import { sampleLegalDocuments } from '../data/documentsData';
 import { legalVocabularyList } from '../data/vocabularyData';
-import { LegalTerm } from '../types';
+import type { DocumentParagraph, LegalDocument, LegalTerm } from '../types';
 import { LegalWord } from './LegalWord';
-import { 
-  Bookmark, 
-  BookmarkCheck, 
-  Scale, 
-  Check, 
-  MessageSquare, 
-  CheckCircle2, 
-  ArrowRight,
-  Volume2,
-  Minimize2,
-  BookOpen,
-  Sparkles,
-  ChevronRight
+import {
+  ArrowRight, Bookmark, BookmarkCheck, Check, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, CloudCheck, Copy,
+  Eye, ListTree, MessageSquare, MessageSquareText, Printer, Scale, Search, Volume2, X,
 } from 'lucide-react';
+import { CONTENT_W, CONTENT_H, MARGIN, PAGE_H, PAGE_W, type Block, type BlockKind, wordCount } from './writing/docModel';
+import { paginate, type Part } from './writing/paginate';
+import {
+  COMMENTS_GAP, COMMENTS_W, DocIcon, Menu, ZOOMS, type ZoomSel, printDoc, reducedMotion, stackComments, useDocFontsReady,
+} from './writing/chrome';
+
+/* ------------------------------------------------------------------ */
+/* Term matching (unchanged rules from the original reader)            */
+/* ------------------------------------------------------------------ */
+
+const termById = (id: string) => legalVocabularyList.find((t) => t.id === id);
+
+const getTermVariants = (term: LegalTerm): string[] => {
+  const base = term.term.trim();
+  const variants = [base];
+  if (term.id === 'covenant') variants.push('covenants', 'covenant');
+  if (term.id === 'shareholder') variants.push('shareholders', 'shareholder');
+  if (term.id === 'liability') variants.push('liabilities', 'liability', 'liable');
+  if (term.id === 'indemnity') variants.push('indemnify', 'indemnities', 'indemnified', 'indemnity');
+  if (term.id === 'representation') variants.push('representations', 'represents', 'representation');
+  if (term.id === 'warranty') variants.push('warranties', 'warrants', 'warranty');
+  if (term.id === 'breach') variants.push('breaches', 'breached', 'breach');
+  if (term.id === 'arbitration') variants.push('arbitral', 'arbitration');
+  if (term.id === 'severability') variants.push('severed', 'severability');
+  if (term.id === 'thereto') variants.push('hereto', 'thereto');
+  if (term.id === 'due-diligence') variants.push('legal due diligence', 'due diligence');
+  if (term.id === 'hold-harmless') variants.push('hold harmless', 'holds harmless', 'holding harmless');
+  if (term.id === 'preponderance-of-evidence') variants.push('preponderance of the evidence', 'preponderance of evidence');
+  if (term.id === 'bona-fide') variants.push('bona fide', 'mala fide');
+  if (!base.endsWith('s')) variants.push(`${base}s`);
+  return variants;
+};
+
+interface Matcher { re: RegExp; map: Map<string, LegalTerm> }
+
+function buildMatcher(ids: string[] | undefined): Matcher | null {
+  const terms = (ids ?? []).map(termById).filter((t): t is LegalTerm => !!t);
+  if (!terms.length) return null;
+  const map = new Map<string, LegalTerm>();
+  const all: string[] = [];
+  for (const t of terms) {
+    for (const v of getTermVariants(t)) {
+      const lower = v.toLowerCase();
+      if (!map.has(lower)) { map.set(lower, t); all.push(v); }
+    }
+  }
+  if (!all.length) return null;
+  all.sort((a, b) => b.length - a.length);
+  const re = new RegExp(`\\b(${all.map((v) => v.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')).join('|')})\\b`, 'gi');
+  return { re, map };
+}
+
+/* ------------------------------------------------------------------ */
+/* Document → blocks (presentation only; the text is the data as is)   */
+/* ------------------------------------------------------------------ */
+
+interface DBlock extends Block {
+  /** paragraph this block belongs to (-1 = front matter / execution) */
+  pi: number;
+  matcher?: Matcher | null;
+  extra?: string;
+}
+
+const isExecuted = (d: LegalDocument) => d.documentType === 'Contract' || d.documentType === 'Corporate';
+
+/** "DELIVERY & DELAY CLAUSE 4.2" → heading + clause "4.2"; "SECTION 1: SCOPE" → "1. SCOPE"; "… ¶14" → "14." */
+function parseNumber(raw: string): { heading?: string; headLabel?: string; centred?: boolean; kind: BlockKind; label?: string } {
+  const n = raw.trim();
+  if (n === 'PREAMBLE') return { kind: 'p' };
+  if (/^RECITALS?$/.test(n)) return { heading: 'RECITALS', centred: true, kind: 'p' };
+  let m = n.match(/^RECITALS?\s+([A-Z])$/);
+  if (m) return { heading: 'RECITALS', centred: true, kind: 'num', label: `(${m[1]})` };
+  m = n.match(/^SECTION\s+(\d+):\s*(.+)$/);
+  if (m) return { heading: m[2], headLabel: `${m[1]}.`, kind: 'p' };
+  m = n.match(/^(.*?)\s*¶\s*(\d+)$/);
+  if (m) return { heading: m[1] || undefined, kind: 'num', label: `${m[2]}.` };
+  m = n.match(/^(.*?)\s+(\d+)\.(\d+)$/);
+  if (m) return { heading: m[1], headLabel: `${m[2]}.`, kind: 'clause', label: `${m[2]}.${m[3]}` };
+  return { heading: n, kind: 'p' };
+}
+
+function buildDocBlocks(doc: LegalDocument): DBlock[] {
+  const out: DBlock[] = [];
+  let bi = 0;
+  const push = (b: Partial<DBlock> & { kind: BlockKind; text: string; pi: number }) => {
+    out.push({ id: `${doc.id}-${bi}`, sec: b.pi, bi: bi++, hits: [], first: false, hasFields: false, ...b } as DBlock);
+  };
+  push({ kind: 'title', text: doc.title, pi: -1, extra: 'is-doctitle' });
+  push({ kind: 'lh2', text: `Governing Law: ${doc.governingLaw} · Jurisdiction: ${doc.jurisdiction}`, pi: -1, extra: 'dr-b--meta' });
+  if (doc.parties?.length && !isExecuted(doc)) {
+    push({ kind: 'lh2', text: `Parties: ${doc.parties.join(' and ')}`, pi: -1, extra: 'dr-b--meta dr-b--parties' });
+  }
+  let lastHeading = '';
+  doc.paragraphs.forEach((p, pi) => {
+    const parsed = parseNumber(p.paragraphNumber);
+    let first = true;
+    if (parsed.heading && parsed.heading !== lastHeading) {
+      push({
+        kind: parsed.centred ? 'title' : 'heading', text: parsed.heading, label: parsed.headLabel, pi, first: true,
+        extra: parsed.centred ? 'dr-b--subtitle' : undefined,
+      });
+      first = false;
+    }
+    lastHeading = parsed.heading ?? '';
+    push({ kind: parsed.kind, label: parsed.label, text: p.text, pi, first, matcher: buildMatcher(p.highlightedTermIds) });
+  });
+  if (isExecuted(doc) && doc.parties?.length) {
+    push({ kind: 'gap', text: '', pi: -1 });
+    push({ kind: 'party', text: doc.parties.join('\n'), pi: -1, extra: 'dr-exec' });
+  }
+  return out;
+}
+
+/** Short label for a paragraph in the outline and the comment cards. */
+const paraLabel = (p: DocumentParagraph) => {
+  const parsed = parseNumber(p.paragraphNumber);
+  if (p.paragraphNumber === 'PREAMBLE') return 'Preamble';
+  const name = (parsed.heading ?? p.paragraphNumber).toLowerCase().replace(/(^|\s|&)\S/g, (c) => c.toUpperCase());
+  const num = parsed.label ?? parsed.headLabel;
+  return num && !/^\(/.test(num) ? `${num.replace(/\.$/, '')} · ${name}` : num ? `${name} ${num}` : name;
+};
+
+const FONT_PX = { sm: 14, base: 16, lg: 18.667 } as const;
+const FONT_PT = { sm: '10.5', base: '12', lg: '14' } as const;
+
+/* ------------------------------------------------------------------ */
+/* Main                                                                */
+/* ------------------------------------------------------------------ */
+
+interface Pos { top: number }
 
 export const DocumentReader: React.FC = () => {
-  const { 
-    activeDocId, 
-    setActiveDocId, 
-    setActiveLookupTermId, 
-    isTermSaved, 
-    saveTerm, 
-    removeSavedTerm,
-    toggleBookmarkParagraph,
-    isParagraphBookmarked,
-    completedDocuments,
-    markDocumentComplete,
-    personalNotes,
-    saveNote
+  const {
+    activeDocId, setActiveDocId, setActiveLookupTermId, isTermSaved, saveTerm, removeSavedTerm,
+    toggleBookmarkParagraph, isParagraphBookmarked, completedDocuments, markDocumentComplete, personalNotes, saveNote,
   } = useStudy();
 
-  // Selected document or default to first
-  const currentDoc = sampleLegalDocuments.find(d => d.id === activeDocId) || sampleLegalDocuments[0];
+  const currentDoc = sampleLegalDocuments.find((d) => d.id === activeDocId) || sampleLegalDocuments[0];
   const isDocCompleted = completedDocuments.includes(currentDoc.id);
+  const paras = currentDoc.paragraphs;
 
-  // Single shared state for selected legal term as specified in requirements
-  const [selectedLegalTerm, setSelectedLegalTerm] = useState<LegalTerm | null>(() => {
-    return legalVocabularyList.find(t => currentDoc.keyTermIds?.includes(t.id)) || legalVocabularyList[0];
-  });
-  const [assistantPanelOpen, setAssistantPanelOpen] = useState<boolean>(true);
-  const [activeRightTab, setActiveRightTab] = useState<'INSPECTOR' | 'GLOSSARY' | 'SUMMARY' | 'NOTES'>('INSPECTOR');
+  /* ---- reader state */
+  const [selectedLegalTerm, setSelectedLegalTerm] = useState<LegalTerm | null>(null);
+  /** paragraph whose card shows the term inspector */
+  const [termPara, setTermPara] = useState<number | null>(null);
+  const [activeSec, setActiveSec] = useState<number | null>(0);
+  const [commentsOn, setCommentsOn] = useState<boolean>(true); // "Indonesian analysis" in the margin
   const [fontSize, setFontSize] = useState<'sm' | 'base' | 'lg'>('base');
-  const [showIndonesianTranslation, setShowIndonesianTranslation] = useState<boolean>(true);
+  const [zoomSel, setZoomSel] = useState<ZoomSel>('fit');
+  const [outlineOpen, setOutlineOpen] = useState<boolean>(() => typeof window === 'undefined' || window.innerWidth >= 1024);
   const [activeParagraphNoteId, setActiveParagraphNoteId] = useState<string | null>(null);
   const [tempNoteText, setTempNoteText] = useState<string>('');
-
   const [docQuery, setDocQuery] = useState<string>('');
   const [docTypeFilter, setDocTypeFilter] = useState<string>('ALL');
   const [readProgress, setReadProgress] = useState<number>(0);
-  const docCanvasRef = useRef<HTMLDivElement | null>(null);
+  const [pages, setPages] = useState<Part[][]>([]);
+  const [canvasW, setCanvasW] = useState(1000);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [curPage, setCurPage] = useState(1);
+  const [positions, setPositions] = useState<Record<number, Pos>>({});
+  const [connector, setConnector] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const fontsReady = useDocFontsReady();
+
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const pagesRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const blocks = useMemo(() => buildDocBlocks(currentDoc), [currentDoc]);
+  const lastOfKind = useMemo(() => {
+    const set = new Set<string>();
+    blocks.forEach((b, i) => { if (blocks[i + 1]?.kind !== b.kind) set.add(b.id); });
+    return set;
+  }, [blocks]);
+  const words = useMemo(() => wordCount(paras.map((p) => p.text).join(' ')), [paras]);
 
   const docTypes = ['ALL', ...Array.from(new Set(sampleLegalDocuments.map((d) => d.documentType)))];
   const filteredDocs = sampleLegalDocuments.filter((d) => {
@@ -63,256 +194,409 @@ export const DocumentReader: React.FC = () => {
     return [d.title, d.documentType, d.jurisdiction, d.governingLaw, d.abstractEn].some((f) => f.toLowerCase().includes(q));
   });
 
-  // Scroll-linked reading progress for the document canvas
+  /* ---- layout metrics (same rules as the Writing Lab) */
+  const narrow = canvasW < 1020;
+  const showComments = commentsOn && !narrow;
+  /* On phones the sheet keeps A4 proportions but is set smaller so 12 pt stays legible when fitted. */
+  const geo = narrow
+    ? { w: 520, h: Math.round(520 * (PAGE_H / PAGE_W)), m: 40 }
+    : { w: PAGE_W, h: PAGE_H, m: MARGIN };
+  const contentW = narrow ? geo.w - geo.m * 2 : CONTENT_W;
+  const contentH = narrow ? geo.h - geo.m * 2 : CONTENT_H;
+  const fit = narrow
+    ? Math.min(1, (canvasW - 20) / geo.w)
+    : Math.min(1, (canvasW - 56 - (showComments ? COMMENTS_W + COMMENTS_GAP : 0)) / geo.w);
+  const zoom = zoomSel === 'fit' ? Math.max(0.3, fit) : zoomSel;
+  const pagesW = geo.w * zoom;
+
   useEffect(() => {
-    const onScroll = () => {
-      const el = docCanvasRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const total = rect.height - window.innerHeight * 0.6;
-      const read = Math.min(Math.max((window.innerHeight * 0.4 - rect.top) / Math.max(total, 1), 0), 1);
-      setReadProgress(read);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-    };
+    const el = canvasRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setCanvasW(el.clientWidth));
+    ro.observe(el);
+    setCanvasW(el.clientWidth);
+    return () => ro.disconnect();
+  }, []);
+
+  /* ---- document switch */
+  useEffect(() => {
+    setSelectedLegalTerm(null);
+    setTermPara(null);
+    setActiveSec(0);
+    setSheetOpen(false);
+    setReadProgress(0);
+    canvasRef.current?.scrollTo({ top: 0 });
   }, [currentDoc.id]);
 
-  const inspectorScrollRef = useRef<HTMLDivElement | null>(null);
-  const assistantPanelRef = useRef<HTMLDivElement | null>(null);
+  /* ---- paginate from the hidden measuring copy */
+  useLayoutEffect(() => {
+    const root = measureRef.current;
+    if (!root) return;
+    setPages(paginate(root, blocks, 0, contentH));
+  }, [blocks, fontsReady, zoom, fontSize, contentH]);
 
-  // Helper to dynamically identify the actual parent container controlling vertical scrolling
-  const getScrollParent = (node: HTMLElement | null): HTMLElement | Window => {
-    if (!node || typeof window === 'undefined') return window;
-    let parent = node.parentElement;
-    while (parent && parent !== document.body && parent !== document.documentElement) {
-      const style = window.getComputedStyle(parent);
-      const overflowY = style.overflowY;
-      if ((overflowY === 'auto' || overflowY === 'scroll') && parent.scrollHeight > parent.clientHeight) {
-        return parent;
-      }
-      parent = parent.parentElement;
-    }
-    return window;
-  };
-
-  // Helper to calculate sticky / fixed navigation height dynamically so Assistant Panel is never hidden underneath
-  const getHeaderOffset = (): number => {
-    if (typeof document === 'undefined') return 96;
-    const headerEl = document.querySelector('header');
-    if (headerEl) {
-      const headerRect = headerEl.getBoundingClientRect();
-      // Leave clear breathing room below the sticky floating capsule
-      return Math.max(headerRect.bottom + 18, 88);
-    }
-    return 96;
-  };
-
-  // Smoothly scroll the main container so the Legal English Assistant Panel is brought clearly into view
-  const scrollToAssistantPanel = (force = false) => {
-    const panel = assistantPanelRef.current;
-    if (!panel || typeof window === 'undefined') return;
-
-    const headerOffset = getHeaderOffset();
-    const rect = panel.getBoundingClientRect();
-
-    // Check if the top of the Assistant Panel is already clearly visible in the viewport below navigation
-    // (If user is already near the Assistant Panel, avoid unnecessary large jumps)
-    const isAlreadyNear = (
-      rect.top >= (headerOffset - 25) &&
-      rect.top <= (headerOffset + 130) &&
-      rect.bottom > headerOffset
-    );
-
-    if (!force && isAlreadyNear) {
-      return;
-    }
-
-    const scrollParent = getScrollParent(panel);
-
-    if (scrollParent === window) {
-      const currentScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-      const targetScrollY = Math.max(0, currentScrollY + rect.top - headerOffset);
-
-      if ('scrollTo' in window) {
-        window.scrollTo({
-          top: targetScrollY,
-          behavior: 'smooth',
-        });
-      } else {
-        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    } else {
-      const container = scrollParent as HTMLElement;
-      const containerRect = container.getBoundingClientRect();
-      const currentScrollTop = container.scrollTop;
-      const targetScrollTop = Math.max(0, currentScrollTop + (rect.top - containerRect.top) - headerOffset);
-
-      if (typeof container.scrollTo === 'function') {
-        container.scrollTo({
-          top: targetScrollTop,
-          behavior: 'smooth',
-        });
-      } else {
-        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-  };
-
-  // When switching documents, default to first key term of that document
-  useEffect(() => {
-    const docTerm = legalVocabularyList.find(t => currentDoc.keyTermIds?.includes(t.id)) || legalVocabularyList[0];
-    setSelectedLegalTerm(docTerm);
-  }, [currentDoc.id]);
-
-  // Handle clicking ANY legal word in document or glossary
-  const handleSelectLegalWord = (term: LegalTerm) => {
-    // 1. Set the selected legal term
-    setSelectedLegalTerm(term);
-
-    // 2. Make sure Assistant Panel is open
-    setAssistantPanelOpen(true);
-
-    // 3. Make sure the Inspector tab is active
-    setActiveRightTab('INSPECTOR');
-
-    // 4. Scroll assistant panel internal content to top of selected word's explanation
-    if (inspectorScrollRef.current) {
-      inspectorScrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // 5. Automatically scroll the main page / scroll container to the Assistant Panel after DOM updates
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (assistantPanelRef.current) {
-          scrollToAssistantPanel();
-        } else {
-          // If panel was previously closed and just mounting, allow short post-render delay
-          setTimeout(() => {
-            scrollToAssistantPanel();
-          }, 60);
-        }
-      });
+  /* ---- comment cards: anchored to each paragraph, Docs-style stacking */
+  const layoutComments = useCallback(() => {
+    const stage = stageRef.current;
+    const pagesEl = pagesRef.current;
+    if (!stage || !pagesEl || !showComments) { setConnector(null); return; }
+    const sr = stage.getBoundingClientRect();
+    const anchorEls: (HTMLElement | null)[] = [];
+    const anchors = paras.map((_, i) => {
+      const el = pagesEl.querySelector<HTMLElement>(`[data-sec-first="${i}"]`);
+      anchorEls[i] = el;
+      return el ? el.getBoundingClientRect().top - sr.top : i * 120;
     });
+    const h = anchors.map((_, i) => cardRefs.current[i]?.offsetHeight ?? 90);
+    const a = activeSec != null && activeSec < paras.length ? activeSec : -1;
+    const top = stackComments(anchors, h, a);
+    const next: Record<number, Pos> = {};
+    top.forEach((t, i) => { next[i] = { top: Math.round(t) }; });
+    setPositions((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next));
+
+    const termEl = a >= 0 && termPara === a ? pagesEl.querySelector<HTMLElement>(`[data-sec="${a}"] .legal-word-btn.is-selected`) : null;
+    const anchorEl = termEl ?? (a >= 0 ? anchorEls[a] : null);
+    if (anchorEl) {
+      const r = anchorEl.getBoundingClientRect();
+      const pr = pagesEl.getBoundingClientRect();
+      const ax = Math.min(termEl ? r.right : pr.right - geo.m * zoom, pr.right) - sr.left;
+      const ay = r.top - sr.top + Math.min(r.height, 22 * zoom) * 0.85;
+      const px = pr.right - sr.left;
+      const cx = px + COMMENTS_GAP - 12;
+      const cy = top[a] + 24;
+      setConnector(`M${ax.toFixed(1)},${ay.toFixed(1)} H${(px - 4).toFixed(1)} C${(px + 10).toFixed(1)},${ay.toFixed(1)} ${(cx - 10).toFixed(1)},${cy} ${cx.toFixed(1)},${cy}`);
+    } else setConnector(null);
+  }, [paras, activeSec, termPara, showComments, zoom, geo.m]);
+
+  useLayoutEffect(() => { layoutComments(); }, [layoutComments, pages, selectedLegalTerm, personalNotes]);
+  useEffect(() => {
+    if (!showComments) return;
+    const ro = new ResizeObserver(() => layoutComments());
+    cardRefs.current.forEach((el) => el && ro.observe(el));
+    if (pagesRef.current) ro.observe(pagesRef.current);
+    return () => ro.disconnect();
+  }, [layoutComments, showComments, currentDoc.id]);
+
+  /* ---- scroll: current page + reading progress */
+  const onScroll = useCallback(() => {
+    const c = canvasRef.current;
+    const p = pagesRef.current;
+    if (!c || !p) return;
+    const mid = c.getBoundingClientRect().top + c.clientHeight * 0.4;
+    let idx = 1;
+    p.querySelectorAll<HTMLElement>('.wd-page').forEach((el, i) => { if (el.getBoundingClientRect().top <= mid) idx = i + 1; });
+    setCurPage(idx);
+    const max = c.scrollHeight - c.clientHeight;
+    setReadProgress(max > 0 ? Math.min(1, Math.max(0, c.scrollTop / max)) : 1);
+  }, []);
+  useEffect(() => { onScroll(); }, [onScroll, pages]);
+
+  /* ---- interactions */
+  const scrollToSec = (i: number) => {
+    const c = canvasRef.current;
+    const el = pagesRef.current?.querySelector<HTMLElement>(`[data-sec-first="${i}"]`);
+    if (!c || !el) return;
+    const top = el.getBoundingClientRect().top - c.getBoundingClientRect().top + c.scrollTop - 48;
+    c.scrollTo({ top, behavior: reducedMotion() ? 'auto' : 'smooth' });
   };
 
-  // Pronunciation audio playback helper
+  const activate = (i: number, opts: { scroll?: boolean; sheet?: boolean; keepTerm?: boolean } = {}) => {
+    setActiveSec(i);
+    if (!opts.keepTerm && termPara !== i) setTermPara(null);
+    if (opts.scroll) scrollToSec(i);
+    if (narrow && opts.sheet) setSheetOpen(true);
+  };
+
+  /** Clicking a highlighted term (in the page, a card or the glossary). */
+  const handleSelectLegalWord = (term: LegalTerm, pi: number | null, opts: { scroll?: boolean } = {}) => {
+    setSelectedLegalTerm(term);
+    if (pi == null) { setActiveLookupTermId(term.id); return; }
+    setTermPara(pi);
+    setActiveSec(pi);
+    if (!commentsOn && !narrow) setCommentsOn(true);
+    if (opts.scroll) scrollToSec(pi);
+    if (narrow) setSheetOpen(true);
+  };
+
+  const selectDoc = (id: string) => {
+    setActiveDocId(id);
+    if (window.innerWidth < 1024) setOutlineOpen(false);
+  };
+
   const playPronunciation = (termText: string) => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(termText.toLowerCase());
-        utterance.lang = 'en-US';
-        utterance.rate = 0.85;
-        window.speechSynthesis.speak(utterance);
+        const u = new SpeechSynthesisUtterance(termText.toLowerCase());
+        u.lang = 'en-US';
+        u.rate = 0.85;
+        window.speechSynthesis.speak(u);
       } catch (err) {
         console.warn('Speech synthesis unavailable', err);
       }
     }
   };
 
-  // Helper to render paragraph with clickable highlighted terms in warm parchment style
-  const renderParagraphWithHighlights = (paragraphText: string, highlightedIds: string[] | undefined) => {
-    if (!highlightedIds || highlightedIds.length === 0) {
-      return <span>{paragraphText}</span>;
-    }
-
-    // Find all terms to highlight
-    const termObjects = highlightedIds
-      .map(id => legalVocabularyList.find(t => t.id === id))
-      .filter((t): t is LegalTerm => !!t);
-
-    if (termObjects.length === 0) {
-      return <span>{paragraphText}</span>;
-    }
-
-    // Build map of text variant -> LegalTerm
-    const variantMap = new Map<string, LegalTerm>();
-    const allVariants: string[] = [];
-
-    const getTermVariants = (term: LegalTerm): string[] => {
-      const base = term.term.trim();
-      const variants = [base];
-      if (term.id === 'covenant') variants.push('covenants', 'covenant');
-      if (term.id === 'shareholder') variants.push('shareholders', 'shareholder');
-      if (term.id === 'liability') variants.push('liabilities', 'liability', 'liable');
-      if (term.id === 'indemnity') variants.push('indemnify', 'indemnities', 'indemnified', 'indemnity');
-      if (term.id === 'representation') variants.push('representations', 'represents', 'representation');
-      if (term.id === 'warranty') variants.push('warranties', 'warrants', 'warranty');
-      if (term.id === 'breach') variants.push('breaches', 'breached', 'breach');
-      if (term.id === 'arbitration') variants.push('arbitral', 'arbitration');
-      if (term.id === 'severability') variants.push('severed', 'severability');
-      if (term.id === 'thereto') variants.push('hereto', 'thereto');
-      if (term.id === 'due-diligence') variants.push('legal due diligence', 'due diligence');
-      if (term.id === 'hold-harmless') variants.push('hold harmless', 'holds harmless', 'holding harmless');
-      if (term.id === 'preponderance-of-evidence') variants.push('preponderance of the evidence', 'preponderance of evidence');
-      if (term.id === 'bona-fide') variants.push('bona fide', 'mala fide');
-      if (!base.endsWith('s')) variants.push(`${base}s`);
-      return variants;
-    };
-
-    for (const t of termObjects) {
-      for (const v of getTermVariants(t)) {
-        const lower = v.toLowerCase();
-        if (!variantMap.has(lower)) {
-          variantMap.set(lower, t);
-          allVariants.push(v);
-        }
-      }
-    }
-
-    // Sort descending by length so longer phrases match before substrings
-    allVariants.sort((a, b) => b.length - a.length);
-
-    if (allVariants.length === 0) {
-      return <span>{paragraphText}</span>;
-    }
-
-    const regexPattern = new RegExp(`\\b(${allVariants.map(v => v.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')).join('|')})\\b`, 'gi');
-    const parts = paragraphText.split(regexPattern);
-
-    return (
-      <span>
-        {parts.map((part, index) => {
-          const matchedTerm = variantMap.get(part.toLowerCase());
-          if (matchedTerm) {
-            const isSelected = selectedLegalTerm?.id === matchedTerm.id;
-            return (
-              <LegalWord
-                key={`${matchedTerm.id}-${index}`}
-                term={matchedTerm}
-                displayText={part}
-                isSelected={isSelected}
-                onSelect={handleSelectLegalWord}
-              />
-            );
-          }
-          return <span key={index}>{part}</span>;
-        })}
-      </span>
-    );
-  };
-
   const handleOpenNoteModal = (pId: string) => {
     setActiveParagraphNoteId(pId);
-    const key = `${currentDoc.id}-${pId}`;
-    setTempNoteText(personalNotes[key] || '');
+    setTempNoteText(personalNotes[`${currentDoc.id}-${pId}`] || '');
   };
-
   const handleSaveParagraphNote = () => {
     if (activeParagraphNoteId) {
-      const key = `${currentDoc.id}-${activeParagraphNoteId}`;
-      saveNote(key, tempNoteText);
+      saveNote(`${currentDoc.id}-${activeParagraphNoteId}`, tempNoteText);
       setActiveParagraphNoteId(null);
     }
   };
 
+  const copyAll = async () => {
+    const text = [currentDoc.title, '', ...paras.flatMap((p) => [p.paragraphNumber, p.text, ''])].join('\n');
+    try { await navigator.clipboard.writeText(text); setCopied(true); window.setTimeout(() => setCopied(false), 1600); } catch { /* ignore */ }
+  };
+
+  /* ---- rendering helpers */
+  const renderText = (b: DBlock, from: number, to: number, interactive: boolean): React.ReactNode => {
+    const slice = b.text.slice(from, to);
+    if (!b.matcher) return slice;
+    b.matcher.re.lastIndex = 0;
+    const parts = slice.split(b.matcher.re);
+    return parts.map((part, i) => {
+      const t = i % 2 === 1 ? b.matcher!.map.get(part.toLowerCase()) : undefined;
+      if (!t) return <React.Fragment key={i}>{part}</React.Fragment>;
+      if (!interactive) return <span key={i} className="legal-word-btn doc-term-highlight">{part}</span>;
+      return (
+        <LegalWord
+          key={`${t.id}-${i}`}
+          term={t}
+          displayText={part}
+          isSelected={selectedLegalTerm?.id === t.id && termPara === b.pi}
+          onSelect={(term) => handleSelectLegalWord(term, b.pi)}
+        />
+      );
+    });
+  };
+
+  const renderBlock = (part: Part, opts: { measure?: boolean; pageTop?: boolean }) => {
+    const b = part.b as DBlock;
+    const { from, to, head, tail } = part;
+    const isSec = !opts.measure && b.pi >= 0 && activeSec === b.pi;
+    const cls = [
+      'wd-b', `wd-b--${b.kind}`, b.extra,
+      head && 'is-head', tail && 'is-tail', opts.pageTop && 'is-pagetop',
+      lastOfKind.has(b.id) && !head && 'is-last', isSec && 'is-sec',
+    ].filter(Boolean).join(' ');
+    const p = b.pi >= 0 ? paras[b.pi] : null;
+    const attrs: Record<string, unknown> = opts.measure
+      ? { 'data-mblock': b.id }
+      : {
+          'data-block': b.id,
+          ...(b.pi >= 0 ? { 'data-sec': b.pi } : {}),
+          ...(b.first && !tail ? { 'data-sec-first': b.pi } : {}),
+          onClick: b.pi >= 0 ? () => { if (activeSec !== b.pi || narrow) activate(b.pi, { sheet: narrow }); } : undefined,
+        };
+    const marks = !opts.measure && p && b.first && !tail ? (
+      <>
+        {isParagraphBookmarked(currentDoc.id, p.id) && (
+          <BookmarkCheck className="dr-bm" style={{ left: -(geo.m / 2) - 9 }} aria-label="Bookmarked" />
+        )}
+        {narrow && (
+          <button
+            type="button"
+            className="wd-margin-cmt"
+            style={{ width: Math.min(30 / zoom, geo.m - 8), height: Math.min(30 / zoom, geo.m - 8), right: -geo.m + 4 }}
+            aria-label={`Open analysis: ${paraLabel(p)}`}
+            onClick={(e) => { e.stopPropagation(); activate(b.pi, { sheet: true }); }}
+          >
+            <MessageSquareText style={{ width: '58%', height: '58%' }} aria-hidden="true" />
+          </button>
+        )}
+      </>
+    ) : null;
+
+    if (b.kind === 'gap') return <div className={cls} {...attrs} aria-hidden="true" />;
+    if (b.kind === 'party') {
+      return (
+        <div className={cls} {...attrs}>
+          {b.text.split('\n').map((party, k) => {
+            const m = party.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+            return (
+              <div key={k} className="dr-exec-col">
+                <p className="wd-party-name">{party}</p>
+                <div className="wd-party-line" aria-hidden="true" />
+                <p>By: {m ? `for and on behalf of the ${m[2]}` : ''}</p>
+                <p>Name:</p>
+                <p>Title:</p>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+    const end = head ? b.text.slice(0, to).replace(/\s+$/, '').length : to;
+    const body = renderText(b, from, end, !opts.measure);
+    const hasLabel = ['num', 'clause', 'heading'].includes(b.kind) && b.label;
+    return (
+      <div className={cls} {...attrs}>
+        {marks}
+        {hasLabel && <span className="wd-lbl">{tail ? '' : b.label}</span>}
+        <span className="wd-txt" data-text>{body}</span>
+      </div>
+    );
+  };
+
+  /* ---- comment card body (desktop card + mobile sheet) */
+  const renderCard = (i: number, expanded: boolean) => {
+    const p = paras[i];
+    const terms = (p.highlightedTermIds ?? []).map(termById).filter((t): t is LegalTerm => !!t);
+    const note = personalNotes[`${currentDoc.id}-${p.id}`];
+    const bookmarked = isParagraphBookmarked(currentDoc.id, p.id);
+    const t = termPara === i ? selectedLegalTerm : null;
+    return (
+      <>
+        <div className="wd-cmt-head">
+          <span className="wd-avatar" aria-hidden="true">L</span>
+          <div className="min-w-0">
+            <p className="wd-cmt-author">Lexa <span className="wd-cmt-meta">· {i + 1} of {paras.length}</span></p>
+            <p className="wd-cmt-sec">
+              <span>{paraLabel(p)}</span>
+              <span className="wd-cmt-id">Analisis yuridis &amp; makna klausul</span>
+            </p>
+          </div>
+        </div>
+        <p className={`wd-cmt-purpose${expanded ? '' : ' is-clamped'}`}>
+          {p.indonesianSummary ?? 'Belum ada analisis untuk paragraf ini.'}
+        </p>
+        {!expanded && (
+          <p className="wd-cmt-more">
+            {terms.length} key term{terms.length === 1 ? '' : 's'}
+            {note ? ' · My note' : ''}
+            {bookmarked ? ' · Bookmarked' : ''}
+          </p>
+        )}
+        {expanded && (
+          <div className="wd-cmt-body">
+            {terms.length > 0 && (
+              <>
+                <p className="wd-cmt-h">Key terms in this clause</p>
+                <div className="dr-chips">
+                  {terms.map((term) => (
+                    <button
+                      key={term.id}
+                      type="button"
+                      className={`dr-chip${t?.id === term.id ? ' is-on' : ''}`}
+                      aria-pressed={t?.id === term.id}
+                      onClick={(e) => { e.stopPropagation(); handleSelectLegalWord(term, i); }}
+                    >
+                      {term.term}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {t && (
+              <div key={t.id} className="dr-term animate-inspector-fade" aria-label={`Term: ${t.term}`}>
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="dr-term-meta">
+                      {t.category} · {t.partOfSpeech}{t.difficulty ? ` · ${t.difficulty}` : ''}
+                    </p>
+                    <p className="dr-term-word">{t.term}</p>
+                    {t.pronunciation && (
+                      <p className="dr-term-pron">
+                        <span>{t.pronunciation}</span>
+                        <button type="button" className="wd-icobtn is-sm" onClick={(e) => { e.stopPropagation(); playPronunciation(t.term); }} aria-label="Listen to pronunciation" title="Listen to pronunciation">
+                          <Volume2 className="w-3.5 h-3.5" aria-hidden="true" />
+                        </button>
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className={`dr-save${isTermSaved(t.id) ? ' is-on' : ''}`}
+                    onClick={(e) => { e.stopPropagation(); if (isTermSaved(t.id)) removeSavedTerm(t.id); else saveTerm(t.id, undefined, currentDoc.id); }}
+                    aria-pressed={isTermSaved(t.id)}
+                    title="Save term to study list"
+                  >
+                    {isTermSaved(t.id) ? <BookmarkCheck className="w-3.5 h-3.5" aria-hidden="true" /> : <Bookmark className="w-3.5 h-3.5" aria-hidden="true" />}
+                    {isTermSaved(t.id) ? 'Saved' : 'Save'}
+                  </button>
+                </div>
+                <p className="wd-cmt-h">Indonesian legal meaning</p>
+                <p className="dr-term-strong">{t.indonesianMeaning}</p>
+                {t.indonesianLegalConcept && <p className="dr-term-p">{t.indonesianLegalConcept}</p>}
+                {(t.plainEnglish || t.legalDefinition) && (
+                  <>
+                    <p className="wd-cmt-h">Plain-language explanation</p>
+                    <p className="dr-term-p">{t.plainEnglish || t.legalDefinition}</p>
+                  </>
+                )}
+                {t.legalFunction && (
+                  <>
+                    <p className="wd-cmt-h">How lawyers use this term</p>
+                    <p className="dr-term-p">{t.legalFunction}</p>
+                  </>
+                )}
+                <p className="wd-cmt-h">KUHPerdata / hukum positif</p>
+                <p className="dr-term-p">{t.civilLawEquivalent || 'Padanan doktriner umum dalam sistem hukum perdata Indonesia.'}</p>
+                {t.commonMistakesOrNuances && (
+                  <>
+                    <p className="wd-cmt-h">Drafting nuance &amp; traps</p>
+                    <p className="dr-term-p">{t.commonMistakesOrNuances}</p>
+                  </>
+                )}
+                {(t.authenticClauseExcerpt || t.exampleSentenceEn) && (
+                  <>
+                    <p className="wd-cmt-h">Example</p>
+                    {t.authenticClauseExcerpt && (
+                      <p className="dr-term-quote">
+                        “{t.authenticClauseExcerpt}”
+                        {t.authenticClauseSource && <span>— {t.authenticClauseSource}</span>}
+                      </p>
+                    )}
+                    {t.exampleSentenceEn && <p className="dr-term-p"><b>EN</b> {t.exampleSentenceEn}</p>}
+                    {t.exampleSentenceId && <p className="dr-term-p italic"><b>ID</b> {t.exampleSentenceId}</p>}
+                  </>
+                )}
+                {t.commonCollocations && t.commonCollocations.length > 0 && (
+                  <>
+                    <p className="wd-cmt-h">Common collocations</p>
+                    <div className="dr-chips">
+                      {t.commonCollocations.map((c, k) => <span key={k} className="dr-chip is-static">{c}</span>)}
+                    </div>
+                  </>
+                )}
+                <button type="button" className="dr-open" onClick={(e) => { e.stopPropagation(); setActiveLookupTermId(t.id); }}>
+                  Open complete term analysis <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                </button>
+              </div>
+            )}
+
+            <p className="wd-cmt-h">My note</p>
+            {note ? <p className="dr-note">{note}</p> : <p className="dr-term-p">No note on this paragraph yet.</p>}
+            <div className="dr-actions">
+              <button type="button" className="dr-act" onClick={(e) => { e.stopPropagation(); toggleBookmarkParagraph(currentDoc.id, p.id); }} aria-pressed={bookmarked}>
+                {bookmarked ? <BookmarkCheck className="w-4 h-4" aria-hidden="true" /> : <Bookmark className="w-4 h-4" aria-hidden="true" />}
+                {bookmarked ? 'Bookmarked' : 'Bookmark'}
+              </button>
+              <button type="button" className="dr-act" onClick={(e) => { e.stopPropagation(); handleOpenNoteModal(p.id); }}>
+                <MessageSquare className="w-4 h-4" aria-hidden="true" /> {note ? 'Edit note' : 'Add note'}
+              </button>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  };
+
+  const total = pages.length || 1;
+  const docCls = 'wd-doc wd-doc--block dr-doc';
+  const docStyle = { ['--wd-lh' as string]: '1.2', fontSize: FONT_PX[fontSize] } as React.CSSProperties;
+  const myNotes = paras.map((p, i) => ({ p, i, note: personalNotes[`${currentDoc.id}-${p.id}`] })).filter((x) => x.note);
+  const sheetSec = activeSec ?? 0;
+
+  /* ------------------------------------------------------------------ */
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-6">
+    <div className="wd-wrap dr">
       <div
         className="reading-progress w-full"
         style={{ transform: `scaleX(${readProgress})` }}
@@ -322,672 +606,351 @@ export const DocumentReader: React.FC = () => {
         aria-valuemax={100}
         aria-valuenow={Math.round(readProgress * 100)}
       />
-      
-      {/* Top Document Header & Selector (Floating Glass Container) */}
-      <div className="bg-surface border border-line rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-line pb-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-[11px] font-sans font-medium uppercase px-2.5 py-0.5 rounded-full tracking-wider bg-surface-3 text-ink-2 border border-line">
-                {currentDoc.documentType}
-              </span>
-              <span className="text-[11px] font-sans text-muted">
-                {currentDoc.jurisdiction}
-              </span>
-              <span className="text-[11px] font-sans text-faint">
-                • {currentDoc.readingTimeMinutes} min read
+      <header className="wd-intro">
+        <div>
+          <p className="wl-eyebrow">§ Documents</p>
+          <h1 className="text-[26px] sm:text-[32px] font-medium text-ink tracking-[-0.03em] leading-[1.1]">Read the real thing</h1>
+        </div>
+        <p className="text-[13.5px] text-muted leading-relaxed max-w-[62ch]">
+          Model contracts, awards and opinions laid out as they would be printed. Tap a highlighted term to open it in the
+          margin; each clause carries Lexa’s Indonesian analysis as a comment.
+        </p>
+      </header>
+
+      <div className="wd-editor" aria-label="Document reader">
+        {/* ============================== Doc bar */}
+        <div className="wd-docbar">
+          <DocIcon className="wd-docicon" />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 min-w-0">
+              <h2 className="wd-filename" title={currentDoc.downloadableFilename}>{currentDoc.downloadableFilename}</h2>
+              <span className="wd-saved" aria-live="polite">
+                {isDocCompleted
+                  ? <><CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" /> Completed</>
+                  : <><CloudCheck className="w-3.5 h-3.5" aria-hidden="true" /> {Math.round(readProgress * 100)}% read</>}
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-serif font-semibold text-ink tracking-tight">
-              {currentDoc.title}
-            </h1>
+            <div className="wd-menubar">
+              <Menu label="File">
+                {(close) => (
+                  <>
+                    <button role="menuitem" type="button" onClick={() => { close(); printDoc(); }}><Printer className="w-4 h-4" aria-hidden="true" /> Print or save as PDF</button>
+                    <button role="menuitem" type="button" onClick={() => { close(); copyAll(); }}><Copy className="w-4 h-4" aria-hidden="true" /> Copy all text</button>
+                    <button role="menuitem" type="button" onClick={() => { close(); markDocumentComplete(currentDoc.id); }} disabled={isDocCompleted}><CheckCircle2 className="w-4 h-4" aria-hidden="true" /> {isDocCompleted ? 'Completed' : 'Mark as complete'}</button>
+                  </>
+                )}
+              </Menu>
+              <Menu label="View">
+                {(close) => (
+                  <>
+                    <button role="menuitem" type="button" onClick={() => { close(); setOutlineOpen((o) => !o); }}><ListTree className="w-4 h-4" aria-hidden="true" /> {outlineOpen ? 'Hide' : 'Show'} outline</button>
+                    <button role="menuitem" type="button" onClick={() => { close(); setCommentsOn((o) => !o); }}><MessageSquareText className="w-4 h-4" aria-hidden="true" /> Indonesian analysis: {commentsOn ? 'On' : 'Off'}</button>
+                    <div className="wd-menu-sep" />
+                    {ZOOMS.map((z) => (
+                      <button role="menuitemradio" aria-checked={zoomSel === z.v} key={z.label} type="button" onClick={() => { close(); setZoomSel(z.v); }}>
+                        <span className="w-4 inline-flex justify-center">{zoomSel === z.v ? <Check className="w-4 h-4" aria-hidden="true" /> : null}</span> Zoom {z.label}
+                      </button>
+                    ))}
+                  </>
+                )}
+              </Menu>
+              <span className="wd-menu-meta">{currentDoc.documentType} · {currentDoc.jurisdiction} · {currentDoc.readingTimeMinutes} min read</span>
+            </div>
           </div>
-
-          {/* Action Bar */}
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="wd-docbar-actions">
             <button
+              type="button"
+              className={`wd-icobtn wd-cmt-toggle${showComments ? ' is-on' : ''}`}
+              onClick={() => setCommentsOn((o) => !o)}
+              aria-pressed={showComments}
+              aria-label={showComments ? 'Hide analysis comments' : 'Show analysis comments'}
+              title="Indonesian analysis"
+              disabled={narrow}
+            >
+              <MessageSquareText className="w-[18px] h-[18px]" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className={`wd-pill inline-flex dr-complete${isDocCompleted ? ' is-done' : ''}`}
               onClick={() => markDocumentComplete(currentDoc.id)}
-              className={`h-9 px-3.5 text-xs ${isDocCompleted ? 'btn-secondary' : 'btn-primary'}`}
+              aria-pressed={isDocCompleted}
             >
-              <CheckCircle2 className={`w-3.5 h-3.5 ${isDocCompleted ? 'text-success' : ''}`} />
-              <span>{isDocCompleted ? 'Completed' : 'Mark as complete'}</span>
+              <CheckCircle2 className="w-4 h-4" aria-hidden="true" /> {isDocCompleted ? 'Completed' : 'Mark as complete'}
             </button>
-
-            <button
-              onClick={() => setShowIndonesianTranslation(prev => !prev)}
-              className={`h-9 px-3.5 text-xs font-sans font-medium flex items-center gap-1.5 cursor-pointer rounded-lg transition-colors border ${
-                showIndonesianTranslation
-                  ? 'bg-surface-3 border-line-strong text-ink'
-                  : 'bg-surface border-line text-muted hover:text-ink hover:bg-surface-2'
-              }`}
-              title="Toggle paragraph-by-paragraph Indonesian translation"
-              aria-pressed={showIndonesianTranslation}
-            >
-              <Scale className="w-3.5 h-3.5 text-ink-2" />
-              <span>Indonesian analysis: {showIndonesianTranslation ? 'On' : 'Off'}</span>
-            </button>
-
-            {/* Font Size Adjust */}
-            <div className="flex items-center bg-surface border border-line text-xs font-sans rounded-full overflow-hidden p-0.5">
-              <button
-                onClick={() => setFontSize('sm')}
-                className={`px-3 py-1 cursor-pointer font-bold transition-all rounded-full ${fontSize === 'sm' ? 'bg-accent text-on-accent' : 'text-muted hover:text-ink'}`}
-              >
-                A-
-              </button>
-              <button
-                onClick={() => setFontSize('base')}
-                className={`px-3 py-1 cursor-pointer font-bold transition-all rounded-full ${fontSize === 'base' ? 'bg-accent text-on-accent' : 'text-muted hover:text-ink'}`}
-              >
-                A
-              </button>
-              <button
-                onClick={() => setFontSize('lg')}
-                className={`px-3 py-1 cursor-pointer font-bold transition-all rounded-full ${fontSize === 'lg' ? 'bg-accent text-on-accent' : 'text-muted hover:text-ink'}`}
-              >
-                A+
-              </button>
-            </div>
           </div>
         </div>
 
-        {/* Document library: all documents visible (wrapping), searchable, filterable by type */}
-        <div className="space-y-3 pt-1">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-            <label htmlFor="doc-search" className="text-sm font-medium text-ink shrink-0">Documents</label>
-            <input
-              id="doc-search"
-              type="search"
-              value={docQuery}
-              onChange={(e) => setDocQuery(e.target.value)}
-              placeholder="Search documents"
-              className="lexa-input px-4 py-2 text-sm w-full sm:max-w-xs"
-            />
-            <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Filter by type">
+        {/* ============================== Toolbar */}
+        <div className="wd-toolbar" role="toolbar" aria-label="Document tools">
+          <button type="button" className={`wd-tb${outlineOpen ? ' is-on' : ''}`} onClick={() => setOutlineOpen((o) => !o)} aria-pressed={outlineOpen} title="Documents and outline">
+            <ListTree className="w-4 h-4" aria-hidden="true" /><span className="wd-tb-l">Documents</span>
+          </button>
+          <span className="wd-tb-sep" aria-hidden="true" />
+          <button type="button" className="wd-tb" onClick={printDoc} title="Print or save as PDF" aria-label="Print or save as PDF">
+            <Printer className="w-4 h-4" aria-hidden="true" />
+          </button>
+          <label className="wd-zoom">
+            <span className="sr-only">Zoom</span>
+            <select value={String(zoomSel)} onChange={(e) => setZoomSel(e.target.value === 'fit' ? 'fit' : (Number(e.target.value) as ZoomSel))}>
+              {ZOOMS.map((z) => (
+                <option key={z.label} value={String(z.v)}>{z.v === 'fit' ? `Fit (${Math.round(fit * 100)}%)` : z.label}</option>
+              ))}
+            </select>
+            <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
+          </label>
+          <span className="wd-tb-sep hidden md:block" aria-hidden="true" />
+          <span className="wd-tb-read hidden md:inline-flex" title="Paragraph style">Normal text</span>
+          <span className="wd-tb-read wd-tb-font hidden md:inline-flex" title="Font">Times New Roman</span>
+          <label className="wd-zoom dr-size" title="Font size">
+            <span className="sr-only">Font size</span>
+            <select value={fontSize} onChange={(e) => setFontSize(e.target.value as 'sm' | 'base' | 'lg')}>
+              {(['sm', 'base', 'lg'] as const).map((k) => <option key={k} value={k}>{FONT_PT[k]}</option>)}
+            </select>
+            <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
+          </label>
+          <span className="wd-tb-sep" aria-hidden="true" />
+          <button
+            type="button"
+            className={`wd-tb${commentsOn ? ' is-on' : ''}`}
+            onClick={() => setCommentsOn((o) => !o)}
+            aria-pressed={commentsOn}
+            title="Toggle the Indonesian analysis comments"
+          >
+            <Scale className="w-4 h-4" aria-hidden="true" /><span className="wd-tb-l">Analisis ID</span>
+          </button>
+          <span className="flex-1" />
+          <button type="button" className="wd-tb" onClick={copyAll} title="Copy all text">
+            {copied ? <Check className="w-4 h-4" aria-hidden="true" /> : <Copy className="w-4 h-4" aria-hidden="true" />}
+            <span className="wd-tb-l">{copied ? 'Copied' : 'Copy'}</span>
+          </button>
+          <span className="wd-tb-sep hidden sm:block" aria-hidden="true" />
+          <span className="wd-tb-mode">
+            <Eye className="w-4 h-4" aria-hidden="true" />
+            <span className="hidden sm:inline">Viewing</span>
+          </span>
+        </div>
+
+        {/* ============================== Body */}
+        <div className="wd-body">
+          {outlineOpen && <div className="wd-scrim lg:hidden" onClick={() => setOutlineOpen(false)} aria-hidden="true" />}
+          <nav className={`wd-side${outlineOpen ? ' is-open' : ''}`} aria-label="Documents and outline">
+            <div className="flex items-center justify-between">
+              <p className="wd-side-h">Documents</p>
+              <button type="button" className="wd-icobtn is-sm lg:hidden" onClick={() => setOutlineOpen(false)} aria-label="Close documents"><X className="w-4 h-4" aria-hidden="true" /></button>
+            </div>
+            <label className="dr-search">
+              <Search className="w-3.5 h-3.5" aria-hidden="true" />
+              <span className="sr-only">Search documents</span>
+              <input type="search" value={docQuery} onChange={(e) => setDocQuery(e.target.value)} placeholder="Search documents" />
+            </label>
+            <div className="dr-filter" role="group" aria-label="Filter by type">
               {docTypes.map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setDocTypeFilter(t)}
-                  aria-pressed={docTypeFilter === t}
-                  className={`px-3 py-1.5 text-xs rounded-full border cursor-pointer transition-colors ${
-                    docTypeFilter === t ? 'bg-accent text-on-accent border-accent font-semibold' : 'bg-surface text-muted border-line hover:text-ink hover:bg-surface-2'
-                  }`}
-                >
-                  {t === 'ALL' ? 'All types' : t}
+                <button key={t} type="button" aria-pressed={docTypeFilter === t} className={docTypeFilter === t ? 'is-on' : ''} onClick={() => setDocTypeFilter(t)}>
+                  {t === 'ALL' ? 'All' : t}
                 </button>
               ))}
             </div>
-          </div>
-          <div className="flex flex-wrap gap-2 text-sm">
-            {filteredDocs.length === 0 && <span className="text-muted">No documents match.</span>}
-            {filteredDocs.map((doc) => (
-              <button
-                key={doc.id}
-                onClick={() => {
-                  setActiveDocId(doc.id);
-                  const docTerm = legalVocabularyList.find(t => doc.keyTermIds?.includes(t.id)) || legalVocabularyList[0];
-                  setSelectedLegalTerm(docTerm);
-                }}
-                aria-current={doc.id === currentDoc.id ? 'true' : undefined}
-                className={`px-3.5 py-1.5 text-left transition-colors cursor-pointer rounded-xl border flex items-center gap-2 ${
-                  doc.id === currentDoc.id
-                    ? 'bg-accent text-on-accent font-semibold border-accent'
-                    : 'bg-surface border-line text-ink-2 hover:text-ink hover:bg-surface-2'
-                }`}
-              >
-                {completedDocuments.includes(doc.id) && <CheckCircle2 className="w-3.5 h-3.5 shrink-0" aria-label="Completed" />}
-                <span>{doc.title}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Main Split Layout: Document Left (7 or 12 cols) + Legal Assistant Right (5 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        {/* LEFT PANE: Dedicated Physical Parchment Canvas inside Glass Frame */}
-        <div className={`${assistantPanelOpen ? 'lg:col-span-7' : 'lg:col-span-12'} transition-all duration-300`}>
-          <div ref={docCanvasRef} className="legal-paper-canvas p-6 sm:p-9 space-y-8 rounded-2xl">
-            
-            {/* Document Head Caption */}
-            <div className="text-center doc-header pb-6 space-y-2 border-b border-line">
-              <span className="text-[11px] font-sans text-faint block font-bold">
-                Model document for study
-              </span>
-              <h2 className="text-xl sm:text-2xl font-legal font-bold text-ink">
-                {currentDoc.title}
-              </h2>
-              <div className="flex items-center justify-center gap-4 text-xs font-sans text-faint pt-1">
-                <span>Governing Law: <strong className="text-ink">{currentDoc.governingLaw}</strong></span>
-                <span>•</span>
-                <span>Jurisdiction: <strong className="text-ink">{currentDoc.jurisdiction}</strong></span>
-              </div>
-              {currentDoc.parties && currentDoc.parties.length > 0 && (
-                <div className="text-xs font-legal italic text-faint pt-1">
-                  Parties: {currentDoc.parties.join(' and ')}
-                </div>
-              )}
-            </div>
-
-            {/* Document Paragraphs */}
-            <div className="space-y-6">
-              {currentDoc.paragraphs.map((p) => {
-                const isBookmarked = isParagraphBookmarked(currentDoc.id, p.id);
-                const noteKey = `${currentDoc.id}-${p.id}`;
-                const hasNote = !!personalNotes[noteKey];
-
-                const textClasses = fontSize === 'sm' 
-                  ? 'text-xs sm:text-sm leading-[1.7]' 
-                  : fontSize === 'lg' 
-                    ? 'text-base sm:text-lg leading-[1.8]' 
-                    : 'text-[16px] sm:text-[17px] leading-[1.78]';
-
+            <ul className="wd-tabs" role="list">
+              {filteredDocs.length === 0 && <li className="dr-empty">No documents match.</li>}
+              {filteredDocs.map((d) => {
+                const on = d.id === currentDoc.id;
+                const done = completedDocuments.includes(d.id);
                 return (
-                  <div 
-                    key={p.id}
-                    id={p.id}
-                    className={`group relative p-4.5 transition-all rounded-xl border-l-3 ${
-                      isBookmarked 
-                        ? 'bg-surface-2 border-line-strong' 
-                        : 'border-transparent hover:border-line-strong hover:bg-surface-2'
-                    }`}
-                  >
-                    {/* Paragraph Number & Utilities Bar */}
-                    <div className="flex items-center justify-between text-[11px] font-sans text-faint mb-2">
-                      <span className="font-bold text-ink bg-surface-2 px-2.5 py-0.5 rounded-full tracking-wider text-[11px]">
-                        {p.paragraphNumber}
+                  <li key={d.id}>
+                    <button type="button" className={`wd-tab${on ? ' is-on' : ''}`} aria-current={on ? 'page' : undefined} onClick={() => selectDoc(d.id)} title={d.title}>
+                      <DocIcon className="wd-tab-ico" />
+                      <span className="min-w-0 flex-1">
+                        <span className="wd-tab-t">{d.title}</span>
+                        <span className="wd-tab-s">{d.documentType} · {d.readingTimeMinutes} min</span>
                       </span>
-                      <div className="flex items-center gap-2 opacity-70 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => toggleBookmarkParagraph(currentDoc.id, p.id)}
-                          className="hover:text-ink cursor-pointer transition-colors"
-                          title={isBookmarked ? "Remove Bookmark" : "Bookmark Paragraph"}
-                        >
-                          {isBookmarked ? <BookmarkCheck className="w-4 h-4 text-ink" /> : <Bookmark className="w-4 h-4" />}
-                        </button>
-                        <button
-                          onClick={() => handleOpenNoteModal(p.id)}
-                          className="hover:text-ink cursor-pointer transition-colors"
-                          title="Add Note to Paragraph"
-                        >
-                          <MessageSquare className={`w-4 h-4 ${hasNote ? 'text-ink font-bold' : ''}`} />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* English Clause Body with Highlighted Interactive Terms */}
-                    <p className={`font-legal text-ink ${textClasses}`}>
-                      {renderParagraphWithHighlights(p.text, p.highlightedTermIds)}
-                    </p>
-
-                    {/* Optional Indonesian Summary & Legal Nuance */}
-                    {showIndonesianTranslation && p.indonesianSummary && (
-                      <div className="mt-3.5 pt-2.5 p-3.5 rounded-xl bg-surface-2 border border-line space-y-1">
-                        <span className="text-[11px] font-sans uppercase text-ink flex items-center gap-1 font-bold tracking-wider">
-                          <Scale className="w-3 h-3 text-ink" />
-                          Analisis Yuridis & Makna Klausul:
-                        </span>
-                        <p className="text-xs sm:text-[13px] font-sans text-ink leading-relaxed font-normal">
-                          {p.indonesianSummary}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Existing Paragraph Note Banner */}
-                    {hasNote && (
-                      <div className="mt-2.5 p-3 bg-surface border border-line text-xs font-sans text-ink rounded-xl">
-                        <strong className="text-ink">My Note:</strong> {personalNotes[noteKey]}
-                      </div>
-                    )}
-                  </div>
+                      {done && <CheckCircle2 className="w-3.5 h-3.5 shrink-0" aria-label="Completed" />}
+                    </button>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
 
-            {/* Bottom Complete CTA */}
-            <div className="pt-6 border-t border-line flex items-center justify-between">
-              <span className="text-xs font-sans text-faint">
-                End of Document • {currentDoc.title}
-              </span>
-              <button
-                onClick={() => markDocumentComplete(currentDoc.id)}
-                disabled={isDocCompleted}
-                className={`px-5 py-2.5 text-sm ${isDocCompleted ? 'btn-secondary' : 'btn-primary'}`}
+            <p className="wd-side-h mt-5">Outline</p>
+            <ol className="wd-outline">
+              {paras.map((p, i) => (
+                <li key={p.id}>
+                  <button type="button" className={`wd-ol${i === activeSec ? ' is-on' : ''}`} onClick={() => { activate(i, { scroll: true }); if (window.innerWidth < 1024) setOutlineOpen(false); }}>
+                    <span className="truncate flex items-center gap-1.5">
+                      {isParagraphBookmarked(currentDoc.id, p.id) && <BookmarkCheck className="w-3 h-3 shrink-0" aria-label="Bookmarked" />}
+                      {paraLabel(p)}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+
+            <p className="wd-side-h mt-5">Key terms ({currentDoc.keyTermIds.length})</p>
+            <ul className="wd-outline">
+              {currentDoc.keyTermIds.map((id) => {
+                const term = termById(id);
+                if (!term) return null;
+                const pi = paras.findIndex((p) => p.highlightedTermIds?.includes(id));
+                const on = selectedLegalTerm?.id === id && termPara != null;
+                return (
+                  <li key={id}>
+                    <button
+                      type="button"
+                      className={`wd-ol${on ? ' is-on' : ''}`}
+                      onClick={() => { handleSelectLegalWord(term, pi >= 0 ? pi : null, { scroll: true }); if (window.innerWidth < 1024) setOutlineOpen(false); }}
+                      title={pi >= 0 ? 'Show in the document' : 'Open the full term analysis'}
+                    >
+                      <span className="truncate">{term.term}</span>
+                      <span className="wd-ol-id">{term.indonesianMeaning}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <p className="wd-side-h mt-5">My notes</p>
+            {myNotes.length === 0 ? (
+              <p className="dr-empty">Belum ada catatan. Buka komentar sebuah klausul lalu pilih “Add note”.</p>
+            ) : (
+              <ul className="wd-outline">
+                {myNotes.map(({ p, i, note }) => (
+                  <li key={p.id}>
+                    <button type="button" className="wd-ol" onClick={() => { activate(i, { scroll: true, sheet: true }); if (window.innerWidth < 1024) setOutlineOpen(false); }}>
+                      <span className="truncate">{paraLabel(p)}</span>
+                      <span className="wd-ol-id">{note}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </nav>
+
+          <div className="wd-canvas" ref={canvasRef} onScroll={onScroll}>
+            <div className="wd-stage" ref={stageRef} style={{ width: pagesW + (showComments ? COMMENTS_GAP + COMMENTS_W : 0) }}>
+              <div
+                className="wd-pages wd-print-root"
+                ref={pagesRef}
+                style={{ zoom, width: geo.w, ['--pw' as string]: `${geo.w}px`, ['--ph' as string]: `${geo.h}px`, ['--pm' as string]: `${geo.m}px` } as React.CSSProperties}
               >
-                <Check className="w-4 h-4" />
-                <span>{isDocCompleted ? 'Completed' : 'Mark as complete'}</span>
-              </button>
+                <div className="wd-ruler" aria-hidden="true">
+                  <span className="wd-ruler-m" style={{ left: 0, width: MARGIN }} />
+                  <span className="wd-ruler-m" style={{ right: 0, width: MARGIN }} />
+                  {Array.from({ length: 33 }, (_, i) => (
+                    <span key={i} className={`wd-tick${i % 4 === 0 ? ' is-major' : i % 2 === 0 ? ' is-half' : ''}`} style={{ left: MARGIN + (i - 4) * 24 }}>
+                      {i % 4 === 0 && i !== 4 ? <i>{Math.abs((i - 4) / 4)}</i> : null}
+                    </span>
+                  ))}
+                </div>
+                {pages.map((parts, pi) => (
+                  <section key={`${currentDoc.id}-${pi}`} className={`wd-page ${docCls}`} style={docStyle} aria-label={`Page ${pi + 1} of ${total}`}>
+                    {pi === 0 && <div className="wd-hdr is-first">MODEL DOCUMENT FOR STUDY</div>}
+                    {pi > 0 && <div className="wd-hdr"><span>{currentDoc.title}</span><span>{currentDoc.documentType}</span></div>}
+                    <div className="wd-content">
+                      {parts.map((part, j) => (
+                        <React.Fragment key={`${part.b.id}-${part.from}`}>{renderBlock(part, { pageTop: j === 0 })}</React.Fragment>
+                      ))}
+                    </div>
+                    <div className="wd-ftr">Page {pi + 1} of {total}</div>
+                  </section>
+                ))}
+
+              </div>
+
+              <aside className="wd-sources dr-about" style={{ width: narrow ? undefined : pagesW }} aria-labelledby="dr-about-h">
+                <h3 id="dr-about-h">About this document</h3>
+                <p className="wd-sources-sub">{currentDoc.documentType} · {currentDoc.governingLaw} · {currentDoc.readingTimeMinutes} minutes of study</p>
+                <p className="wd-sources-k">Document summary (English)</p>
+                <p className="dr-about-p">{currentDoc.abstractEn}</p>
+                <p className="wd-sources-k">Ikhtisar dokumen (Bahasa Indonesia)</p>
+                <p className="dr-about-p italic">{currentDoc.abstractId}</p>
+                <div className="dr-about-end">
+                  <span>End of document · {currentDoc.title}</span>
+                  <button
+                    type="button"
+                    onClick={() => markDocumentComplete(currentDoc.id)}
+                    disabled={isDocCompleted}
+                    className={`px-5 py-2.5 text-sm ${isDocCompleted ? 'btn-secondary' : 'btn-primary'}`}
+                  >
+                    <Check className="w-4 h-4" aria-hidden="true" />
+                    <span>{isDocCompleted ? 'Completed' : 'Mark as complete'}</span>
+                  </button>
+                </div>
+              </aside>
+              {showComments && (
+                <div className="wd-comments" style={{ left: pagesW + COMMENTS_GAP, width: COMMENTS_W }} aria-label="Analysis comments">
+                  {paras.map((p, i) => {
+                    const on = i === activeSec;
+                    return (
+                      <div
+                        key={`${currentDoc.id}-${p.id}`}
+                        ref={(el) => { cardRefs.current[i] = el; }}
+                        className={`wd-cmt${on ? ' is-on' : ''}`}
+                        style={{ top: positions[i]?.top ?? i * 110 }}
+                        onClick={() => { if (!on) activate(i); }}
+                      >
+                        {!on && <button type="button" className="sr-only" onClick={() => activate(i)}>Open analysis of {paraLabel(p)}</button>}
+                        {renderCard(i, on)}
+                        {on && (
+                          <div className="wd-cmt-nav">
+                            <button type="button" className="wd-icobtn is-sm" disabled={i === 0} onClick={(e) => { e.stopPropagation(); activate(i - 1, { scroll: true }); }} aria-label="Previous clause"><ChevronLeft className="w-4 h-4" aria-hidden="true" /></button>
+                            <button type="button" className="wd-icobtn is-sm" disabled={i === paras.length - 1} onClick={(e) => { e.stopPropagation(); activate(i + 1, { scroll: true }); }} aria-label="Next clause"><ChevronRight className="w-4 h-4" aria-hidden="true" /></button>
+                            <span className="flex-1" />
+                            <button type="button" className="wd-cmt-close" onClick={(e) => { e.stopPropagation(); setActiveSec(null); setTermPara(null); }}>Close</button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              {showComments && connector && <svg className="wd-connector" aria-hidden="true"><path d={connector} /></svg>}
             </div>
           </div>
         </div>
 
-        {/* RIGHT PANE: Legal English Assistant Panel (Floating Glass Card) */}
-        {assistantPanelOpen && (
-          <div 
-            ref={assistantPanelRef} 
-            id="legal-english-assistant-panel"
-            className="lg:col-span-5 sticky top-24 space-y-4 scroll-mt-24 sm:scroll-mt-28"
-            style={{ scrollMarginTop: '96px' }}
-          >
-            <div className="rounded-2xl bg-surface overflow-hidden border border-line">
-              
-              {/* Assistant Header & Tab Switcher */}
-              <div className="p-5 border-b border-line">
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <div className="flex items-center gap-2">
-                    <Scale className="w-4 h-4 text-ink-2" />
-                    <h3 className="font-serif font-semibold text-sm text-ink">
-                      Term assistant
-                    </h3>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    {selectedLegalTerm && (
-                      <span className="hidden sm:inline-block text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-surface-3 border border-line-strong text-ink-2 truncate max-w-[120px]">
-                        {selectedLegalTerm.term}
-                      </span>
-                    )}
-                    <button
-                      onClick={() => setAssistantPanelOpen(false)}
-                      className="p-1 text-muted hover:text-ink hover:bg-surface-3 rounded-lg transition-all cursor-pointer"
-                      title="Minimize Assistant Panel"
-                      aria-label="Minimize Assistant Panel"
-                    >
-                      <Minimize2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-                <div className="grid grid-cols-4 gap-1.5 text-[11px] font-sans p-1 bg-surface border border-line rounded-full">
-                  <button
-                    onClick={() => setActiveRightTab('INSPECTOR')}
-                    className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
-                      activeRightTab === 'INSPECTOR' ? 'bg-accent text-on-accent font-semibold border border-accent' : 'text-muted font-normal hover:text-ink'
-                    }`}
-                  >
-                    Inspector
-                  </button>
-                  <button
-                    onClick={() => setActiveRightTab('GLOSSARY')}
-                    className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
-                      activeRightTab === 'GLOSSARY' ? 'bg-accent text-on-accent font-semibold border border-accent' : 'text-muted font-normal hover:text-ink'
-                    }`}
-                  >
-                    Glossary
-                  </button>
-                  <button
-                    onClick={() => setActiveRightTab('SUMMARY')}
-                    className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
-                      activeRightTab === 'SUMMARY' ? 'bg-accent text-on-accent font-semibold border border-accent' : 'text-muted font-normal hover:text-ink'
-                    }`}
-                  >
-                    Summary
-                  </button>
-                  <button
-                    onClick={() => setActiveRightTab('NOTES')}
-                    className={`py-1.5 text-center transition-all cursor-pointer rounded-full ${
-                      activeRightTab === 'NOTES' ? 'bg-accent text-on-accent font-semibold border border-accent' : 'text-muted font-normal hover:text-ink'
-                    }`}
-                  >
-                    Notes
-                  </button>
-                </div>
-              </div>
-
-              {/* TAB 1: TERM INSPECTOR */}
-              {activeRightTab === 'INSPECTOR' && selectedLegalTerm && (
-                <div ref={inspectorScrollRef} className="p-5 space-y-4 max-h-[75vh] overflow-y-auto no-scrollbar">
-                  <div key={selectedLegalTerm.id} className="animate-inspector-fade space-y-4">
-                    
-                    {/* Header with Category, Part of Speech, Pronunciation & Save */}
-                    <div className="flex items-start justify-between border-b border-line pb-3">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                          <span className="text-[11px] font-sans font-medium uppercase px-2.5 py-0.5 rounded-full tracking-wider bg-surface-3 text-ink-2 border border-line">
-                            {selectedLegalTerm.category}
-                          </span>
-                          <span className="text-[11px] font-sans text-faint">
-                            {selectedLegalTerm.partOfSpeech}
-                          </span>
-                          {selectedLegalTerm.difficulty && (
-                            <span className="text-[11px] font-sans text-ink-2 px-2 py-0.5 rounded-full bg-surface-3 border border-line">
-                              {selectedLegalTerm.difficulty}
-                            </span>
-                          )}
-                        </div>
-                        <h4 className="text-2xl sm:text-3xl font-sans font-extrabold text-ink tracking-tight">
-                          {selectedLegalTerm.term}
-                        </h4>
-
-                        {selectedLegalTerm.pronunciation && (
-                          <div className="flex items-center gap-2 mt-2">
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-3 border border-line text-ink-2 text-xs font-mono">
-                              <span>{selectedLegalTerm.pronunciation}</span>
-                              <button
-                                onClick={() => playPronunciation(selectedLegalTerm.term)}
-                                className="p-1 text-muted hover:text-ink hover:bg-surface-3 rounded-full transition-colors cursor-pointer"
-                                title="Listen to American legal pronunciation"
-                                aria-label="Listen to pronunciation"
-                              >
-                                <Volume2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                            <span className="text-[11px] text-faint font-semibold">
-                              Pronunciation
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      <button
-                        onClick={() => {
-                          if (isTermSaved(selectedLegalTerm.id)) {
-                            removeSavedTerm(selectedLegalTerm.id);
-                          } else {
-                            saveTerm(selectedLegalTerm.id, undefined, currentDoc.id);
-                          }
-                        }}
-                        className={`px-3.5 py-1.5 text-xs font-sans flex items-center gap-1.5 cursor-pointer rounded-full transition-all shrink-0 border ${
-                          isTermSaved(selectedLegalTerm.id)
-                            ? 'bg-accent text-on-accent border-accent font-semibold'
-                            : 'bg-surface border-line text-muted hover:text-ink hover:bg-surface-3'
-                        }`}
-                        title="Save term to study list"
-                      >
-                        {isTermSaved(selectedLegalTerm.id) ? <BookmarkCheck className="w-3.5 h-3.5 text-ink" /> : <Bookmark className="w-3.5 h-3.5" />}
-                        <span>{isTermSaved(selectedLegalTerm.id) ? 'Saved' : 'Save'}</span>
-                      </button>
-                    </div>
-
-                    {/* Meaning & Indonesian Legal Concept */}
-                    <div className="p-4 rounded-2xl bg-surface border border-line space-y-1.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-                        <span className="text-[11px] font-sans text-muted font-semibold">
-                          Indonesian Legal Meaning & Concept
-                        </span>
-                      </div>
-                      <p className="font-sans font-bold text-base text-ink">
-                        {selectedLegalTerm.indonesianMeaning}
-                      </p>
-                      {selectedLegalTerm.indonesianLegalConcept && (
-                        <p className="text-xs sm:text-[13px] text-muted leading-relaxed font-normal">
-                          {selectedLegalTerm.indonesianLegalConcept}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Plain-Language Explanation */}
-                    {(selectedLegalTerm.plainEnglish || selectedLegalTerm.legalDefinition) && (
-                      <div className="p-4 rounded-2xl bg-surface border border-line space-y-1.5">
-                        <div className="flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-                          <span className="text-[11px] font-sans text-muted font-semibold">
-                            Plain-Language Explanation
-                          </span>
-                        </div>
-                        <p className="text-xs sm:text-[13px] text-ink leading-relaxed font-normal">
-                          {selectedLegalTerm.plainEnglish || selectedLegalTerm.legalDefinition}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Legal Context / How Lawyers Use This in Contracts */}
-                    {selectedLegalTerm.legalFunction && (
-                      <div className="p-4 rounded-2xl bg-surface border border-line space-y-1.5">
-                        <div className="flex items-center gap-1.5">
-                          <Scale className="w-3.5 h-3.5 text-ink-2" />
-                          <span className="text-[11px] font-sans text-muted font-semibold">
-                            Legal Context / How Lawyers Use This Term
-                          </span>
-                        </div>
-                        <p className="text-xs sm:text-[13px] text-muted leading-relaxed font-normal">
-                          {selectedLegalTerm.legalFunction}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Indonesian Legal Equivalent (KUHPerdata / Civil Law) */}
-                    <div className="p-4 rounded-2xl bg-surface border border-line space-y-1.5">
-                      <div className="flex items-center gap-1.5">
-                        <BookOpen className="w-3.5 h-3.5 text-ink-2" />
-                        <span className="text-[11px] font-sans text-muted font-semibold">
-                          Indonesian Legal Equivalent (KUHPerdata / Hukum Positif)
-                        </span>
-                      </div>
-                      <p className="text-xs sm:text-[13px] text-ink-2 font-sans font-medium">
-                        {selectedLegalTerm.civilLawEquivalent || 'Padanan doktriner umum dalam sistem hukum perdata Indonesia.'}
-                      </p>
-                    </div>
-
-                    {/* Drafting Nuance & Common Traps */}
-                    {selectedLegalTerm.commonMistakesOrNuances && (
-                      <div className="p-4 rounded-2xl bg-surface border border-line space-y-1.5">
-                        <div className="flex items-center gap-1.5">
-                          <Sparkles className="w-3.5 h-3.5 text-ink-2" />
-                          <span className="text-[11px] font-sans uppercase text-ink-2 font-semibold tracking-wider">
-                            Drafting Nuance & Common Traps
-                          </span>
-                        </div>
-                        <p className="text-xs text-muted leading-relaxed font-normal">
-                          {selectedLegalTerm.commonMistakesOrNuances}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Example Sentence or Clause */}
-                    {(selectedLegalTerm.authenticClauseExcerpt || selectedLegalTerm.exampleSentenceEn) && (
-                      <div className="p-4 rounded-2xl bg-surface border border-line space-y-2">
-                        <span className="text-[11px] font-sans text-muted font-semibold block">
-                          Example Sentence & Authentic Clause
-                        </span>
-                        {selectedLegalTerm.authenticClauseExcerpt && (
-                          <div className="p-3 rounded-xl bg-surface border border-line font-legal text-xs text-ink italic leading-relaxed">
-                            "{selectedLegalTerm.authenticClauseExcerpt}"
-                            {selectedLegalTerm.authenticClauseSource && (
-                              <span className="block not-italic font-sans text-[11px] text-faint mt-1.5">
-                                — {selectedLegalTerm.authenticClauseSource}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                        {selectedLegalTerm.exampleSentenceEn && (
-                          <div className="space-y-1 text-xs font-sans">
-                            <p className="text-ink">
-                              <strong className="text-ink">EN:</strong> {selectedLegalTerm.exampleSentenceEn}
-                            </p>
-                            {selectedLegalTerm.exampleSentenceId && (
-                              <p className="text-muted italic">
-                                <strong className="text-faint">ID:</strong> {selectedLegalTerm.exampleSentenceId}
-                              </p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Collocations & Related Terms */}
-                    {selectedLegalTerm.commonCollocations && selectedLegalTerm.commonCollocations.length > 0 && (
-                      <div className="space-y-1.5 pt-1">
-                        <span className="text-[11px] font-sans text-faint font-semibold block">
-                          Common Collocations:
-                        </span>
-                        <div className="flex flex-wrap gap-1.5">
-                          {selectedLegalTerm.commonCollocations.map((col, idx) => (
-                            <span key={idx} className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-surface-3 border border-line text-muted">
-                              {col}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* View in Full Modal */}
-                    <button
-                      onClick={() => setActiveLookupTermId(selectedLegalTerm.id)}
-                      className="w-full btn-primary py-3 text-xs flex items-center justify-center gap-1.5 font-medium cursor-pointer transition-all"
-                    >
-                      <span>Open Complete Term Analysis</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-ink" />
-                    </button>
-
-                  </div>
-                </div>
-              )}
-
-              {/* TAB 2: DOCUMENT GLOSSARY */}
-              {activeRightTab === 'GLOSSARY' && (
-                <div className="p-5 space-y-3 max-h-[75vh] overflow-y-auto no-scrollbar">
-                  <div className="text-xs font-sans text-muted mb-2 font-medium">
-                    Key terms in this document ({currentDoc.keyTermIds.length} terms):
-                  </div>
-                  <div className="space-y-2">
-                    {currentDoc.keyTermIds.map((termId) => {
-                      const matchedTerm = legalVocabularyList.find(t => t.id === termId);
-                      if (!matchedTerm) return null;
-                      const isSelected = selectedLegalTerm?.id === matchedTerm.id;
-                      return (
-                        <div
-                          key={termId}
-                          onClick={() => handleSelectLegalWord(matchedTerm)}
-                          className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
-                            isSelected
-                              ? 'bg-surface-3 border-line-strong shadow-sm'
-                              : 'bg-surface border-line hover:border-line-strong hover:bg-surface-3'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="font-sans font-bold text-sm text-ink">
-                              {matchedTerm.term}
-                            </span>
-                            <span className={`text-[11px] font-sans font-medium px-2 py-0.5 rounded-full border ${
-                              isSelected
-                                ? 'bg-accent text-on-accent border-accent font-semibold'
-                                : 'text-muted bg-surface-3 border-line'
-                            }`}>
-                              {isSelected ? 'Active' : 'Inspect'}
-                            </span>
-                          </div>
-                          <p className="text-xs text-muted font-sans font-medium line-clamp-1">
-                            {matchedTerm.indonesianMeaning}
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-            {/* TAB 3: DOCUMENT SUMMARY */}
-            {activeRightTab === 'SUMMARY' && (
-              <div className="p-5 space-y-4 max-h-[75vh] overflow-y-auto no-scrollbar font-sans">
-                <div className="space-y-2">
-                  <h4 className="font-bold text-base text-ink">
-                    Document Summary (English)
-                  </h4>
-                  <p className="text-xs sm:text-sm text-muted leading-relaxed font-normal">
-                    {currentDoc.abstractEn}
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-surface border border-line space-y-2">
-                  <h4 className="font-bold text-base text-ink">
-                    Ikhtisar Dokumen (Bahasa Indonesia)
-                  </h4>
-                  <p className="text-xs sm:text-sm text-muted leading-relaxed font-normal">
-                    {currentDoc.abstractId}
-                  </p>
-                </div>
-
-                <div className="pt-2 font-sans text-xs text-muted space-y-1">
-                  <div><strong className="text-ink">Document Type:</strong> {currentDoc.documentType}</div>
-                  <div><strong className="text-ink">Governing Law:</strong> {currentDoc.governingLaw}</div>
-                  <div><strong className="text-ink">Estimated Study Time:</strong> {currentDoc.readingTimeMinutes} Minutes</div>
-                </div>
-              </div>
-            )}
-
-            {/* TAB 4: MY ANNOTATIONS & NOTES */}
-            {activeRightTab === 'NOTES' && (
-              <div className="p-5 space-y-4 max-h-[75vh] overflow-y-auto no-scrollbar">
-                <div className="text-xs font-sans text-muted">
-                  Personal notes and annotations for <em className="text-ink">{currentDoc.title}</em>:
-                </div>
-
-                {Object.keys(personalNotes).filter(k => k.startsWith(currentDoc.id)).length === 0 ? (
-                  <div className="p-6 text-center rounded-2xl border border-dashed border-line text-faint">
-                    <MessageSquare className="w-6 h-6 mx-auto mb-2 opacity-40 text-ink-2" />
-                    <p className="text-xs font-sans">Belum ada catatan pada dokumen ini.</p>
-                    <p className="text-[11px] font-sans mt-1 text-faint">
-                      Klik ikon pesan di sebelah paragraf dokumen untuk menambahkan catatan.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {Object.entries(personalNotes)
-                      .filter(([k]) => k.startsWith(currentDoc.id))
-                      .map(([key, note]) => {
-                        const pId = key.replace(`${currentDoc.id}-`, '');
-                        return (
-                          <div key={key} className="p-3.5 rounded-2xl bg-surface border border-line space-y-1">
-                            <div className="flex items-center justify-between text-[11px] font-sans font-semibold text-muted">
-                              <span className="text-ink-2 font-bold">Paragraph {pId}</span>
-                              <button
-                                onClick={() => handleOpenNoteModal(pId)}
-                                className="text-muted underline hover:text-ink cursor-pointer"
-                              >
-                                Edit
-                              </button>
-                            </div>
-                            <p className="text-xs text-ink font-sans">
-                              {note}
-                            </p>
-                          </div>
-                        );
-                      })}
-                  </div>
-                )}
-              </div>
-            )}
-
-          </div>
+        {/* ============================== Status bar */}
+        <div className="wd-status">
+          <span>Page {Math.min(curPage, total)} of {total}</span>
+          <span>{words.toLocaleString('en-US')} words</span>
+          <span>{Math.round(readProgress * 100)}% read</span>
+          <span className="hidden sm:inline">{isDocCompleted ? 'Completed' : 'In progress'}</span>
+          <span className="flex-1" />
+          <span className="hidden sm:inline">{narrow ? 'A4 · fitted to screen' : 'A4 · 210 × 297 mm'}</span>
+          <span>{Math.round(zoom * 100)}%</span>
         </div>
-        )}
-
       </div>
 
-      {/* Floating Re-open Button when Assistant Panel is Minimized */}
-      {!assistantPanelOpen && (
-        <div className="fixed bottom-6 right-6 z-40">
-          <button
-            onClick={() => {
-              setAssistantPanelOpen(true);
-              requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                  scrollToAssistantPanel(true);
-                });
-              });
-            }}
-            className="flex items-center gap-2.5 px-4 py-3 rounded-full bg-surface border border-line-strong text-ink hover:scale-105 transition-all cursor-pointer group"
-          >
-            <Scale className="w-4 h-4 text-ink group-hover:rotate-12 transition-transform" />
-            <span className="text-xs font-sans font-bold tracking-wide">
-              Open Legal Assistant
-            </span>
-            {selectedLegalTerm && (
-              <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-surface-3 text-ink-2 border border-line-strong">
-                {selectedLegalTerm.term}
-              </span>
-            )}
-          </button>
+      {/* Hidden measuring copy for pagination */}
+      <div className="wd-measure" aria-hidden="true">
+        <div ref={measureRef} className={docCls} style={{ ...docStyle, width: contentW, zoom }}>
+          {blocks.map((b) => (
+            <React.Fragment key={b.id}>{renderBlock({ b, from: 0, to: b.text.length, head: false, tail: false }, { measure: true })}</React.Fragment>
+          ))}
         </div>
+      </div>
+
+      {/* Mobile comment sheet */}
+      {narrow && sheetOpen && activeSec != null && paras[sheetSec] && (
+        <>
+          <div className="wd-sheet-scrim" onClick={() => setSheetOpen(false)} aria-hidden="true" />
+          <div className="wd-sheet" role="dialog" aria-modal="false" aria-label={`Analysis: ${paraLabel(paras[sheetSec])}`}>
+            <div className="wd-sheet-grip" aria-hidden="true" />
+            <div className="wd-sheet-bar">
+              <button type="button" className="wd-icobtn is-sm" disabled={sheetSec === 0} onClick={() => activate(sheetSec - 1, { scroll: true, sheet: true })} aria-label="Previous clause"><ChevronLeft className="w-4 h-4" aria-hidden="true" /></button>
+              <button type="button" className="wd-icobtn is-sm" disabled={sheetSec === paras.length - 1} onClick={() => activate(sheetSec + 1, { scroll: true, sheet: true })} aria-label="Next clause"><ChevronRight className="w-4 h-4" aria-hidden="true" /></button>
+              <span className="flex-1" />
+              <button type="button" className="wd-icobtn is-sm" onClick={() => setSheetOpen(false)} aria-label="Close analysis"><X className="w-4 h-4" aria-hidden="true" /></button>
+            </div>
+            <div className="wd-sheet-body">{renderCard(sheetSec, true)}</div>
+          </div>
+        </>
       )}
 
-      {/* Note Edit Modal (Floating Glass Modal) */}
+      {/* Note edit modal */}
       {activeParagraphNoteId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface/80 backdrop-blur-md">
-          <div className="rounded-2xl bg-surface backdrop-blur-2xl border border-line p-6 max-w-md w-full space-y-4">
-            <h3 className="font-serif font-semibold text-base text-ink">
-              Add Study Note to Paragraph {activeParagraphNoteId}
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-surface/80 backdrop-blur-md">
+          <div className="rounded-2xl bg-surface border border-line p-6 max-w-md w-full space-y-4" role="dialog" aria-modal="true" aria-labelledby="dr-note-h">
+            <h3 id="dr-note-h" className="font-serif font-semibold text-base text-ink">
+              Study note · {paraLabel(paras.find((p) => p.id === activeParagraphNoteId) ?? paras[0])}
             </h3>
             <textarea
               value={tempNoteText}
@@ -997,23 +960,12 @@ export const DocumentReader: React.FC = () => {
               autoFocus
             />
             <div className="flex justify-end gap-2 text-xs font-sans">
-              <button
-                onClick={() => setActiveParagraphNoteId(null)}
-                className="btn-secondary px-4 py-2 font-medium"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveParagraphNote}
-                className="btn-primary px-4 py-2 font-medium"
-              >
-                Save Note
-              </button>
+              <button onClick={() => setActiveParagraphNoteId(null)} className="btn-secondary px-4 py-2 font-medium">Cancel</button>
+              <button onClick={handleSaveParagraphNote} className="btn-primary px-4 py-2 font-medium">Save Note</button>
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 };
