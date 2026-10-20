@@ -634,7 +634,7 @@ export const WritingLab: React.FC = () => {
 
   /* ------------------------------------------------------------------ */
   return (
-    <div className="wd-wrap">
+    <div className="wd-wrap wl">
       <header className="wd-intro">
         <div>
           <p className="wl-eyebrow">§ Writing lab</p>
