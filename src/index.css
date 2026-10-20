@@ -1352,7 +1352,7 @@ html.dark .hero-underline { background-image: linear-gradient(currentColor, curr
    Document Reader — reuses the Writing Lab editor (.wd-*) with the Paper
    palette in light mode. Pages stay white paper in both themes.
    ========================================================================== */
-html:not(.dark) .dr {
+html:not(.dark) :is(.dr, .wl) {
   --wd-chrome: var(--color-brand-50);
   --wd-bar: var(--color-brand-100);
   --wd-canvas: var(--color-brand-200);
@@ -1367,18 +1367,36 @@ html:not(.dark) .dr {
   --wd-card-soft: var(--color-brand-100);
   --wd-conn: var(--color-brand-400);
 }
-html:not(.dark) .dr .wd-editor { border-color: var(--color-brand-300); }
-html:not(.dark) .dr .wd-canvas { border-top-color: var(--color-brand-300); }
-html:not(.dark) .dr .wd-ruler { border-color: var(--color-brand-300); color: #ADB5BD; box-shadow: none; }
-html:not(.dark) .dr .wd-ruler-m { background: var(--color-brand-100); }
-html:not(.dark) .dr .wd-page { box-shadow: 0 1px 2px color-mix(in oklch, var(--color-brand-950) 10%, transparent), 0 0 0 1px color-mix(in oklch, var(--color-brand-950) 4%, transparent); }
-html:not(.dark) .dr .wd-cmt.is-on { box-shadow: 0 1px 3px color-mix(in oklch, var(--color-brand-950) 18%, transparent), 0 6px 16px -4px color-mix(in oklch, var(--color-brand-950) 14%, transparent); border-color: var(--color-brand-200); }
-html:not(.dark) .dr .wd-avatar { background: var(--color-brand-800); color: var(--color-brand-50); }
-html:not(.dark) .dr .wd-pill { background: var(--color-brand-900); color: var(--color-brand-50); }
-html:not(.dark) .dr .wd-pill.is-done { background: var(--color-brand-200); color: #2B3035; }
-html:not(.dark) .dr .wd-margin-cmt { background: var(--color-brand-100); color: #343A40; border-color: var(--color-brand-300); }
-html:not(.dark) .dr .wd-b.is-sec > .wd-margin-cmt { background: var(--color-brand-300); }
-html:not(.dark) .dr .wd-zoom select option { color: #2B3035; background: var(--color-brand-50); }
+html:not(.dark) :is(.dr, .wl) .wd-editor { border-color: var(--color-brand-300); }
+html:not(.dark) :is(.dr, .wl) .wd-canvas { border-top-color: var(--color-brand-300); }
+html:not(.dark) :is(.dr, .wl) .wd-ruler { border-color: var(--color-brand-300); color: #ADB5BD; box-shadow: none; }
+html:not(.dark) :is(.dr, .wl) .wd-ruler-m { background: var(--color-brand-100); }
+html:not(.dark) :is(.dr, .wl) .wd-page { box-shadow: 0 1px 2px color-mix(in oklch, var(--color-brand-950) 10%, transparent), 0 0 0 1px color-mix(in oklch, var(--color-brand-950) 4%, transparent); }
+html:not(.dark) :is(.dr, .wl) .wd-cmt.is-on { box-shadow: 0 1px 3px color-mix(in oklch, var(--color-brand-950) 18%, transparent), 0 6px 16px -4px color-mix(in oklch, var(--color-brand-950) 14%, transparent); border-color: var(--color-brand-200); }
+html:not(.dark) :is(.dr, .wl) .wd-avatar { background: var(--color-brand-800); color: var(--color-brand-50); }
+html:not(.dark) :is(.dr, .wl) .wd-pill { background: var(--color-brand-900); color: var(--color-brand-50); }
+html:not(.dark) :is(.dr, .wl) .wd-pill.is-done { background: var(--color-brand-200); color: #2B3035; }
+html:not(.dark) :is(.dr, .wl) .wd-margin-cmt { background: var(--color-brand-100); color: #343A40; border-color: var(--color-brand-300); }
+html:not(.dark) :is(.dr, .wl) .wd-b.is-sec > .wd-margin-cmt { background: var(--color-brand-300); }
+html:not(.dark) :is(.dr, .wl) .wd-zoom select option { color: #2B3035; background: var(--color-brand-50); }
+html:not(.dark) .wl {
+  --wd-hl: color-mix(in oklch, var(--color-brand-400) 18%, transparent);
+  --wd-hl-sec: color-mix(in oklch, var(--color-brand-400) 34%, transparent);
+  --wd-hl-hot: var(--color-brand-300);
+}
+html:not(.dark) .wl .wd-hl { box-shadow: inset 0 -1px 0 color-mix(in oklch, var(--color-brand-500) 50%, transparent); }
+html:not(.dark) .wl .wd-hl.is-hot { box-shadow: inset 0 -2px 0 #343A40; }
+html:not(.dark) .wl .wd-hl.is-sec::after { color: #343A40; }
+html:not(.dark) .wl .wd-hl:focus-visible { outline-color: #343A40; }
+html:not(.dark) .wl .wd-ruler { background: #FFFFFF; }
+html:not(.dark) .wl .wd-field { caret-color: #2B3035; }
+html:not(.dark) .wl .wd-field:empty::before { background: var(--color-brand-100); color: #6C757D; }
+html:not(.dark) .wl .wd-field[data-field]:not(:empty) { background: color-mix(in oklch, var(--color-brand-300) 30%, transparent); box-shadow: inset 0 -1px 0 #ADB5BD; }
+html:not(.dark) .wl .wd-field[data-field]:hover:empty::before { background: var(--color-brand-200); }
+html:not(.dark) .wl .wd-field[data-field]:focus { background: var(--color-brand-200); box-shadow: inset 0 -2px 0 #343A40; }
+html:not(.dark) .wl .wd-field[data-field]:focus:empty::before { background: var(--color-brand-300); color: #2B3035; }
+html:not(.dark) .wl .wd-cmt-note.is-hot { background: var(--color-brand-100); }
+html:not(.dark) .wl .wd-cmt-n { background: var(--color-brand-300); color: #212529; }
 html.dark .dr .wd-pill { background: var(--wd-sel); color: var(--wd-ink); }
 html.dark .dr .wd-pill.is-done { background: var(--wd-bar); }
 
