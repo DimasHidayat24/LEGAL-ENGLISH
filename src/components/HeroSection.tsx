@@ -133,14 +133,15 @@ export const HeroSection: React.FC = () => {
       <section id="hero-banner" className="pt-14 sm:pt-20 lg:pt-24 pb-14 lg:pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-5xl mx-auto">
-            <h1 className="display-h1 text-[40px] sm:text-[64px] lg:text-[80px] text-ink">
-              Read the law like a <em className="h1-serif">lawyer</em>.
+            <h1 className="display-h1 hero-h1 text-[42px] sm:text-[64px] lg:text-[84px] text-ink">
+              Read the law
               <br />
-              <span className="text-muted">In English.</span>
+              like a <em className="h1-serif hero-underline">lawyer</em>.
             </h1>
 
-            <p className="text-base sm:text-lg text-muted leading-relaxed max-w-[34rem] mx-auto mt-6">
-              Legal English explained through Indonesian law — contracts, doctrine, and drafting, side by side.
+            <p className="hero-lede max-w-[36rem] mx-auto mt-7">
+              <span className="text-ink">In English.</span> Contracts, doctrine, and drafting — explained through the
+              Indonesian law you already study.
             </p>
 
             <div className="flex flex-wrap justify-center items-center gap-3 mt-8">
@@ -152,7 +153,7 @@ export const HeroSection: React.FC = () => {
               </button>
             </div>
 
-            <p className="mt-6 text-sm text-muted">
+            <p className="mt-6 text-sm text-faint">
               Free for students ·{' '}
               <a
                 href="#/vocabulary"
