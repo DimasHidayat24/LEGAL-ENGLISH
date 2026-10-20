@@ -11,13 +11,11 @@ import {
   foreignRuns,
 } from './writing/docModel';
 import { paginate, type Part } from './writing/paginate';
+import { COMMENTS_GAP, COMMENTS_W, DocIcon, Menu, ZOOMS, type ZoomSel, printDoc, reducedMotion, stackComments, useDocFontsReady } from './writing/chrome';
 
 /* ------------------------------------------------------------------ */
 /* Helpers                                                             */
 /* ------------------------------------------------------------------ */
-
-const reducedMotion = () =>
-  typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 async function copyText(text: string): Promise<boolean> {
   try {
@@ -50,13 +48,6 @@ const storeKey = (moduleId: string) => `lexa.writing.template.${moduleId}`;
 const loadValues = (moduleId: string): Record<string, string> => {
   try { return JSON.parse(localStorage.getItem(storeKey(moduleId)) || '{}'); } catch { return {}; }
 };
-
-type ZoomSel = 'fit' | 0.75 | 1 | 1.25;
-const ZOOMS: { v: ZoomSel; label: string }[] = [
-  { v: 'fit', label: 'Fit' }, { v: 0.75, label: '75%' }, { v: 1, label: '100%' }, { v: 1.25, label: '125%' },
-];
-const COMMENTS_W = 300;
-const COMMENTS_GAP = 28;
 
 /* ------------------------------------------------------------------ */
 /* Inline text: comment highlights (example) / fields (template)       */
@@ -382,39 +373,6 @@ const CommentBody: React.FC<{
 };
 
 /* ------------------------------------------------------------------ */
-/* Small menu (File / View)                                            */
-/* ------------------------------------------------------------------ */
-
-const Menu: React.FC<{ label: string; children: (close: () => void) => React.ReactNode }> = ({ label, children }) => {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!open) return;
-    const off = (e: MouseEvent) => { if (!ref.current?.contains(e.target as Node)) setOpen(false); };
-    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
-    document.addEventListener('mousedown', off);
-    document.addEventListener('keydown', esc);
-    return () => { document.removeEventListener('mousedown', off); document.removeEventListener('keydown', esc); };
-  }, [open]);
-  return (
-    <div className="relative" ref={ref}>
-      <button type="button" className={`wd-menu-btn${open ? ' is-open' : ''}`} aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        {label}
-      </button>
-      {open && <div className="wd-menu" role="menu">{children(() => setOpen(false))}</div>}
-    </div>
-  );
-};
-
-const DocIcon: React.FC<{ className?: string }> = ({ className }) => (
-  <svg viewBox="0 0 24 32" className={className} aria-hidden="true">
-    <path d="M3 0h12l9 9v20a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3V3a3 3 0 0 1 3-3z" fill="var(--wd-doc-icon)" />
-    <path d="M15 0l9 9h-6a3 3 0 0 1-3-3z" fill="#fff" fillOpacity=".45" />
-    <path d="M6 15h12M6 19h12M6 23h8" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" />
-  </svg>
-);
-
-/* ------------------------------------------------------------------ */
 /* Export (.doc that Word opens) + print                               */
 /* ------------------------------------------------------------------ */
 
@@ -450,15 +408,6 @@ function exportDoc(module: WritingModule, blocks: Block[], values: Record<string
   window.setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 }
 
-function printDoc() {
-  const root = document.documentElement;
-  root.classList.add('wd-printing');
-  const done = () => { root.classList.remove('wd-printing'); window.removeEventListener('afterprint', done); };
-  window.addEventListener('afterprint', done);
-  window.print();
-  window.setTimeout(done, 1500);
-}
-
 /* ------------------------------------------------------------------ */
 /* Main                                                                */
 /* ------------------------------------------------------------------ */
@@ -482,7 +431,7 @@ export const WritingLab: React.FC = () => {
   const [values, setValues] = useState<Record<string, string>>(() => loadValues(moduleId));
   const [saveState, setSaveState] = useState<'saved' | 'saving'>('saved');
   const [pages, setPages] = useState<Part[][]>([]);
-  const [fontsReady, setFontsReady] = useState(false);
+  const fontsReady = useDocFontsReady();
   const [canvasW, setCanvasW] = useState(1000);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [curPage, setCurPage] = useState(1);
@@ -520,17 +469,6 @@ export const WritingLab: React.FC = () => {
     : Math.min(1, (canvasW - 56 - (showComments ? COMMENTS_W + COMMENTS_GAP : 0)) / PAGE_W);
   const zoom = zoomSel === 'fit' ? Math.max(0.3, fit) : zoomSel;
   const pagesW = PAGE_W * zoom;
-
-  /* ---- fonts: paginate only once the document face is in */
-  useEffect(() => {
-    let alive = true;
-    const fonts = (document as Document & { fonts?: FontFaceSet }).fonts;
-    if (!fonts) { setFontsReady(true); return; }
-    Promise.all([
-      fonts.load('16px Tinos'), fonts.load('bold 16px Tinos'), fonts.load('italic 16px Tinos'),
-    ]).catch(() => undefined).then(() => fonts.ready).then(() => { if (alive) setFontsReady(true); });
-    return () => { alive = false; };
-  }, []);
 
   /* ---- canvas width */
   useEffect(() => {
@@ -578,19 +516,8 @@ export const WritingLab: React.FC = () => {
     });
     const n = anchors.length;
     const h = anchors.map((_, i) => cardRefs.current[i]?.offsetHeight ?? 90);
-    const gap = 10;
-    const top = anchors.slice();
     const a = activeSec != null && activeSec < n ? activeSec : -1;
-    if (a >= 0) {
-      for (let i = a + 1; i < n; i++) top[i] = Math.max(anchors[i], top[i - 1] + h[i - 1] + gap);
-      for (let i = a - 1; i >= 0; i--) top[i] = Math.min(anchors[i], top[i + 1] - h[i] - gap);
-      if (top[0] < 0) {
-        top[0] = 0;
-        for (let i = 1; i < n; i++) top[i] = Math.max(top[i], top[i - 1] + h[i - 1] + gap);
-      }
-    } else {
-      for (let i = 1; i < n; i++) top[i] = Math.max(anchors[i], top[i - 1] + h[i - 1] + gap);
-    }
+    const top = stackComments(anchors, h, a);
     const next: Record<number, Pos> = {};
     top.forEach((t, i) => { next[i] = { top: Math.round(t), anchor: Math.round(anchors[i]) }; });
     setPositions((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next));
