@@ -56,11 +56,12 @@ function measureLines(el: HTMLElement, b: Block, scale: number): { starts: numbe
  * Lay the blocks onto A4 pages. Paragraphs split between lines (never mid-line), keeping at
  * least two lines on each side; headings stay with the block that follows them.
  */
-export function paginate(root: HTMLElement, blocks: Block[], firstPageReserve: number): Part[][] {
+export function paginate(root: HTMLElement, blocks: Block[], firstPageReserve: number, contentH: number = CONTENT_H): Part[][] {
+  const CONTENT_H_ = contentH;
   const pages: Placed[][] = [[]];
   let used = 0;
   const SLACK = 3;
-  let avail = CONTENT_H - SLACK - firstPageReserve;
+  let avail = CONTENT_H_ - SLACK - firstPageReserve;
   const cur = () => pages[pages.length - 1];
   const scale = root.getBoundingClientRect().width / root.offsetWidth || 1;
 
@@ -75,7 +76,7 @@ export function paginate(root: HTMLElement, blocks: Block[], firstPageReserve: n
     }
     pages.push([]);
     used = 0;
-    avail = CONTENT_H - SLACK;
+    avail = CONTENT_H_ - SLACK;
     carried.forEach((c, i) => {
       const h = i === 0 ? c.h - c.padT : c.h;
       cur().push({ ...c });
@@ -132,7 +133,7 @@ export function paginate(root: HTMLElement, blocks: Block[], firstPageReserve: n
         cur().push({ part: { b, from: starts[a], to, head: true, tail: a > 0 }, h: pt + k * lh, padT: pt });
         pages.push([]);
         used = 0;
-        avail = CONTENT_H - SLACK;
+        avail = CONTENT_H_ - SLACK;
         a += k;
       }
       continue;
