@@ -221,12 +221,12 @@ export const CurriculumView: React.FC = () => {
                       <p className="font-sans font-bold text-sm text-ink">
                         {concept.meaningId}
                       </p>
-                      <p className="text-xs text-muted mt-1 font-sans font-normal">
+                      <p className="text-sm text-muted mt-1 font-sans font-normal leading-relaxed">
                         {concept.explanationId}
                       </p>
                     </div>
 
-                    <div className="text-xs text-muted space-y-1 font-sans">
+                    <div className="text-sm text-muted space-y-1 font-sans leading-relaxed">
                       <strong className="text-ink font-semibold">Legal Function:</strong> {concept.legalFunction}
                     </div>
 
@@ -235,16 +235,16 @@ export const CurriculumView: React.FC = () => {
                       <span className="text-[11px] font-sans text-muted block font-semibold">
                         Authentic Example Clause:
                       </span>
-                      <blockquote className="text-xs sm:text-[13px] font-serif italic text-ink leading-[1.7]">
+                      <blockquote className="text-sm font-serif italic text-ink leading-[1.7]">
                         &ldquo;{concept.authenticExample}&rdquo;
                       </blockquote>
-                      <p className="text-xs font-sans text-muted pt-2 border-t border-line">
+                      <p className="text-sm font-sans text-muted pt-2 border-t border-line leading-relaxed">
                         <strong className="text-ink font-semibold">Terjemahan:</strong> {concept.indonesianTranslation}
                       </p>
                     </div>
 
                     {concept.draftingTip && (
-                      <div className="text-xs font-sans text-muted bg-surface-3 p-3 rounded-xl border border-line">
+                      <div className="text-sm font-sans text-muted bg-surface-3 p-3 rounded-xl border border-line leading-relaxed">
                         <span className="text-ink font-semibold">Drafting Tip:</span>{' '}
                         <span className="text-ink-2">{concept.draftingTip}</span>
                       </div>

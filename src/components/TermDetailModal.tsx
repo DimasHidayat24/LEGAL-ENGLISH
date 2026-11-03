@@ -269,7 +269,7 @@ export const TermDetailModal: React.FC = () => {
             <p className="text-base sm:text-lg font-sans font-extrabold text-ink">
               {term.indonesianMeaning}
             </p>
-            <p className="text-xs sm:text-sm text-muted leading-relaxed font-sans font-normal">
+            <p className="text-sm text-muted leading-relaxed font-sans font-normal">
               {term.indonesianLegalConcept}
             </p>
             {term.civilLawEquivalent?.trim() && (
@@ -287,7 +287,7 @@ export const TermDetailModal: React.FC = () => {
                 <AlertTriangle className="w-4 h-4 text-ink shrink-0" />
                 Catatan Konseptual Komparatif (Common Law vs Civil Law)
               </div>
-              <p className="text-xs sm:text-sm text-muted leading-relaxed font-sans font-normal">
+              <p className="text-sm text-muted leading-relaxed font-sans font-normal">
                 {term.conceptualNote || 
                   'Istilah ini merupakan konsep khas Common Law yang tidak memiliki padanan langsung 1:1 dalam sistem hukum Indonesia (Civil Law). Terjemahan di atas merupakan padanan fungsional terdekat yang harus dipahami dalam konteks yuridisnya.'}
               </p>
@@ -300,7 +300,7 @@ export const TermDetailModal: React.FC = () => {
               <span className="text-[11px] font-sans text-muted block font-bold">
                 Plain English Explanation
               </span>
-              <p className="text-xs sm:text-sm text-muted font-sans font-normal leading-relaxed">
+              <p className="text-sm text-muted font-sans font-normal leading-relaxed">
                 {term.plainEnglish || term.legalDefinition}
               </p>
             </div>
@@ -309,7 +309,7 @@ export const TermDetailModal: React.FC = () => {
               <span className="text-[11px] font-sans text-muted block font-bold">
                 Black&apos;s Law / Formal Legal Definition
               </span>
-              <p className="text-xs sm:text-sm text-muted font-sans font-normal leading-relaxed">
+              <p className="text-sm text-muted font-sans font-normal leading-relaxed">
                 {term.legalDefinition}
               </p>
             </div>
@@ -320,7 +320,7 @@ export const TermDetailModal: React.FC = () => {
             <span className="text-[11px] font-sans uppercase tracking-wider text-ink block font-bold">
               Why Lawyers Use This in Practice (Legal Function)
             </span>
-            <p className="text-xs sm:text-sm text-muted font-sans font-normal leading-relaxed">
+            <p className="text-sm text-muted font-sans font-normal leading-relaxed">
               {term.legalFunction}
             </p>
           </div>
@@ -339,7 +339,7 @@ export const TermDetailModal: React.FC = () => {
                   </span>
                 )}
               </div>
-              <blockquote className="font-legal italic text-xs sm:text-sm text-ink pl-3 my-2 leading-[1.7] bg-surface-2 p-3 rounded-xl border border-line border-l-2 border-l-accent">
+              <blockquote className="font-legal italic text-sm text-ink pl-3 my-2 leading-[1.7] bg-surface-2 p-3 rounded-xl border border-line border-l-2 border-l-accent">
                 &ldquo;{term.authenticClauseExcerpt}&rdquo;
               </blockquote>
             </div>
@@ -388,7 +388,7 @@ export const TermDetailModal: React.FC = () => {
                 </button>
               </div>
 
-                <div className="text-xs sm:text-sm font-legal text-ink bg-surface-2 p-3 rounded-xl leading-[1.7] border border-line">
+                <div className="text-sm font-legal text-ink bg-surface-2 p-3 rounded-xl leading-[1.7] border border-line">
                   {activeContextTab === 'contracts' && (
                     <p>{term.contextExamples.contracts || 'Standard operational covenants and warranty provisions.'}</p>
                   )}

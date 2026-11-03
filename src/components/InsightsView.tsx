@@ -126,7 +126,7 @@ export const InsightsView: React.FC = () => {
           </div>
 
           {/* Article Markdown Rendered Body */}
-          <div className="font-legal text-sm sm:text-base leading-[1.75] text-ink space-y-6">
+          <div className="font-legal text-sm sm:text-base leading-[1.75] text-ink space-y-6 max-w-[65ch]">
             {activeArticle.contentMarkdown.split('\n\n').map((para, pIdx) => {
               if (para.startsWith('### ')) {
                 return (

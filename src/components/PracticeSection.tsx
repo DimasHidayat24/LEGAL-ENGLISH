@@ -382,7 +382,7 @@ export const PracticeSection: React.FC = () => {
             </div>
 
             {currentExercise.scenario && (
-              <div className="p-4 rounded-2xl lexa-surface-subtle text-xs sm:text-sm font-sans text-muted leading-relaxed">
+              <div className="p-4 rounded-2xl lexa-surface-subtle text-sm font-sans text-muted leading-relaxed">
                 <strong className="text-ink font-semibold">Context / Scenario:</strong> {currentExercise.scenario}
               </div>
             )}
@@ -395,7 +395,7 @@ export const PracticeSection: React.FC = () => {
                 <BookOpen className="w-4 h-4" />
                 <span>Legal Instrument / Commentary Excerpt</span>
               </div>
-              <div className="text-xs sm:text-sm font-sans text-ink-2 leading-relaxed whitespace-pre-line border-l-2 border-accent pl-4 py-1 italic">
+              <div className="text-sm font-sans text-ink-2 leading-relaxed whitespace-pre-line border-l-2 border-accent pl-4 py-1 italic">
                 {currentExercise.passage}
               </div>
             </div>
@@ -407,7 +407,7 @@ export const PracticeSection: React.FC = () => {
               {currentExercise.promptEn}
             </p>
             {currentExercise.promptId && (
-              <p className="text-xs sm:text-sm font-sans italic text-muted font-normal">
+              <p className="text-sm font-sans italic text-muted font-normal">
                 {currentExercise.promptId}
               </p>
             )}
@@ -421,7 +421,7 @@ export const PracticeSection: React.FC = () => {
                   key={idx}
                   disabled={isSubmitted}
                   onClick={() => setSelectedOption(idx)}
-                  className={`w-full text-left p-4 text-xs sm:text-sm font-sans border transition-all flex items-center justify-between cursor-pointer rounded-2xl ${
+                  className={`w-full text-left p-4 text-sm font-sans border transition-all flex items-center justify-between cursor-pointer rounded-2xl ${
                     isSubmitted 
                       ? idx === currentExercise.correctIndex 
                         ? 'bg-success-soft border-success text-ink font-semibold' 

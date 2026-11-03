@@ -112,7 +112,7 @@ export const ComparativeLawSection: React.FC = () => {
                   Indonesian Civil Law Framework
                 </h3>
               </div>
-              <p className="text-xs sm:text-sm text-muted font-sans leading-relaxed">
+              <p className="text-sm text-muted font-sans leading-relaxed">
                 {activeConcept.civilLawNuance}
               </p>
             </div>
@@ -127,7 +127,7 @@ export const ComparativeLawSection: React.FC = () => {
                   Common Law / International Doctrine
                 </h3>
               </div>
-              <p className="text-xs sm:text-sm text-muted font-sans leading-relaxed">
+              <p className="text-sm text-muted font-sans leading-relaxed">
                 {activeConcept.commonLawNuance}
               </p>
             </div>

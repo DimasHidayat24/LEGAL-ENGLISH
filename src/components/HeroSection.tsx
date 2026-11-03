@@ -207,7 +207,7 @@ export const HeroSection: React.FC = () => {
             body="Four steps that take you from reading a clause to drafting one."
           />
 
-          <ol className="border-t border-line">
+          <ol className="border-t border-line list-none">
             {chapters.map((c, i) => (
               <li
                 key={c.n}
@@ -219,11 +219,9 @@ export const HeroSection: React.FC = () => {
                   <span className="chapter-mark" aria-hidden="true">
                     §&thinsp;{i + 1}
                   </span>
-                  <span className="lg:hidden text-sm font-mono text-muted">{c.n}</span>
                   <span className="hidden lg:block absolute -right-[4.5px] top-[60px] w-2 h-2 rounded-full chap-dot" aria-hidden="true" />
                 </div>
                 <div className="pt-4 lg:py-12">
-                  <p className="hidden lg:block mb-3"><span className="chap-chip">{c.n}</span></p>
                   <h3 className="text-2xl sm:text-[28px] font-medium tracking-[-0.03em] text-ink">{c.name}</h3>
                   <p className="text-muted mt-3 leading-relaxed max-w-sm">{c.line}</p>
                   <button onClick={() => setSelectedTab(c.tab)} className="btn-ghost text-sm px-0 mt-5">
