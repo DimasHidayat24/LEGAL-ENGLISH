@@ -58,8 +58,8 @@ html.light,
   --surface-3: var(--color-brand-100);
   --text: var(--color-brand-950);
   --text-2: var(--color-brand-900);
-  --text-muted: var(--color-brand-700);
-  --text-faint: var(--color-brand-600);
+  --text-muted: var(--color-brand-600);
+  --text-faint: var(--color-brand-500);
   --border: var(--color-brand-200);
   --border-strong: var(--color-brand-300);
   --accent: var(--color-brand-900);
@@ -906,8 +906,10 @@ html.dark .ann-tip { background: #1a1a1a; box-shadow: 0 12px 32px -12px rgba(0,0
 .section-pad { padding-top: 72px; padding-bottom: 72px; }
 @media (min-width: 1024px) { .section-pad { padding-top: 120px; padding-bottom: 120px; } }
 
-.display-h1 { font-weight: 500; letter-spacing: -0.04em; line-height: 1.05; }
-.display-h2 { font-weight: 500; letter-spacing: -0.035em; line-height: 1.1; }
+/* Type scale — sizes only; font families intentionally unchanged (Geist / Source Serif 4 / Tinos). */
+.display-h1 { font-weight: 500; letter-spacing: -0.04em; line-height: 1.05; font-size: clamp(2.625rem, 8vw, 5.25rem); }
+.display-h2 { font-weight: 500; letter-spacing: -0.035em; line-height: 1.1; font-size: clamp(2rem, 5vw, 2.75rem); }
+.display-h2-lg { font-weight: 500; letter-spacing: -0.035em; line-height: 1.1; font-size: clamp(2.25rem, 5vw, 3.25rem); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -1279,18 +1281,18 @@ html.dark .wd-cmt-note.is-hot { background: #3A3020; }
    Chapters step through the scale; no outside accents.
    ========================================================================== */
 html:not(.dark) {
-  --surface: var(--color-brand-50);
-  --surface-2: var(--color-brand-50);
+  --surface: #FFFFFF;
+  --surface-2: oklch(98.6% 0.005 112.18);
   --surface-3: var(--color-brand-100);
   --bg: var(--color-brand-50);
-  --paper: var(--color-brand-50);
+  --paper: #FFFFFF;
   --glass: color-mix(in oklch, var(--color-brand-50) 88%, transparent);
   --pop: var(--color-brand-400);
   /* Type: same hue, low chroma — warm ink, not orange. Colour stays for accents only. */
-  --text: #2B3035;
-  --text-2: #343A40;
-  --text-muted: #6C757D;
-  --text-faint: #ADB5BD;
+  --text: #16191C;
+  --text-2: #212529;
+  --text-muted: #495057;
+  --text-faint: #6C757D;
   --link: var(--color-brand-700);
   --accent: var(--color-brand-900);
   --accent-hover: var(--color-brand-800);
@@ -1308,7 +1310,7 @@ html:not(.dark) .chap-row h3 { background-image: linear-gradient(var(--ch), var(
 html:not(.dark) .chap-row .btn-ghost { color: var(--ch-ink); }
 html:not(.dark) .chap-stage { border-radius: 16px; padding: 14px; background: var(--color-brand-100); }
 html:not(.dark) .h1-serif { color: var(--color-brand-600); }
-html:not(.dark) #hero-banner h1 .text-muted { color: #ADB5BD; }
+html:not(.dark) #hero-banner h1 .text-muted { color: #6C757D; }
 html:not(.dark) .badge-accent, html:not(.dark) .badge-navy { background: var(--color-brand-100); color: var(--color-brand-800); border-color: var(--color-brand-200); }
 html:not(.dark) .progress-fill { background: var(--color-brand-400); }
 html:not(.dark) .btn-secondary { background: var(--color-brand-50); border-color: var(--color-brand-300); }
@@ -1333,9 +1335,8 @@ html.dark .lx-footer { --ft-bg: #0E0E0E; --ft-fg: #EDEDED; --ft-mut: #A1A1A1; bo
 html:not(.dark) .lx-footer .ft-icon[aria-pressed="true"] { color: var(--color-brand-400); }
 .lx-footer .ft-rule { border-top: 1px solid var(--ft-line); color: var(--ft-mut); }
 .lx-footer .ft-word { font-family: var(--font-brand); font-weight: 600; letter-spacing: -0.07em; line-height: .78; font-size: clamp(120px, 27vw, 400px);
-  color: color-mix(in oklch, var(--ft-fg) 7%, transparent); margin-top: 28px; margin-bottom: -0.2em; white-space: nowrap; }
+  color: color-mix(in oklch, var(--ft-fg) 7%, transparent); margin-top: 28px; margin-bottom: -0.2em; white-space: nowrap; text-align: center; }
 .lx-footer .bg-accent { background: var(--ft-fg); color: var(--ft-bg); }
-.lx-footer .ft-word { font-size: clamp(150px, 31vw, 470px); text-align: center; letter-spacing: -0.075em; }
 
 /* Hero type — editorial, ink on paper */
 .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); }
@@ -1345,8 +1346,7 @@ html:not(.dark) .lx-footer .ft-icon[aria-pressed="true"] { color: var(--color-br
 html:not(.dark) .hero-h1 .h1-serif { color: var(--text); }
 .hero-underline { background-image: var(--pencil); background-repeat: no-repeat; background-size: 100% .12em; background-position: 0 92%; padding-bottom: .02em; }
 html.dark .hero-underline { background-image: linear-gradient(currentColor, currentColor); background-size: 100% 2px; }
-.hero-lede { font-size: 17px; line-height: 1.65; color: var(--text-muted); text-wrap: pretty; }
-@media (min-width: 640px) { .hero-lede { font-size: 19px; } }
+.hero-lede { font-size: 18px; line-height: 1.65; color: var(--text-muted); text-wrap: pretty; }
 
 /* ==========================================================================
    Document Reader — reuses the Writing Lab editor (.wd-*) with the Paper
@@ -1369,7 +1369,7 @@ html:not(.dark) :is(.dr, .wl) {
 }
 html:not(.dark) :is(.dr, .wl) .wd-editor { border-color: var(--color-brand-300); }
 html:not(.dark) :is(.dr, .wl) .wd-canvas { border-top-color: var(--color-brand-300); }
-html:not(.dark) :is(.dr, .wl) .wd-ruler { border-color: var(--color-brand-300); color: #ADB5BD; box-shadow: none; }
+html:not(.dark) :is(.dr, .wl) .wd-ruler { border-color: var(--color-brand-300); color: #6C757D; box-shadow: none; }
 html:not(.dark) :is(.dr, .wl) .wd-ruler-m { background: var(--color-brand-100); }
 html:not(.dark) :is(.dr, .wl) .wd-page { box-shadow: 0 1px 2px color-mix(in oklch, var(--color-brand-950) 10%, transparent), 0 0 0 1px color-mix(in oklch, var(--color-brand-950) 4%, transparent); }
 html:not(.dark) :is(.dr, .wl) .wd-cmt.is-on { box-shadow: 0 1px 3px color-mix(in oklch, var(--color-brand-950) 18%, transparent), 0 6px 16px -4px color-mix(in oklch, var(--color-brand-950) 14%, transparent); border-color: var(--color-brand-200); }
@@ -1402,13 +1402,13 @@ html.dark .dr .wd-pill.is-done { background: var(--wd-bar); }
 
 /* paper: ink, header/footer and term marks are the same in both themes */
 .dr .wd-page {
-  --text: #2B3035; --text-2: #343A40; --text-muted: #6C757D; --text-faint: #ADB5BD;
+  --text: #16191C; --text-2: #212529; --text-muted: #495057; --text-faint: #6C757D;
   --link: #343A40; --link-contrast: #F8F9FA;
   --wd-paper-ink: #2B3035;
 }
 .dr .wd-doc { color: #2B3035; }
 .dr .wd-hdr { color: #6C757D; }
-.dr .wd-hdr.is-first { color: #ADB5BD; font-size: 11px; letter-spacing: .14em; }
+.dr .wd-hdr.is-first { color: #6C757D; font-size: 11px; letter-spacing: .14em; }
 .dr .wd-ftr { color: #6C757D; }
 .dr .wd-party-line { border-bottom-color: #2B3035; }
 .dr .wd-b--title.is-doctitle { font-size: 1.16em; letter-spacing: .12em; line-height: 1.35; padding-bottom: 10px; }

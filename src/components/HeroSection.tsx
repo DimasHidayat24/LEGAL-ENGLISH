@@ -56,7 +56,7 @@ const SectionHeader: React.FC<{
   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 sm:mb-14">
     <div className="max-w-2xl">
       {eyebrow && <p className="text-sm text-muted mb-3">{eyebrow}</p>}
-      <h2 className="display-h2 text-[32px] sm:text-[44px] text-ink">{title}</h2>
+      <h2 className="display-h2 text-ink">{title}</h2>
       {body && <p className="text-base sm:text-lg text-muted mt-4 leading-relaxed">{body}</p>}
     </div>
     {action}
@@ -133,7 +133,7 @@ export const HeroSection: React.FC = () => {
       <section id="hero-banner" className="pt-14 sm:pt-20 lg:pt-24 pb-14 lg:pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-5xl mx-auto">
-            <h1 className="display-h1 hero-h1 text-[42px] sm:text-[64px] lg:text-[84px] text-ink">
+            <h1 className="display-h1 hero-h1 text-ink">
               Read the law
               <br />
               like a <em className="h1-serif hero-underline">lawyer</em>.
@@ -243,7 +243,7 @@ export const HeroSection: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="lg:col-span-5">
               <p className="text-sm text-muted mb-3">Civil law ⟷ common law</p>
-              <h2 className="display-h2 text-[36px] sm:text-[52px] text-ink">
+              <h2 className="display-h2 display-h2-lg text-ink">
                 Same concept.
                 <br />
                 <span className="text-muted">Different language.</span>
@@ -367,7 +367,7 @@ export const HeroSection: React.FC = () => {
 
           {/* Closing CTA */}
           <div className="mt-24 lg:mt-32 text-center">
-            <h2 className="display-h2 text-[32px] sm:text-[48px] text-ink">Start with one clause today.</h2>
+            <h2 className="display-h2 text-ink">Start with one clause today.</h2>
             <p className="text-muted mt-4 text-base sm:text-lg">Free for students. No account needed — progress saves in your browser.</p>
             <div className="flex flex-wrap justify-center gap-3 mt-8">
               <button onClick={() => setSelectedTab('learn')} className="btn-primary h-11 px-5 text-[15px]">
