@@ -37,6 +37,23 @@ export const VocabularyDictionary: React.FC = () => {
     return unique;
   }, []);
 
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    legalVocabularyList.forEach((t) => {
+      if (t.category) counts.set(t.category, (counts.get(t.category) ?? 0) + 1);
+    });
+    return counts;
+  }, []);
+
+  const letterCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    legalVocabularyList.forEach((t) => {
+      const first = t.term?.charAt(0).toUpperCase();
+      if (first) counts.set(first, (counts.get(first) ?? 0) + 1);
+    });
+    return counts;
+  }, []);
+
   const openFlashcards = () => {
     try {
       window.history.pushState(null, '', '#/mystudy/flashcards');
@@ -66,6 +83,7 @@ export const VocabularyDictionary: React.FC = () => {
   ];
 
   const alphabet = ['ALL', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
+  const visibleAlphabet = alphabet.filter((letter) => letter === 'ALL' || (letterCounts.get(letter) ?? 0) > 0);
 
   const filteredTerms = useMemo(() => {
     let results = searchLegalTerms(
@@ -114,7 +132,7 @@ export const VocabularyDictionary: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-6">
       
       {/* Header */}
       <div className="border-b border-line pb-6">
@@ -159,41 +177,41 @@ export const VocabularyDictionary: React.FC = () => {
             )}
           </div>
 
-          {/* Category Tabs */}
-          <div className="space-y-1.5">
-            <div className="flex flex-wrap items-center gap-2 text-xs font-sans pb-1">
-              <span className="text-muted shrink-0 font-medium flex items-center gap-1">
-                <Layers className="w-3.5 h-3.5 text-ink-2" />
-                Category:
-              </span>
+          {/* Category Tabs — one scrollable row with counts; all categories still available */}
+          <div className="flex items-center gap-2 text-xs font-sans pb-1">
+            <span className="text-muted shrink-0 font-medium flex items-center gap-1">
+              <Layers className="w-3.5 h-3.5 text-ink-2" />
+              Category:
+            </span>
+            <div className="flex flex-1 items-center gap-2 overflow-x-auto no-scrollbar">
               <button
                 key="__all"
                 onClick={() => setSelectedCategory('ALL')}
                 aria-pressed={selectedCategory === 'ALL'}
-                className={`px-3.5 py-1.5 whitespace-nowrap border transition-all cursor-pointer rounded-full text-xs font-medium ${
+                className={`shrink-0 px-3.5 py-1.5 whitespace-nowrap border transition-all cursor-pointer rounded-full text-xs font-medium ${
                   selectedCategory === 'ALL' ? 'bg-accent text-on-accent border-accent font-semibold' : 'bg-surface text-ink-2 border-line hover:border-line-strong hover:bg-surface-2 hover:text-ink'
                 }`}
               >
-                All
+                All · {legalVocabularyList.length}
               </button>
               {categories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3.5 py-1.5 whitespace-nowrap border transition-all cursor-pointer rounded-full text-xs font-medium ${
+                  className={`shrink-0 px-3.5 py-1.5 whitespace-nowrap border transition-all cursor-pointer rounded-full text-xs font-medium ${
                     selectedCategory === cat
                       ? 'bg-accent text-on-accent border-accent font-semibold shadow-xs'
                       : 'bg-surface text-muted border-line hover:border-line-strong hover:bg-surface-3 hover:text-ink'
                   }`}
                 >
-                  {cat}
+                  {cat} · {categoryCounts.get(cat) ?? 0}
                 </button>
               ))}
             </div>
           </div>
 
           {/* Secondary Filters Bar: Type, Jurisdiction, Conceptual Note Toggle */}
-          <div className="flex flex-wrap items-center gap-3 pt-1 text-xs font-sans">
+          <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-sans">
             {/* Term Type Select */}
             <div className="flex items-center gap-1.5 bg-surface border border-line px-3 py-1.5 rounded-full">
               <Tag className="w-3 h-3 text-ink-2" />
@@ -230,12 +248,29 @@ export const VocabularyDictionary: React.FC = () => {
               </select>
             </div>
 
+            {/* Difficulty Select */}
+            <div className="flex items-center gap-1.5 bg-surface border border-line px-3 py-1.5 rounded-full">
+              <span className="text-muted font-medium">Difficulty:</span>
+              <select
+                value={selectedDifficulty}
+                onChange={(e) => setSelectedDifficulty(e.target.value)}
+                aria-label="Filter by Difficulty"
+                className="bg-transparent text-ink focus:outline-none cursor-pointer text-xs font-medium"
+              >
+                <option value="ALL" className="bg-surface text-ink">All Difficulties</option>
+                <option value="Fundamental" className="bg-surface text-ink">Fundamental</option>
+                <option value="Intermediate" className="bg-surface text-ink">Intermediate</option>
+                <option value="Advanced" className="bg-surface text-ink">Advanced</option>
+              </select>
+            </div>
+
             {/* Distinct Concept Filter Toggle */}
             <button
               onClick={() => setOnlyDistinctConcepts(!onlyDistinctConcepts)}
+              aria-pressed={onlyDistinctConcepts}
               className={`flex items-center gap-1.5 px-3.5 py-1.5 border transition-all cursor-pointer rounded-full text-xs font-medium ${
                 onlyDistinctConcepts
-                  ? 'bg-accent text-on-accent border-accent font-semibold'
+                  ? 'bg-surface-3 text-ink border-line-strong font-semibold'
                   : 'bg-surface text-muted border-line hover:border-line-strong hover:text-ink'
               }`}
             >
@@ -257,21 +292,16 @@ export const VocabularyDictionary: React.FC = () => {
           {/* Alphabetical A-Z Scrubber */}
           <div className="flex items-center gap-1 overflow-x-auto text-[11px] font-sans py-2 border-t border-b border-line no-scrollbar">
             <span className="text-muted shrink-0 mr-1.5 font-bold">A-Z:</span>
-            {alphabet.map((letter) => {
-              const countForLetter = legalVocabularyList.filter(t => 
-                letter === 'ALL' ? true : t.term.toUpperCase().startsWith(letter)
-              ).length;
+            {visibleAlphabet.map((letter) => {
+              const countForLetter = letter === 'ALL' ? legalVocabularyList.length : (letterCounts.get(letter) ?? 0);
 
               return (
                 <button
                   key={letter}
                   onClick={() => setSelectedLetter(letter)}
-                  disabled={letter !== 'ALL' && countForLetter === 0}
                   className={`px-2.5 py-1 min-w-[26px] text-center transition-all cursor-pointer rounded-full font-medium ${
                     selectedLetter === letter
                       ? 'bg-accent text-on-accent font-bold border border-accent'
-                      : countForLetter === 0
-                      ? 'text-faint cursor-not-allowed opacity-30'
                       : 'text-muted hover:text-ink hover:bg-surface-3'
                   }`}
                   title={`${countForLetter} terms starting with ${letter}`}
@@ -329,23 +359,6 @@ export const VocabularyDictionary: React.FC = () => {
             </button>
           </div>
 
-          {/* Difficulty Filter */}
-          <div className="flex items-center gap-1.5 p-1 bg-surface border border-line rounded-full">
-            <span className="text-muted font-medium px-2">Difficulty:</span>
-            {['ALL', 'Fundamental', 'Intermediate', 'Advanced'].map((diff) => (
-              <button
-                key={diff}
-                onClick={() => setSelectedDifficulty(diff)}
-                className={`px-3 py-1 rounded-full transition-all cursor-pointer font-medium ${
-                  selectedDifficulty.toLowerCase() === diff.toLowerCase()
-                    ? 'bg-accent text-on-accent font-semibold border border-accent shadow-xs'
-                    : 'text-muted hover:text-ink'
-                }`}
-              >
-                {diff}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
 
