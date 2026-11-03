@@ -1497,3 +1497,78 @@ html:not(.dark) .dr .wd-tab.is-on { background: var(--color-brand-200); }
 @media (max-width: 1019px) { .dr .dr-about { width: auto !important; margin: 8px 10px 0; padding: 20px; } }
 .dr .wd-b--party.dr-exec { display: grid; grid-template-columns: 1fr 1fr; column-gap: 36px; width: auto; padding-right: 0; }
 .dr .dr-exec-col p { margin: 0; }
+
+/* ==========================================================================
+   Blues palette + liquid glass (approved 2026-11-04) — additive only.
+   Neutrals lead and primary buttons stay ink; one indigo/blue family is
+   used sparingly (hero glow, quote accents, glass surfaces). No font,
+   size, or logic changes. Glass sits only where a glow or dimmed
+   backdrop is behind it; reading cards stay opaque.
+   ========================================================================== */
+:root,
+html.light,
+[data-theme="light"] {
+  --color-accent-blue-50: #EEF0FE;
+  --color-accent-blue-100: #E0E4FD;
+  --color-accent-blue-300: #9EA6F0;
+  --color-accent-blue-500: #4052EE;
+  --color-accent-blue-600: #3645C7;
+  --color-accent-blue-700: #2C359E;
+  --glass-hero: rgba(255, 255, 255, 0.78);
+  --glass-hero-border: rgba(255, 255, 255, 0.55);
+  --glass-hero-highlight: rgba(255, 255, 255, 0.6);
+  --glow-blue: color-mix(in oklch, var(--color-accent-blue-500) 18%, transparent);
+}
+
+html.dark,
+[data-theme="dark"] {
+  --color-accent-blue-50: color-mix(in oklch, var(--color-accent-blue-500) 16%, #111111);
+  --color-accent-blue-100: color-mix(in oklch, var(--color-accent-blue-500) 26%, #111111);
+  --color-accent-blue-300: #9EA6F0;
+  --color-accent-blue-500: #4052EE;
+  --color-accent-blue-600: #8AB4F8;
+  --color-accent-blue-700: color-mix(in oklch, #FFFFFF 35%, var(--color-accent-blue-500));
+  --glass-hero: rgba(17, 17, 17, 0.72);
+  --glass-hero-border: rgba(255, 255, 255, 0.12);
+  --glass-hero-highlight: rgba(255, 255, 255, 0.08);
+  --glow-blue: color-mix(in oklch, var(--color-accent-blue-500) 26%, transparent);
+}
+
+/* Liquid glass at the approved "pas" transparency: 0.78 light / 0.72 dark,
+   blur 16px. Reserved for surfaces over a glow or dimmed backdrop. */
+.glass-hero {
+  background: var(--glass-hero);
+  backdrop-filter: saturate(160%) blur(16px);
+  -webkit-backdrop-filter: saturate(160%) blur(16px);
+  border: 1px solid var(--glass-hero-border);
+  border-radius: 16px;
+  box-shadow: inset 0 1px 0 var(--glass-hero-highlight), 0 12px 32px -12px color-mix(in oklch, var(--color-accent-blue-500) 25%, transparent);
+}
+
+/* Navbar and modals already use the glass system; retune them to the
+   approved glass values (they previously used 0.82-0.88 + blur 12px). */
+.lexa-nav {
+  background: var(--glass-hero);
+  backdrop-filter: saturate(160%) blur(16px);
+  -webkit-backdrop-filter: saturate(160%) blur(16px);
+}
+
+.liquid-glass-modal {
+  background: var(--glass-hero);
+  backdrop-filter: saturate(160%) blur(16px);
+  -webkit-backdrop-filter: saturate(160%) blur(16px);
+  border-color: var(--glass-hero-border);
+}
+
+/* Localized blue glow behind the hero only (Blues model: no full-page
+   gradient). Light keeps the existing grey wash + vertical gradient and
+   adds the blue layer in front of them; dark gains the same glow. */
+html:not(.dark) #hero-banner { background: radial-gradient(60% 55% at 50% 0%, var(--glow-blue) 0%, transparent 70%), radial-gradient(50% 45% at 50% 0%, color-mix(in oklch, var(--color-brand-400) 16%, transparent) 0%, transparent 70%), linear-gradient(180deg, var(--color-brand-100) 0%, var(--color-brand-50) 100%); }
+html.dark #hero-banner { background: radial-gradient(60% 55% at 50% 0%, var(--glow-blue) 0%, transparent 70%), linear-gradient(180deg, #111111 0%, #0A0A0A 100%); }
+
+/* Hero underline ("lawyer") in the sparing blue, light mode only. */
+html:not(.dark) .hero-underline { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M1 4.2 C 18 2 34 5.4 52 3.4 S 86 4.6 99 2.4' fill='none' stroke='%233645C7' stroke-width='2' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E"); }
+
+/* Model-sentence / nuance quotes in the comparative view: blue left rule. */
+blockquote.border-l-2.border-accent { border-left-color: var(--color-accent-blue-600); }
+html.dark blockquote.border-l-2.border-accent { border-left-color: var(--color-accent-blue-300); }
