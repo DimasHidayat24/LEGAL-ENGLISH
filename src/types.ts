@@ -251,6 +251,21 @@ export interface ComparativeConcept {
   commonLawNuance: string;
   whyContextMatters: string;
   exampleScenario: string;
+  sourceRef?: string;
+  relationship?: 'equivalent' | 'functional' | 'false-friend' | 'no-equivalent';
+  sayIt?: {
+    preferredExpression: string;
+    collocations: string[];
+    modelSentenceEn: string;
+    modelSentenceId: string;
+    doNotSay: string;
+    doNotSayWhy: string;
+  };
+  exercise?: {
+    task: string;
+    hint: string;
+    modelAnswer: string;
+  };
 }
 
 export type ExerciseCategory = 'drafting' | 'translation' | 'vocabulary' | 'context' | 'reading';

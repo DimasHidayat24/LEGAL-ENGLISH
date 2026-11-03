@@ -9,6 +9,13 @@ export const ComparativeLawSection: React.FC = () => {
 
   const activeConcept = comparativeLawList.find(c => c.id === selectedConceptId) || comparativeLawList[0];
 
+  const relationshipLabel: Record<string, string> = {
+    equivalent: 'Padanan Setara',
+    functional: 'Padanan Fungsional',
+    'false-friend': 'False Friend',
+    'no-equivalent': 'Tanpa Padanan',
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-8">
       
@@ -78,6 +85,16 @@ export const ComparativeLawSection: React.FC = () => {
             <span className="text-xs font-sans text-muted font-semibold">
               Comparison: {activeConcept.category}
             </span>
+            {activeConcept.sourceRef && (
+              <div className="flex flex-wrap items-center gap-2 text-xs font-sans text-muted">
+                {activeConcept.relationship && (
+                  <span className="px-2.5 py-0.5 rounded-full border border-line bg-surface-3 text-ink-2 font-semibold">
+                    {relationshipLabel[activeConcept.relationship]}
+                  </span>
+                )}
+                <span>Sumber: {activeConcept.sourceRef}</span>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
               <div className="p-4 rounded-2xl bg-surface border border-line">
@@ -133,6 +150,34 @@ export const ComparativeLawSection: React.FC = () => {
             </div>
           </div>
 
+          {/* Ucapkan: How to say it in English */}
+          {activeConcept.sayIt && (
+            <div className="p-5 rounded-2xl bg-surface border border-line space-y-3">
+              <h3 className="text-xs font-serif font-semibold text-ink">
+                2 · Ucapkan — How to say it in English
+              </h3>
+              <p className="text-sm font-sans text-ink leading-relaxed">
+                <strong>Ungkapan yang dianjurkan:</strong> {activeConcept.sayIt.preferredExpression}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {activeConcept.sayIt.collocations.map((col) => (
+                  <span key={col} className="px-2.5 py-0.5 rounded-full border border-line bg-surface-2 text-xs font-sans text-ink-2">
+                    {col}
+                  </span>
+                ))}
+              </div>
+              <blockquote className="text-sm font-serif text-ink leading-[1.7] italic bg-surface p-4 border-l-2 border-accent rounded-xl">
+                &ldquo;{activeConcept.sayIt.modelSentenceEn}&rdquo;
+              </blockquote>
+              <p className="text-sm font-sans text-muted leading-relaxed">
+                {activeConcept.sayIt.modelSentenceId}
+              </p>
+              <p className="text-sm font-sans text-muted leading-relaxed">
+                <strong className="text-ink">Jangan katakan:</strong> &ldquo;{activeConcept.sayIt.doNotSay}&rdquo; — {activeConcept.sayIt.doNotSayWhy}
+              </p>
+            </div>
+          )}
+
           {/* The Critical Takeaway: Why Context Matters & Trap to Avoid */}
           <div className="p-5 rounded-2xl bg-surface-3 border border-line space-y-2.5">
             <div className="flex items-center gap-2 text-ink">
@@ -158,6 +203,25 @@ export const ComparativeLawSection: React.FC = () => {
               &ldquo;{activeConcept.exampleScenario}&rdquo;
             </blockquote>
           </div>
+
+          {/* Pakai: Exercise */}
+          {activeConcept.exercise && (
+            <div className="p-5 rounded-2xl bg-surface border border-line space-y-2.5">
+              <h3 className="text-xs font-serif font-semibold text-ink">
+                3 · Pakai — Latihan
+              </h3>
+              <p className="text-sm font-sans text-ink leading-relaxed">
+                {activeConcept.exercise.task}
+              </p>
+              <p className="text-sm font-sans text-muted leading-relaxed">
+                Petunjuk: {activeConcept.exercise.hint}
+              </p>
+              <details className="text-sm font-sans text-muted leading-relaxed">
+                <summary className="cursor-pointer underline text-ink font-medium">Lihat kunci jawaban</summary>
+                <p className="pt-2 text-ink">{activeConcept.exercise.modelAnswer}</p>
+              </details>
+            </div>
+          )}
 
           {/* Bottom Navigation */}
           <div className="pt-4 border-t border-line flex items-center justify-between">
