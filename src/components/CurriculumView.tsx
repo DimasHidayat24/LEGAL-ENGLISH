@@ -56,7 +56,7 @@ export const CurriculumView: React.FC = () => {
             Lessons
           </span>
         </div>
-        <h1 className="text-3xl sm:text-[44px] font-medium text-ink tracking-[-0.035em] leading-[1.1]">
+        <h1 className="display-h2 reveal text-ink">
           Learn legal English, lesson by lesson
         </h1>
         <p className="text-sm sm:text-base text-muted font-sans mt-2 max-w-3xl leading-relaxed">

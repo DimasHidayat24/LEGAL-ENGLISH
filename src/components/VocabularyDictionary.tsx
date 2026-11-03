@@ -143,7 +143,7 @@ export const VocabularyDictionary: React.FC = () => {
           </span>
         </div>
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-          <h1 className="text-3xl sm:text-[44px] font-medium text-ink tracking-[-0.035em] leading-[1.1]">
+          <h1 className="display-h2 reveal text-ink">
             Legal English dictionary
           </h1>
           <button onClick={openFlashcards} className="btn-secondary px-4 py-2 text-sm self-start sm:self-auto">

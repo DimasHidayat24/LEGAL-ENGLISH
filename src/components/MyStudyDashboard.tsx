@@ -111,7 +111,7 @@ export const MyStudyDashboard: React.FC = () => {
             My Study
           </span>
         </div>
-        <h1 className="text-3xl sm:text-[44px] font-medium text-ink tracking-[-0.035em] leading-[1.1]">
+        <h1 className="display-h2 reveal text-ink">
           Your study hub
         </h1>
         <p className="text-sm sm:text-base text-muted font-sans mt-2 max-w-3xl leading-relaxed">

@@ -53,7 +53,7 @@ const SectionHeader: React.FC<{
   body?: string;
   action?: React.ReactNode;
 }> = ({ eyebrow, title, body, action }) => (
-  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 sm:mb-14">
+  <div className="reveal flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 sm:mb-14">
     <div className="max-w-2xl">
       {eyebrow && <p className="text-sm text-muted mb-3">{eyebrow}</p>}
       <h2 className="display-h2 text-ink">{title}</h2>
@@ -239,7 +239,7 @@ export const HeroSection: React.FC = () => {
       <section id="section-comparative-preview" className="section-pad border-t border-line">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-            <div className="lg:col-span-5">
+            <div className="reveal lg:col-span-5">
               <p className="text-sm text-muted mb-3">Civil law ⟷ common law</p>
               <h2 className="display-h2 display-h2-lg text-ink">
                 Same concept.
@@ -255,7 +255,7 @@ export const HeroSection: React.FC = () => {
               </button>
             </div>
             <div className="lg:col-span-7">
-              <div className="rounded-2xl border border-line overflow-hidden bg-surface">
+              <div className="glass-feature reveal rounded-2xl border border-line overflow-hidden bg-surface">
                 <div className="hidden sm:grid grid-cols-[1fr_32px_1fr] px-6 py-3 border-b border-line bg-surface-2 text-xs text-muted">
                   <span>Indonesian civil law</span>
                   <span />
