@@ -91,6 +91,7 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
   const [timeRemainingSeconds, setTimeRemainingSeconds] = useState<number>(0);
   const [totalDurationMinutes, setTotalDurationMinutes] = useState<number>(25);
   const [showSubmitModal, setShowSubmitModal] = useState<boolean>(false);
+  const [focusMode, setFocusMode] = useState<boolean>(false);
   const [examStartTime, setExamStartTime] = useState<number>(0);
 
   // Results state
@@ -167,6 +168,7 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
     setTimeRemainingSeconds(chosenDuration * 60);
     setExamStartTime(Date.now());
     setShowSubmitModal(false);
+    setFocusMode(false);
     setMode('IN_EXAM');
   };
 
@@ -583,6 +585,20 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
               <span>{isFlagged ? 'Flagged' : 'Flag Question'}</span>
             </button>
 
+            {/* Focus Mode Toggle */}
+            <button
+              onClick={() => setFocusMode(prev => !prev)}
+              aria-pressed={focusMode}
+              className={`px-3 py-1.5 rounded-full border text-xs font-sans flex items-center gap-1.5 cursor-pointer transition-colors ${
+                focusMode
+                  ? 'bg-accent border-accent text-on-accent font-semibold'
+                  : 'bg-surface/80 border-line text-muted hover:text-ink'
+              }`}
+              title="Hide the question navigator while answering"
+            >
+              <span>{focusMode ? 'Keluar Fokus' : 'Fokus'}</span>
+            </button>
+
             {/* End / Submit Exam */}
             <button
               onClick={() => setShowSubmitModal(true)}
@@ -594,6 +610,7 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
         </div>
 
         {/* Question Palette / Navigator Grid */}
+        {!focusMode && (
         <div className="p-3 rounded-2xl lexa-surface-subtle border border-line space-y-2">
           <div className="flex items-center justify-between text-[11px] font-sans text-muted px-1">
             <span>Exam Navigator (Click to Jump):</span>
@@ -631,6 +648,7 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
             })}
           </div>
         </div>
+        )}
 
         {/* Active Question Body Card */}
         <div className="p-6 sm:p-10 rounded-2xl glass-panel-deep space-y-6">

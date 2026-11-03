@@ -382,7 +382,7 @@ export const PracticeSection: React.FC = () => {
             </div>
 
             {currentExercise.scenario && (
-              <div className="p-4 rounded-2xl lexa-surface-subtle text-sm font-sans text-muted leading-relaxed">
+              <div className="text-sm font-sans text-muted leading-relaxed border-l-2 border-accent pl-4 py-1">
                 <strong className="text-ink font-semibold">Context / Scenario:</strong> {currentExercise.scenario}
               </div>
             )}
@@ -390,7 +390,7 @@ export const PracticeSection: React.FC = () => {
 
           {/* Reading Passage if applicable */}
           {currentExercise.passage && (
-            <div className="p-5 rounded-2xl bg-surface border border-line space-y-2.5">
+            <div className="space-y-2.5">
               <div className="flex items-center gap-2 text-ink text-xs font-sans font-bold uppercase tracking-wider">
                 <BookOpen className="w-4 h-4" />
                 <span>Legal Instrument / Commentary Excerpt</span>

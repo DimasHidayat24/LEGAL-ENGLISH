@@ -256,12 +256,12 @@ export const TermDetailModal: React.FC = () => {
 
         {/* Scrollable Content Container */}
         <div 
-          className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 sm:px-7 py-5 space-y-5 lexa-custom-scrollbar"
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 sm:px-7 py-6 lexa-custom-scrollbar"
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
           
           {/* Indonesian Meaning & Conceptual Foundation */}
-          <div className="p-4 rounded-2xl liquid-modal-tile space-y-2">
+          <div className="space-y-2">
             <div className="text-[11px] font-sans text-muted flex items-center gap-1.5 font-bold">
               <Scale className="w-3.5 h-3.5 text-ink" />
               Padanan Bahasa Indonesia & Konstruksi Hukum
@@ -282,7 +282,7 @@ export const TermDetailModal: React.FC = () => {
 
           {/* Conceptual Distinction Note if applicable */}
           {(term.isDistinctConcept || term.conceptualNote) && (
-            <div className="p-4 rounded-2xl liquid-modal-tile space-y-2">
+            <div className="space-y-2 border-t border-line pt-7">
               <div className="flex items-center gap-2 text-ink text-xs font-sans font-bold uppercase tracking-wider">
                 <AlertTriangle className="w-4 h-4 text-ink shrink-0" />
                 Catatan Konseptual Komparatif (Common Law vs Civil Law)
@@ -295,8 +295,8 @@ export const TermDetailModal: React.FC = () => {
           )}
 
           {/* Plain English vs Legal Definition */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <div className="p-4 rounded-2xl liquid-modal-tile space-y-1.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 border-t border-line pt-7">
+            <div className="space-y-1.5 border-l-2 border-line pl-4">
               <span className="text-[11px] font-sans text-muted block font-bold">
                 Plain English Explanation
               </span>
@@ -305,7 +305,7 @@ export const TermDetailModal: React.FC = () => {
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl liquid-modal-tile space-y-1.5">
+            <div className="space-y-1.5 border-l-2 border-line pl-4">
               <span className="text-[11px] font-sans text-muted block font-bold">
                 Black&apos;s Law / Formal Legal Definition
               </span>
@@ -316,7 +316,7 @@ export const TermDetailModal: React.FC = () => {
           </div>
 
           {/* Why Lawyers Use This (Legal Function) */}
-          <div className="p-4 rounded-2xl liquid-modal-tile space-y-1.5">
+          <div className="space-y-1.5 border-t border-line pt-7">
             <span className="text-[11px] font-sans uppercase tracking-wider text-ink block font-bold">
               Why Lawyers Use This in Practice (Legal Function)
             </span>
@@ -327,7 +327,7 @@ export const TermDetailModal: React.FC = () => {
 
           {/* Authentic Contract Clause Excerpt */}
           {term.authenticClauseExcerpt && (
-            <div className="liquid-modal-tile p-4 space-y-2">
+            <div className="space-y-2 border-t border-line pt-7">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[11px] font-sans uppercase tracking-wider text-ink flex items-center gap-1.5 font-semibold">
                   <FileText className="w-3.5 h-3.5 text-ink" />
@@ -339,7 +339,7 @@ export const TermDetailModal: React.FC = () => {
                   </span>
                 )}
               </div>
-              <blockquote className="font-legal italic text-sm text-ink pl-3 my-2 leading-[1.7] bg-surface-2 p-3 rounded-xl border border-line border-l-2 border-l-accent">
+              <blockquote className="font-legal italic text-sm text-ink pl-3 my-2 leading-[1.7] border-l-2 border-l-accent">
                 &ldquo;{term.authenticClauseExcerpt}&rdquo;
               </blockquote>
             </div>
@@ -347,7 +347,7 @@ export const TermDetailModal: React.FC = () => {
 
           {/* Context Examples Tabs (Contracts / Court Decisions / Legal Opinions) */}
           {term.contextExamples && (
-            <div className="liquid-modal-tile p-4 space-y-3">
+            <div className="space-y-3 border-t border-line pt-7">
               <span className="text-[11px] font-sans text-muted block font-semibold">
                 Contextual Usage in Real Legal Materials
               </span>
@@ -388,7 +388,7 @@ export const TermDetailModal: React.FC = () => {
                 </button>
               </div>
 
-                <div className="text-sm font-legal text-ink bg-surface-2 p-3 rounded-xl leading-[1.7] border border-line">
+                <div className="text-sm font-legal text-ink leading-[1.7] border-l-2 border-l-accent pl-3">
                   {activeContextTab === 'contracts' && (
                     <p>{term.contextExamples.contracts || 'Standard operational covenants and warranty provisions.'}</p>
                   )}
@@ -403,11 +403,11 @@ export const TermDetailModal: React.FC = () => {
           )}
 
           {/* Sample Sentence & Indonesian Translation */}
-          <div className="space-y-2">
+          <div className="space-y-2 border-t border-line pt-7">
             <span className="text-[11px] font-sans text-muted block font-semibold">
               Standard Bilingual Sentence Example
             </span>
-            <div className="p-3.5 liquid-modal-tile space-y-1.5 rounded-2xl">
+            <div className="space-y-1.5 border-l-2 border-l-accent pl-4">
               <p className="text-sm font-semibold text-ink font-sans">
                 {term.exampleSentenceEn}
               </p>
@@ -419,7 +419,7 @@ export const TermDetailModal: React.FC = () => {
 
           {/* Common Collocations */}
           {term.commonCollocations && term.commonCollocations.length > 0 && (
-            <div>
+            <div className="border-t border-line pt-7">
               <span className="text-[11px] font-sans text-muted block mb-2 font-semibold">
                 Common Legal Collocations
               </span>
@@ -438,7 +438,7 @@ export const TermDetailModal: React.FC = () => {
 
           {/* Related Documents with clickable cross-reference links */}
           {term.connectedDocIds && term.connectedDocIds.length > 0 && (
-            <div className="p-4 rounded-2xl liquid-modal-tile space-y-2">
+            <div className="space-y-2 border-t border-line pt-7">
               <div className="text-[11px] font-sans uppercase tracking-wider text-ink flex items-center gap-1.5 font-semibold">
                 <FileText className="w-3.5 h-3.5 text-ink" />
                 Where to Find This Term in LEXA Document Library
@@ -459,7 +459,7 @@ export const TermDetailModal: React.FC = () => {
           )}
 
           {/* Personal Note Section for Spaced Repetition */}
-          <div className="p-4 rounded-2xl liquid-modal-tile space-y-3">
+          <div className="space-y-3 border-t border-line pt-7">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-sans text-muted font-semibold">
                 Your Personal Study Notes ({savedRecord?.notes ? 'Saved' : 'Empty'})

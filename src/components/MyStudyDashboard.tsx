@@ -313,7 +313,7 @@ export const MyStudyDashboard: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="p-3.5 rounded-2xl bg-surface border border-line my-2.5 space-y-1">
+                      <div className="space-y-1 my-2.5 border-t border-line pt-3">
                         <p className="font-sans font-bold text-sm text-ink">
                           {term.indonesianMeaning}
                         </p>
@@ -323,7 +323,7 @@ export const MyStudyDashboard: React.FC = () => {
                       </div>
 
                       {/* Personal Note */}
-                      <div className="text-xs font-sans text-muted bg-surface p-3 border border-line rounded-2xl">
+                      <div className="text-xs font-sans text-muted border-l-2 border-line pl-3">
                         <span className="font-sans text-[11px] text-faint block font-semibold">
                           My Note:
                         </span>
@@ -431,7 +431,7 @@ export const MyStudyDashboard: React.FC = () => {
                       {flashcardTermObj.indonesianLegalConcept}
                     </p>
 
-                    <div className="p-3.5 rounded-2xl bg-surface border border-line text-xs text-muted font-sans">
+                    <div className="text-xs text-muted font-sans border-l-2 border-line pl-3">
                       <strong className="text-ink font-semibold">Legal Function:</strong> {flashcardTermObj.legalFunction}
                     </div>
 
