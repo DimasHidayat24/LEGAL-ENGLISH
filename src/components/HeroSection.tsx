@@ -136,7 +136,7 @@ export const HeroSection: React.FC = () => {
             <h1 className="display-h1 hero-h1 hero-enter text-ink">
               Read the law
               <br />
-              like a <em className="h1-serif hero-underline">lawyer</em>.
+              like a <em className="h1-serif">lawyer</em>.
             </h1>
 
             <p className="hero-lede hero-enter hero-d2 max-w-[36rem] mx-auto mt-5">

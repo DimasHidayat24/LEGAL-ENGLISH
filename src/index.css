@@ -1344,8 +1344,6 @@ html:not(.dark) .lx-footer .ft-icon[aria-pressed="true"] { color: var(--color-br
 .hero-h1 { letter-spacing: -0.045em; line-height: 0.98; font-weight: 500; }
 .hero-h1 .h1-serif { letter-spacing: -0.015em; padding-right: .04em; }
 html:not(.dark) .hero-h1 .h1-serif { color: var(--text); }
-.hero-underline { background-image: var(--pencil); background-repeat: no-repeat; background-size: 100% .12em; background-position: 0 92%; padding-bottom: .02em; }
-html.dark .hero-underline { background-image: linear-gradient(currentColor, currentColor); background-size: 100% 2px; }
 .hero-lede { font-size: 18px; line-height: 1.65; color: var(--text-muted); text-wrap: pretty; }
 
 /* ==========================================================================
@@ -1567,7 +1565,6 @@ html:not(.dark) #hero-banner { background: radial-gradient(60% 55% at 50% 0%, va
 html.dark #hero-banner { background: radial-gradient(60% 55% at 50% 0%, var(--glow-blue) 0%, transparent 70%), linear-gradient(180deg, #0A0A0A 0%, #0A0A0A 100%); }
 
 /* Hero underline ("lawyer") in the sparing blue, light mode only. */
-html:not(.dark) .hero-underline { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M1 4.2 C 18 2 34 5.4 52 3.4 S 86 4.6 99 2.4' fill='none' stroke='%233645C7' stroke-width='2' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E"); }
 
 /* Model-sentence / nuance quotes in the comparative view: blue left rule. */
 blockquote.border-l-2.border-accent { border-left-color: var(--color-accent-blue-600); }
