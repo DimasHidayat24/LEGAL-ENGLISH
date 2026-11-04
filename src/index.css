@@ -1514,7 +1514,7 @@ html.light,
   --color-accent-blue-500: #4052EE;
   --color-accent-blue-600: #3645C7;
   --color-accent-blue-700: #2C359E;
-  --glass-hero: rgba(255, 255, 255, 0.78);
+  --glass-hero: rgba(255, 255, 255, 0.66);
   --glass-hero-border: rgba(255, 255, 255, 0.55);
   --glass-hero-highlight: rgba(255, 255, 255, 0.6);
   --glow-blue: color-mix(in oklch, var(--color-accent-blue-500) 18%, transparent);
@@ -1528,13 +1528,13 @@ html.dark,
   --color-accent-blue-500: #4052EE;
   --color-accent-blue-600: #8AB4F8;
   --color-accent-blue-700: color-mix(in oklch, #FFFFFF 35%, var(--color-accent-blue-500));
-  --glass-hero: rgba(17, 17, 17, 0.72);
+  --glass-hero: rgba(17, 17, 17, 0.60);
   --glass-hero-border: rgba(255, 255, 255, 0.12);
   --glass-hero-highlight: rgba(255, 255, 255, 0.08);
   --glow-blue: color-mix(in oklch, var(--color-accent-blue-500) 26%, transparent);
 }
 
-/* Liquid glass at the approved "pas" transparency: 0.78 light / 0.72 dark,
+/* Liquid glass, thinned per approval: 0.66 light / 0.60 dark (was 0.78 / 0.72),
    blur 16px. Reserved for surfaces over a glow or dimmed backdrop. */
 .glass-hero {
   background: var(--glass-hero);
