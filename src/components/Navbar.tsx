@@ -89,8 +89,8 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <header className={`lexa-nav sticky top-0 z-50 ${isScrolled ? 'is-scrolled' : ''}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 grid grid-cols-[1fr_auto] lg:grid-cols-[1fr_auto_1fr] items-center gap-4">
+      <header className="sticky top-0 z-50 px-3 pt-3 sm:px-4">
+        <div className={`lexa-nav ${isScrolled ? 'is-scrolled' : ''} mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-14 grid grid-cols-[1fr_auto] lg:grid-cols-[1fr_auto_1fr] items-center gap-4`}>
           {/* Logo */}
           <a
             href="#/"

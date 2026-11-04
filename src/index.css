@@ -1682,3 +1682,17 @@ html.dark .hero-eyebrow-mark { border-color: var(--color-accent-blue-300); }
     }
   }
 }
+
+/* ============ Navbar pill: floating glass pill, sticky with 12px gaps ============
+   Geometry only: rounded-full, 1px border, soft shadow (theme-aware via --text).
+   The glass background/blur come from the .lexa-nav retune above (glass-hero
+   0.66 / 0.60). is-scrolled only deepens the shadow. */
+.lexa-nav {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: 0 10px 30px color-mix(in oklch, var(--text) 10%, transparent);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+.lexa-nav.is-scrolled {
+  box-shadow: 0 14px 34px color-mix(in oklch, var(--text) 14%, transparent);
+}
