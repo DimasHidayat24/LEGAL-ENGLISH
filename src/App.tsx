@@ -7,6 +7,7 @@ import React, { Suspense, lazy, useEffect } from 'react';
 import { StudyProvider, useStudy } from './context/StudyContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { ToastStack } from './components/ToastStack';
 import { HeroSection } from './components/HeroSection';
 
 // Heavy sections are code-split so the first paint only ships the shell + home page.
@@ -74,6 +75,8 @@ const AppContent: React.FC = () => {
       </main>
 
       <Footer />
+
+      <ToastStack />
 
       <Suspense fallback={null}>
         {activeLookupTermId && <TermDetailModal />}

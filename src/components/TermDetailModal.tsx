@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useStudy } from '../context/StudyContext';
 import { getTermById, legalVocabularyList } from '../data/vocabulary/index';
 import { AudioPronounceButton } from './AudioPronounceButton';
+import { pushToast } from './ToastStack';
 import { SpeechAccent } from '../utils/speech';
 import { 
   Bookmark, 
@@ -108,8 +109,20 @@ export const TermDetailModal: React.FC = () => {
   const handleSaveToggle = () => {
     if (isSaved) {
       removeSavedTerm(term.id);
+      pushToast({
+        kind: 'info',
+        title: 'Istilah dihapus',
+        body: `${term.term} dihapus dari My Study.`,
+      });
     } else {
       saveTerm(term.id, personalNoteInput || undefined);
+      pushToast({
+        kind: 'success',
+        title: 'Istilah tersimpan',
+        body: `${term.term} tersimpan di My Study.`,
+        actionLabel: 'Lihat',
+        onAction: () => setSelectedTab('mystudy'),
+      });
     }
   };
 

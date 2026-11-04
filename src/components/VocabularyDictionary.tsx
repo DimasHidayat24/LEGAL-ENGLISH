@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useStudy } from '../context/StudyContext';
 import { legalVocabularyList, searchLegalTerms } from '../data/vocabulary/index';
 import { AudioPronounceButton } from './AudioPronounceButton';
+import { pushToast } from './ToastStack';
 import { SpeechAccent } from '../utils/speech';
 import { 
   Search, 
@@ -413,8 +414,20 @@ export const VocabularyDictionary: React.FC = () => {
                         e.stopPropagation();
                         if (isSaved) {
                           removeSavedTerm(term.id);
+                          pushToast({
+                            kind: 'info',
+                            title: 'Istilah dihapus',
+                            body: `${term.term} dihapus dari My Study.`,
+                          });
                         } else {
                           saveTerm(term.id);
+                          pushToast({
+                            kind: 'success',
+                            title: 'Istilah tersimpan',
+                            body: `${term.term} tersimpan di My Study.`,
+                            actionLabel: 'Lihat',
+                            onAction: () => setSelectedTab('mystudy'),
+                          });
                         }
                       }}
                       className={`min-w-[36px] min-h-[36px] sm:min-w-[40px] sm:min-h-[40px] p-2 border transition-all cursor-pointer rounded-full flex items-center justify-center ${

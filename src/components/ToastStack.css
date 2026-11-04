@@ -1,0 +1,169 @@
+/* Toast stack — adapted from the Bencho "Toast stack" block
+   (https://bencho.dev/blocks/toast-stack), MIT licensed, by Lorenzo Cabra.
+   Bencho's own tokens (--fill-on, --fill-slab, --font-ui, --signal) are
+   mapped here to Lexa tokens; the stroke switch from the Bencho page is
+   dropped (Lexa has no such page-level switch). Motion is CSS transitions
+   only, so Lexa's global prefers-reduced-motion guard applies. */
+
+.tst-wrap {
+  position: fixed;
+  right: 16px;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 60;
+  width: min(360px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.tst-wrap .tst {
+  pointer-events: auto;
+}
+
+.tst {
+  position: relative;
+  font-family: var(--font-sans);
+  color: var(--text);
+  --tst-mute: color-mix(in srgb, var(--text) 52%, var(--surface));
+  --tst-wash: color-mix(in srgb, var(--text) 6%, var(--surface));
+  transition: height 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tst-toast {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px 0 16px;
+  border-radius: var(--tst-r);
+  background: var(--surface);
+  transform-origin: 50% 0;
+  box-shadow: var(--shadow-float);
+  transition:
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 220ms ease,
+    background-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+/* Tucked: the same near-surface tone for both slivers, and a faint edge
+   so each sliver has a line to read by. */
+.tst:not([data-open]) .tst-toast:not([data-front]) {
+  background: color-mix(in srgb, var(--text) 6%, var(--surface));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 6%, transparent);
+}
+
+/* Only the front one is read while stacked; the rest are slivers. */
+.tst-toast > * {
+  transition: opacity 220ms ease;
+}
+
+.tst:not([data-open]) .tst-toast:not([data-front]) > * {
+  opacity: 0;
+}
+
+.tst-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+
+.tst-toast[data-kind='success'] .tst-icon {
+  color: var(--success);
+}
+
+.tst-toast[data-kind='error'] .tst-icon {
+  color: var(--danger);
+}
+
+.tst-toast[data-kind='warning'] .tst-icon {
+  color: var(--warning);
+}
+
+.tst-toast[data-kind='info'] .tst-icon {
+  color: var(--color-accent-blue-600);
+}
+
+.tst-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tst-text b {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+
+.tst-text span {
+  font-size: 13px;
+  line-height: 17px;
+  color: var(--tst-mute);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tst-act {
+  flex: none;
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--tst-wash);
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: scale 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tst-act:active {
+  scale: 0.96;
+}
+
+.tst-x {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--tst-mute);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.tst-x:hover {
+  background: var(--tst-wash);
+  color: var(--text);
+}
+
+.tst-act:focus-visible,
+.tst-x:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent-blue-600);
+}
+
+html.dark .tst-toast[data-kind='info'] .tst-icon {
+  color: #8ab4f8;
+}
+
+html.dark .tst-act:focus-visible,
+html.dark .tst-x:focus-visible {
+  box-shadow: 0 0 0 2px #8ab4f8;
+}
