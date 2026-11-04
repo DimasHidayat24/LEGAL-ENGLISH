@@ -199,7 +199,7 @@ export const CurriculumView: React.FC = () => {
                         <span className="w-6 h-6 bg-accent text-on-accent border border-accent text-xs font-sans font-bold flex items-center justify-center rounded-full">
                           {cIdx + 1}
                         </span>
-                        <h4 className="font-sans font-extrabold text-lg text-ink">
+                        <h4 className="font-sans font-bold text-lg text-ink">
                           {concept.term}
                         </h4>
                       </div>

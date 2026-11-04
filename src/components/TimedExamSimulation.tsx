@@ -896,7 +896,7 @@ export const TimedExamSimulation: React.FC<{ onBackToPractice?: () => void }> = 
                 Overall Assessment Score
               </span>
               <div className="flex items-baseline gap-2">
-                <span className={`text-4xl sm:text-5xl font-sans font-extrabold tracking-tight ${
+                <span className={`text-4xl sm:text-5xl font-sans font-bold tracking-tight ${
                   currentResult.scorePercentage >= 75
                     ? 'text-ink'
                     : currentResult.scorePercentage >= 60

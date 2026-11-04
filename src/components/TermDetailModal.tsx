@@ -266,7 +266,7 @@ export const TermDetailModal: React.FC = () => {
               <Scale className="w-3.5 h-3.5 text-ink" />
               Padanan Bahasa Indonesia & Konstruksi Hukum
             </div>
-            <p className="text-base sm:text-lg font-sans font-extrabold text-ink">
+            <p className="text-base sm:text-lg font-sans font-bold text-ink">
               {term.indonesianMeaning}
             </p>
             <p className="text-sm text-muted leading-relaxed font-sans font-normal">

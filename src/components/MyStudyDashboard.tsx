@@ -107,7 +107,7 @@ export const MyStudyDashboard: React.FC = () => {
       <div className="border-b border-line pb-6">
         <div className="flex items-center gap-2 mb-1.5">
           <Award className="w-4 h-4 text-ink-2" />
-          <span className="text-[11px] font-sans text-muted font-semibold">
+          <span className="text-[12px] font-sans text-muted font-medium uppercase tracking-[0.14em]">
             My Study
           </span>
         </div>
@@ -121,32 +121,32 @@ export const MyStudyDashboard: React.FC = () => {
         {/* Top Metric Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6">
           <div className="p-5 rounded-2xl lexa-card space-y-1">
-            <span className="text-[11px] font-sans text-faint block font-semibold">Saved Terms</span>
-            <div className="text-2xl sm:text-3xl font-sans font-extrabold text-ink tracking-tight">
+            <span className="text-[11px] font-sans text-faint block font-semibold uppercase tracking-[0.12em]">Saved Terms</span>
+            <div className="text-2xl sm:text-3xl font-sans font-bold text-ink tracking-tight">
               {savedTerms.length}
             </div>
             <span className="text-[11px] font-sans text-muted font-medium">In My Vocabulary</span>
           </div>
 
           <div className="p-5 rounded-2xl lexa-card space-y-1">
-            <span className="text-[11px] font-sans text-faint block font-semibold">Lessons Mastered</span>
-            <div className="text-2xl sm:text-3xl font-sans font-extrabold text-ink tracking-tight">
+            <span className="text-[11px] font-sans text-faint block font-semibold uppercase tracking-[0.12em]">Lessons Mastered</span>
+            <div className="text-2xl sm:text-3xl font-sans font-bold text-ink tracking-tight">
               {completedLessons.length} / {curriculumLessons.length}
             </div>
             <span className="text-[11px] font-sans text-muted font-medium">Lessons</span>
           </div>
 
           <div className="p-5 rounded-2xl lexa-card space-y-1">
-            <span className="text-[11px] font-sans text-faint block font-semibold">Documents Read</span>
-            <div className="text-2xl sm:text-3xl font-sans font-extrabold text-ink tracking-tight">
+            <span className="text-[11px] font-sans text-faint block font-semibold uppercase tracking-[0.12em]">Documents Read</span>
+            <div className="text-2xl sm:text-3xl font-sans font-bold text-ink tracking-tight">
               {completedDocuments.length} / {sampleLegalDocuments.length}
             </div>
             <span className="text-[11px] font-sans text-muted font-medium">Authentic Instruments</span>
           </div>
 
           <div className="p-5 rounded-2xl lexa-card space-y-1">
-            <span className="text-[11px] font-sans text-faint block font-semibold">Exercises Solved</span>
-            <div className="text-2xl sm:text-3xl font-sans font-extrabold text-ink tracking-tight">
+            <span className="text-[11px] font-sans text-faint block font-semibold uppercase tracking-[0.12em]">Exercises Solved</span>
+            <div className="text-2xl sm:text-3xl font-sans font-bold text-ink tracking-tight">
               {Object.keys(exerciseScores).length} / {allPracticeExercises.length}
             </div>
             <span className="text-[11px] font-sans text-muted font-medium">Practice Benchmark</span>
@@ -595,20 +595,20 @@ export const MyStudyDashboard: React.FC = () => {
               {/* Summary Stats Row */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="p-5 rounded-2xl lexa-card space-y-1">
-                  <span className="text-[11px] font-sans text-faint block font-semibold">
+                  <span className="text-[11px] font-sans text-faint block font-semibold uppercase tracking-[0.12em]">
                     Total Exams Taken
                   </span>
-                  <div className="text-2xl sm:text-3xl font-sans font-extrabold text-ink">
+                  <div className="text-2xl sm:text-3xl font-sans font-bold text-ink">
                     {examHistory.length}
                   </div>
                   <span className="text-[11px] font-sans text-muted">Diagnostic Sessions</span>
                 </div>
 
                 <div className="p-5 rounded-2xl lexa-card space-y-1">
-                  <span className="text-[11px] font-sans text-faint block font-semibold">
+                  <span className="text-[11px] font-sans text-faint block font-semibold uppercase tracking-[0.12em]">
                     Average Score
                   </span>
-                  <div className="text-2xl sm:text-3xl font-sans font-extrabold text-ink-2">
+                  <div className="text-2xl sm:text-3xl font-sans font-bold text-ink-2">
                     {Math.round(examHistory.reduce((acc, h) => acc + h.scorePercentage, 0) / examHistory.length)}%
                   </div>
                   <span className="text-[11px] font-sans text-muted">Cumulative Benchmark</span>
@@ -616,7 +616,7 @@ export const MyStudyDashboard: React.FC = () => {
 
                 <div className="p-5 rounded-2xl lexa-card space-y-1 flex flex-col justify-between">
                   <div>
-                    <span className="text-[11px] font-sans text-faint block font-semibold">
+                    <span className="text-[11px] font-sans text-faint block font-semibold uppercase tracking-[0.12em]">
                       Latest Proficiency Tier
                     </span>
                     <div className="text-sm font-sans font-bold text-ink mt-1 truncate">

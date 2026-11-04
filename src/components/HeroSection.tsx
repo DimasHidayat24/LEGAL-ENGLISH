@@ -55,7 +55,7 @@ const SectionHeader: React.FC<{
 }> = ({ eyebrow, title, body, action }) => (
   <div className="reveal flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 sm:mb-14">
     <div className="max-w-2xl">
-      {eyebrow && <p className="text-sm text-muted mb-3">{eyebrow}</p>}
+      {eyebrow && <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-muted mb-3">{eyebrow}</p>}
       <h2 className="display-h2 text-ink">{title}</h2>
       {body && <p className="text-base sm:text-lg text-muted mt-4 leading-relaxed">{body}</p>}
     </div>
@@ -240,7 +240,7 @@ export const HeroSection: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             <div className="reveal lg:col-span-5">
-              <p className="text-sm text-muted mb-3">Civil law ⟷ common law</p>
+              <p className="text-[12px] font-medium uppercase tracking-[0.14em] text-muted mb-3">Civil law ⟷ common law</p>
               <h2 className="display-h2 display-h2-lg text-ink">
                 Same concept.
                 <br />
