@@ -455,65 +455,17 @@ export const VocabularyDictionary: React.FC = () => {
                   <p className="font-sans font-bold text-sm sm:text-base text-ink leading-snug">
                     {term.indonesianMeaning}
                   </p>
-                  <p className="text-xs sm:text-[13px] text-muted leading-relaxed font-sans">
+                  <p className="text-xs sm:text-[13px] text-muted leading-relaxed font-sans line-clamp-3">
                     {term.indonesianLegalConcept}
                   </p>
                 </div>
 
-                {/* Conceptual Distinction Banner if applicable */}
-                {term.isDistinctConcept && (
-                  <div className="mb-3.5 p-3 rounded-xl bg-surface border border-line flex items-start gap-2.5 text-xs">
-                    <AlertTriangle className="w-3.5 h-3.5 text-ink-2 shrink-0 mt-0.5" />
-                    <div className="text-xs text-muted leading-relaxed font-sans">
-                      <span className="font-bold text-ink  ">Distinct Concept:</span> No exact civil law equivalent.
-                    </div>
-                  </div>
-                )}
-
-                {/* Plain English & Black's Law Summary */}
-                <div className="text-xs sm:text-[13px] text-muted font-sans leading-relaxed mb-3.5">
-                  <strong className="text-ink font-semibold">Plain English:</strong> {term.plainEnglish || term.legalDefinition}
-                </div>
-
-                {/* Context Clause / Example Preview */}
-                {(term.authenticClauseExcerpt || term.exampleSentenceEn) && (
-                  <div className="text-xs sm:text-[13px] font-serif italic text-ink-2 mb-3.5 pl-3.5 border-l-2 border-line-strong bg-surface py-2.5 pr-3 rounded-r-xl leading-relaxed break-words">
-                    &ldquo;{term.authenticClauseExcerpt || term.exampleSentenceEn}&rdquo;
-                  </div>
-                )}
-
-                {/* Common Collocations preview */}
-                {term.commonCollocations && term.commonCollocations.length > 0 && (
-                  <div className="mb-3.5">
-                    <span className="text-[11px] font-sans text-faint font-semibold block mb-1.5">Common Collocations:</span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {term.commonCollocations.map((col, idx) => (
-                        <span key={idx} className="text-[11px] font-sans px-2.5 py-1 bg-surface border border-line text-muted rounded-full font-normal">
-                          {col}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
 
-              {/* Footer */}
-              <div className="pt-3.5 border-t border-line space-y-2 mt-auto">
-                {/* Connected Document link if present */}
-                {term.connectedDocIds && term.connectedDocIds.length > 0 && (
-                  <div className="flex items-center gap-1.5 text-xs font-sans text-faint  ">
-                    <FileText className="w-3.5 h-3.5 text-ink-2 shrink-0" />
-                    <span className="text-muted break-words">
-                      In: {term.connectedDocIds[0].title}
-                    </span>
-                  </div>
-                )}
-
-                <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-sans text-muted  ">
-                  <span className="text-xs text-muted italic leading-snug">
-                    {term.civilLawEquivalent || 'KUHPerdata mapping'}
-                  </span>
-                  <span className="font-bold flex items-center gap-1 group-hover:text-ink text-ink shrink-0 ml-auto">
+              {/* Footer: single affordance line; detail lives in the modal */}
+              <div className="pt-3.5 border-t border-line mt-auto">
+                <div className="flex items-center justify-end gap-2 text-xs font-sans text-muted">
+                  <span className="font-bold flex items-center gap-1 group-hover:text-ink text-ink shrink-0">
                     Inspect Entry <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </div>
