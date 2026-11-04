@@ -49,6 +49,10 @@ const PEEK = 14;
 const GAP = 10;
 const CORNER = 20;
 const AUTO_DISMISS_MS = 6000;
+/* Fixed open height from the Bencho block: the fanned-out positions are
+   laid out on a 3-slot grid, so the open container must stay 3 slots
+   tall or the oldest toast lands below the viewport. */
+const OPEN_HEIGHT = SHOWN * HEIGHT + 20;
 const EXIT_MS = 220;
 
 /* Minimal external store: any component can push a toast without
@@ -169,7 +173,7 @@ export function ToastStack() {
         data-open={open || undefined}
         style={
           {
-            height: stackHeight,
+            height: open ? OPEN_HEIGHT : stackHeight,
             '--tst-r': `${CORNER}px`,
           } as CSSProperties
         }
