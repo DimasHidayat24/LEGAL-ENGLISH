@@ -130,7 +130,7 @@ export const HeroSection: React.FC = () => {
   return (
     <div>
       {/* ============================== Hero ============================== */}
-      <section id="hero-banner" className="pt-14 sm:pt-20 lg:pt-24 pb-14 lg:pb-20">
+      <section id="hero-banner" className="pt-10 sm:pt-14 lg:pt-16 pb-14 lg:pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-5xl mx-auto">
             <h1 className="display-h1 hero-h1 hero-enter text-ink">
@@ -139,12 +139,12 @@ export const HeroSection: React.FC = () => {
               like a <em className="h1-serif hero-underline">lawyer</em>.
             </h1>
 
-            <p className="hero-lede hero-enter hero-d2 max-w-[36rem] mx-auto mt-7">
+            <p className="hero-lede hero-enter hero-d2 max-w-[36rem] mx-auto mt-5">
               <span className="text-ink">In English.</span> Contracts, doctrine, and drafting — explained through the
               Indonesian law you already study.
             </p>
 
-            <div className="flex flex-wrap justify-center items-center gap-3 mt-8 hero-enter hero-d3">
+            <div className="flex flex-wrap justify-center items-center gap-3 mt-6 hero-enter hero-d3">
               <button onClick={() => setSelectedTab('learn')} className="btn-primary h-11 px-5 text-[15px]">
                 Start learning
               </button>
@@ -153,7 +153,7 @@ export const HeroSection: React.FC = () => {
               </button>
             </div>
 
-            <p className="mt-6 text-sm text-faint hero-enter hero-d4">
+            <p className="mt-5 text-sm text-faint hero-enter hero-d4">
               Free for students ·{' '}
               <a
                 href="#/vocabulary"
@@ -168,7 +168,7 @@ export const HeroSection: React.FC = () => {
             </p>
           </div>
 
-          <div className="hero-doc-exit mt-12 sm:mt-16 lg:mt-20">
+          <div className="hero-doc-exit mt-10 sm:mt-12 lg:mt-14">
             <AnnotatedPage terms={previewTerms} onOpenTerm={setActiveLookupTermId} onOpenReader={() => openDoc(firstDoc.id)} />
           </div>
         </div>
