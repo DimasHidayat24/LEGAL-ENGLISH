@@ -209,7 +209,10 @@ export function ToastStack() {
               data-kind={toast.kind}
               data-front={front || undefined}
               style={{
-                zIndex: SHOWN - k,
+                /* Closed, the front toast paints on top: Lexa's surfaces are
+                   opaque, so the original order (tucked toasts on top)
+                   would hide the front toast's text behind their wash. */
+                zIndex: open ? SHOWN - k : SHOWN - i,
                 height: HEIGHT,
                 transform: `translateY(${y + (justAdded ? 16 : 0)}px) scale(${scale})`,
                 opacity: gone || justAdded ? 0 : 1,
