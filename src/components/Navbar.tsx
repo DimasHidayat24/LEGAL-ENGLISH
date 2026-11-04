@@ -29,20 +29,20 @@ const navItems = [
 ];
 
 export const LexaMark: React.FC<{ size?: number }> = ({ size = 28 }) => (
-  <span
+  <svg
     aria-hidden="true"
-    className="inline-flex items-center justify-center text-white font-legal italic font-normal leading-none"
-    style={{
-      width: size,
-      height: size,
-      fontSize: size * 0.72,
-      paddingTop: size * 0.06,
-      backgroundColor: '#201B5F',
-      borderRadius: size * 0.3,
-    }}
+    width={size}
+    height={size}
+    viewBox="0 0 64 64"
+    className="inline-flex shrink-0"
   >
-    §
-  </span>
+    <rect x="2" y="2" width="60" height="60" rx="18" fill="#00A5E5" />
+    <path d="M12 26 Q32 38 52 26" fill="none" stroke="#FFFFFF" strokeWidth="4.5" strokeLinecap="round" />
+    <line x1="23" y1="30" x2="23" y2="44" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
+    <line x1="41" y1="30" x2="41" y2="44" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
+    <circle cx="23" cy="48" r="3.5" fill="#EEE8A9" />
+    <circle cx="41" cy="48" r="3.5" fill="#EEE8A9" />
+  </svg>
 );
 
 const ThemeToggle: React.FC<{ compact?: boolean }> = ({ compact }) => {
