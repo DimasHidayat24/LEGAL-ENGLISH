@@ -1644,3 +1644,41 @@ html.dark .hero-eyebrow-mark { border-color: var(--color-accent-blue-300); }
   from { opacity: 0; filter: blur(6px); transform: translateY(8px); }
   to { opacity: 1; filter: blur(0); transform: none; }
 }
+
+/* ============ Hero feel ala Blues: staggered entrance + scroll-away exit ============
+   Entrance: blur+fade in place, staggered (H1 0ms, lede 120ms, buttons 240ms,
+   footnote 320ms, document preview 400ms), 700ms, once on mount.
+   Exit: the document preview decelerates, blurs and fades as the hero leaves
+   (view timeline, exit range). Hero text leaves 1:1 sharp; glow 1:1; nav sticky.
+   Progressive enhancement: no animation under prefers-reduced-motion, and no
+   exit animation where view timelines are unsupported. */
+@keyframes lexa-hero-in {
+  from { opacity: 0; filter: blur(8px); }
+  to { opacity: 1; filter: blur(0); }
+}
+@keyframes lexa-hero-doc-exit {
+  from { transform: translateY(0); filter: blur(0); opacity: 1; }
+  to { transform: translateY(60px); filter: blur(8px); opacity: 0.55; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-enter {
+    animation: lexa-hero-in 700ms ease both;
+  }
+  .hero-d2 { animation-delay: 120ms; }
+  .hero-d3 { animation-delay: 240ms; }
+  .hero-d4 { animation-delay: 320ms; }
+  @supports (animation-timeline: view()) {
+    .hero-doc-exit {
+      animation:
+        lexa-hero-in 700ms ease 400ms both,
+        lexa-hero-doc-exit linear both;
+      animation-timeline: auto, view();
+      animation-range: normal, exit 10% exit 95%;
+    }
+  }
+  @supports not (animation-timeline: view()) {
+    .hero-doc-exit {
+      animation: lexa-hero-in 700ms ease 400ms both;
+    }
+  }
+}
