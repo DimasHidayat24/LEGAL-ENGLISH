@@ -28,7 +28,7 @@ const navItems = [
   { id: 'insights', label: 'Insights', labelId: 'Artikel', icon: Compass },
 ];
 
-export const LexaMark: React.FC<{ size?: number }> = ({ size = 22 }) => (
+export const LexaMark: React.FC<{ size?: number }> = ({ size = 28 }) => (
   <span
     aria-hidden="true"
     className="inline-flex items-center justify-center text-white font-legal italic font-normal leading-none"
@@ -97,7 +97,7 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <header className="sticky top-0 z-50 px-3 pt-3 sm:px-4">
-        <div className={`lexa-nav ${isScrolled ? 'is-scrolled' : ''} mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 h-14 grid grid-cols-[1fr_auto] lg:grid-cols-[1fr_auto_1fr] items-center gap-4`}>
+        <div className={`lexa-nav ${isScrolled ? 'is-scrolled' : ''} mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 h-14 grid grid-cols-[1fr_auto] lg:grid-cols-[1fr_auto_1fr] items-center gap-4`}>
           {/* Logo */}
           <a
             href="#/"
