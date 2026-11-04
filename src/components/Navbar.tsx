@@ -31,8 +31,15 @@ const navItems = [
 export const LexaMark: React.FC<{ size?: number }> = ({ size = 22 }) => (
   <span
     aria-hidden="true"
-    className="inline-flex items-center justify-center rounded-full bg-accent text-on-accent font-legal italic font-normal leading-none"
-    style={{ width: size, height: size, fontSize: size * 0.72, paddingTop: size * 0.06 }}
+    className="inline-flex items-center justify-center text-white font-legal italic font-normal leading-none"
+    style={{
+      width: size,
+      height: size,
+      fontSize: size * 0.72,
+      paddingTop: size * 0.06,
+      backgroundColor: '#201B5F',
+      borderRadius: size * 0.3,
+    }}
   >
     §
   </span>
@@ -98,11 +105,11 @@ export const Navbar: React.FC = () => {
               e.preventDefault();
               handleNavSelect('home');
             }}
-            className="flex items-center gap-2 justify-self-start cursor-pointer"
+            className="flex items-center justify-self-start cursor-pointer"
             title="Lexa home"
+            aria-label="Lexa — home"
           >
             <LexaMark />
-            <span className="font-brand font-semibold text-[18px] tracking-[-0.045em] text-ink leading-none">lexa</span>
           </a>
 
           {/* Centered links (desktop) */}
@@ -174,7 +181,7 @@ export const Navbar: React.FC = () => {
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} aria-hidden="true" />
           <div className="liquid-glass-modal relative z-10 w-full max-w-sm mx-auto rounded-2xl p-5 space-y-4" role="dialog" aria-label="Navigation">
             <div className="flex items-center justify-between pb-3 border-b border-line">
-              <span className="flex items-center gap-2"><LexaMark /><span className="font-brand font-semibold text-[18px] tracking-[-0.045em] leading-none text-ink">lexa</span></span>
+              <LexaMark />
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 aria-label="Close menu"

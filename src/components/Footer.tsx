@@ -63,7 +63,7 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
           <div className="col-span-2 md:col-span-1 md:justify-self-end md:max-w-[300px]">
-            <span className="flex items-center gap-2 select-none"><LexaMark /><span className="font-brand font-semibold text-[18px] tracking-[-0.045em] leading-none">lexa</span></span>
+            <span className="select-none"><LexaMark /></span>
             <p className="ft-muted text-sm leading-relaxed mt-3">Legal English for Indonesian law students, learned through Indonesian law. For study, not legal advice.</p>
           </div>
         </div>
