@@ -169,7 +169,9 @@ export const HeroSection: React.FC = () => {
           </div>
 
           <div className="hero-doc-exit mt-10 sm:mt-12 lg:mt-14">
-            <AnnotatedPage terms={previewTerms} onOpenTerm={setActiveLookupTermId} onOpenReader={() => openDoc(firstDoc.id)} />
+            <div className="hero-enter hero-d5">
+              <AnnotatedPage terms={previewTerms} onOpenTerm={setActiveLookupTermId} onOpenReader={() => openDoc(firstDoc.id)} />
+            </div>
           </div>
         </div>
       </section>
