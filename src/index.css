@@ -52,21 +52,22 @@
 :root,
 html.light,
 [data-theme="light"] {
-  --bg: var(--color-brand-50);
+  /* DS 1.0 Fase 2 — token fondasi (Ice Blue / Deep Navy). Font tidak berubah; --accent (tombol primer) tetap tinta sampai Fase 3. */
+  --bg: #EDFCFF;
   --surface: #FFFFFF;
-  --surface-2: oklch(98.6% 0.005 112.18);
-  --surface-3: var(--color-brand-100);
-  --text: var(--color-brand-950);
-  --text-2: var(--color-brand-900);
-  --text-muted: var(--color-brand-600);
-  --text-faint: var(--color-brand-500);
-  --border: var(--color-brand-200);
-  --border-strong: var(--color-brand-300);
+  --surface-2: #EDF8FD;
+  --surface-3: #D2F0F9;
+  --text: #0B3445;
+  --text-2: #1C4A5E;
+  --text-muted: #64748B;
+  --text-faint: #5D6E7C;
+  --border: #D6EDF3;
+  --border-strong: #B9E2EE;
   --accent: var(--color-brand-900);
   --accent-hover: var(--color-brand-800);
   --accent-contrast: #FFFFFF;
   --accent-soft: var(--color-brand-100);
-  --link: var(--color-brand-800);
+  --link: #1278A3;
   --link-contrast: #FFFFFF;
   --success: #2F7A52;
   --success-soft: #E7F5EC;
@@ -74,43 +75,101 @@ html.light,
   --danger-soft: #FDECEC;
   --warning: #A64B12;
   --warning-soft: #FFF1E6;
-  --glass: rgba(255, 255, 255, 0.82);
-  --glass-border: var(--color-brand-200);
+  --info: #1278A3;
+  --info-soft: #D2F0F9;
+  --glass: color-mix(in oklch, #EDFCFF 88%, transparent);
+  --glass-border: #D6EDF3;
   --shadow-card: none;
-  --shadow-float: 0 1px 2px rgba(10, 10, 10, 0.05), 0 16px 40px -12px rgba(10, 10, 10, 0.18);
-  --shadow-pop: 0 24px 60px -16px rgba(10, 10, 10, 0.22);
+  --shadow-float: 0 1px 2px rgba(11, 52, 69, 0.05), 0 16px 40px -12px rgba(11, 52, 69, 0.18);
+  --shadow-pop: 0 24px 60px -16px rgba(11, 52, 69, 0.22);
+  /* Alias semantik DS 1.0 */
+  --background: var(--bg);
+  --surface-elevated: #FFFFFF;
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --brand-primary: #30ACD1;
+  --brand-action: #007FAF;
+  --brand-electric: #00A5E5;
+  --brand-highlight: #EEE8A9;
+  --border-default: var(--border);
+  --focus: #1278A3;
+  --disabled-bg: var(--surface-3);
+  --disabled-fg: var(--text-faint);
+  --overlay: rgba(11, 52, 69, 0.45);
+  --hover-bg: color-mix(in oklch, var(--link) 8%, transparent);
+  --active-bg: color-mix(in oklch, var(--link) 14%, transparent);
+  /* Spasi (4px) + radius DS 1.0 — dipakai mulai Fase 3 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(11, 52, 69, 0.06);
+  --shadow-md: 0 4px 12px -2px rgba(11, 52, 69, 0.08), 0 2px 4px rgba(11, 52, 69, 0.04);
+  --shadow-lg: 0 16px 40px -12px rgba(11, 52, 69, 0.14);
   color-scheme: light;
 }
 
 html.dark,
 [data-theme="dark"] {
-  --bg: #0A0A0A;
-  --surface: #111111;
-  --surface-2: #161616;
-  --surface-3: #1F1F1F;
-  --text: #EDEDED;
-  --text-2: #D4D4D4;
-  --text-muted: #A1A1A1;   /* 7.6:1 on bg, 6.4:1 on surface-3 */
-  --text-faint: #8F8F8F;   /* 6.1:1 on bg, 5.1:1 on surface-3 */
-  --border: #262626;
-  --border-strong: #3A3A3A;
+  --bg: #091A24;
+  --surface: #102B39;
+  --surface-2: #12303F;
+  --surface-3: #173747;
+  --text: #EAF8FC;
+  --text-2: #D7EFF8;
+  --text-muted: #A6BBC6;
+  --text-faint: #8F8F8F;
+  --border: #244655;
+  --border-strong: #2F556B;
   --accent: #EDEDED;
   --accent-hover: #FFFFFF;
-  --accent-contrast: #0A0A0A;
+  --accent-contrast: #091A24;
   --accent-soft: #1F1F1F;
   --link: #8ED8F3;
-  --link-contrast: #0A0A0A;
+  --link-contrast: #091A24;
   --success: #6FCF97;
   --success-soft: #11251A;
   --danger: #F19494;
   --danger-soft: #2C1617;
   --warning: #E8C170;
   --warning-soft: #2A2210;
-  --glass: rgba(10, 10, 10, 0.86);
-  --glass-border: #262626;
+  --info: #8ED8F3;
+  --info-soft: #12303F;
+  --glass: rgba(9, 26, 36, 0.86);
+  --glass-border: #244655;
   --shadow-card: none;
   --shadow-float: 0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 40px -10px rgba(0, 0, 0, 0.7);
   --shadow-pop: 0 24px 60px -16px rgba(0, 0, 0, 0.75);
+  /* Alias semantik DS 1.0 */
+  --background: var(--bg);
+  --surface-elevated: #173747;
+  --text-primary: var(--text);
+  --text-secondary: var(--text-muted);
+  --brand-primary: #30ACD1;
+  --brand-action: #00A5E5;
+  --brand-electric: #00A5E5;
+  --brand-highlight: #4B482C;
+  --border-default: var(--border);
+  --focus: #8ED8F3;
+  --disabled-bg: var(--surface-3);
+  --disabled-fg: var(--text-faint);
+  --overlay: rgba(3, 10, 14, 0.6);
+  --hover-bg: color-mix(in oklch, var(--link) 10%, transparent);
+  --active-bg: color-mix(in oklch, var(--link) 16%, transparent);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 40px -12px rgba(0, 0, 0, 0.6);
   color-scheme: dark;
 }
 
@@ -1282,23 +1341,23 @@ html.dark .wd-cmt-note.is-hot { background: #3A3020; }
    ========================================================================== */
 html:not(.dark) {
   --surface: #FFFFFF;
-  --surface-2: oklch(98.6% 0.005 112.18);
-  --surface-3: var(--color-brand-100);
-  --bg: var(--color-brand-50);
+  --surface-2: #EDF8FD;
+  --surface-3: #D2F0F9;
+  --bg: #EDFCFF;
   --paper: #FFFFFF;
-  --glass: color-mix(in oklch, var(--color-brand-50) 88%, transparent);
+  --glass: color-mix(in oklch, #EDFCFF 88%, transparent);
   --pop: var(--color-brand-400);
   /* Type: same hue, low chroma — warm ink, not orange. Colour stays for accents only. */
-  --text: #16191C;
-  --text-2: #212529;
-  --text-muted: #495057;
-  --text-faint: #6C757D;
-  --link: var(--color-brand-700);
+  --text: #0B3445;
+  --text-2: #1C4A5E;
+  --text-muted: #64748B;
+  --text-faint: #5D6E7C;
+  --link: #1278A3;
   --accent: var(--color-brand-900);
   --accent-hover: var(--color-brand-800);
-  --accent-contrast: var(--color-brand-50);
-  --marker: color-mix(in oklch, var(--color-brand-400) 26%, transparent);
-  --marker-hot: color-mix(in oklch, var(--color-brand-400) 45%, transparent);
+  --accent-contrast: #FFFFFF;
+  --marker: color-mix(in oklch, var(--link) 26%, transparent);
+  --marker-hot: color-mix(in oklch, var(--link) 45%, transparent);
   --pencil: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M1 4.2 C 18 2 34 5.4 52 3.4 S 86 4.6 99 2.4' fill='none' stroke='%23495057' stroke-width='2' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
 }
 html:not(.dark) .chap-row { --ch: var(--color-brand-400); --ch-soft: var(--color-brand-100); --ch-ink: var(--color-brand-800); }
@@ -1316,7 +1375,7 @@ html:not(.dark) .progress-fill { background: var(--color-brand-400); }
 html:not(.dark) .btn-secondary { background: var(--color-brand-50); border-color: var(--color-brand-300); }
 html:not(.dark) .chapter-card, html:not(.dark) .ch-card { background-color: var(--color-brand-50); }
 html:not(.dark) #hero-banner { background: radial-gradient(50% 45% at 50% 0%, color-mix(in oklch, var(--color-brand-400) 16%, transparent) 0%, transparent 70%), linear-gradient(180deg, var(--color-brand-100) 0%, var(--color-brand-50) 100%); }
-html:not(.dark) body { background: var(--color-brand-50); }
+html:not(.dark) body { background: var(--bg); }
 
 /* Footer — dark band in the brand scale (Cointrix-style structure) */
 .lx-footer { --ft-bg: var(--color-brand-950); --ft-fg: var(--color-brand-50); --ft-mut: #ADB5BD; --ft-line: color-mix(in oklch, var(--color-brand-50) 12%, transparent);
@@ -1520,13 +1579,13 @@ html.light,
 
 html.dark,
 [data-theme="dark"] {
-  --color-accent-blue-50: color-mix(in oklch, var(--color-accent-blue-500) 16%, #111111);
-  --color-accent-blue-100: color-mix(in oklch, var(--color-accent-blue-500) 26%, #111111);
+  --color-accent-blue-50: color-mix(in oklch, var(--color-accent-blue-500) 16%, #102B39);
+  --color-accent-blue-100: color-mix(in oklch, var(--color-accent-blue-500) 26%, #102B39);
   --color-accent-blue-300: #30ACD1;
   --color-accent-blue-500: #00A5E5;
   --color-accent-blue-600: #8ED8F3;
   --color-accent-blue-700: color-mix(in oklch, #FFFFFF 35%, var(--color-accent-blue-500));
-  --glass-hero: rgba(17, 17, 17, 0.60);
+  --glass-hero: rgba(16, 43, 57, 0.60);
   --glass-hero-border: rgba(255, 255, 255, 0.12);
   --glass-hero-highlight: rgba(255, 255, 255, 0.08);
   --glow-blue: color-mix(in oklch, var(--color-accent-blue-500) 26%, transparent);
@@ -1561,8 +1620,8 @@ html.dark,
 /* Localized blue glow behind the hero only (Blues model: no full-page
    gradient). Light keeps the existing grey wash + vertical gradient and
    adds the blue layer in front of them; dark gains the same glow. */
-html:not(.dark) #hero-banner { background: radial-gradient(60% 55% at 50% 0%, var(--glow-blue) 0%, transparent 70%), radial-gradient(50% 45% at 50% 0%, color-mix(in oklch, var(--color-brand-400) 16%, transparent) 0%, transparent 70%), linear-gradient(180deg, var(--color-brand-100) 0%, var(--color-brand-50) 100%); }
-html.dark #hero-banner { background: radial-gradient(60% 55% at 50% 0%, var(--glow-blue) 0%, transparent 70%), linear-gradient(180deg, #0A0A0A 0%, #0A0A0A 100%); }
+html:not(.dark) #hero-banner { background: radial-gradient(60% 55% at 50% 0%, var(--glow-blue) 0%, transparent 70%), radial-gradient(50% 45% at 50% 0%, color-mix(in oklch, var(--color-accent-blue-500) 10%, transparent) 0%, transparent 70%), linear-gradient(180deg, var(--color-accent-blue-50) 0%, var(--color-accent-blue-50) 100%); }
+html.dark #hero-banner { background: radial-gradient(60% 55% at 50% 0%, var(--glow-blue) 0%, transparent 70%), linear-gradient(180deg, #091A24 0%, #091A24 100%); }
 
 /* Hero underline ("lawyer") in the sparing blue, light mode only. */
 
