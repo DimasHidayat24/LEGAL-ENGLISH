@@ -39,12 +39,27 @@ export const comparativeLawList: ComparativeConcept[] = [
   {
     id: 'comp-consideration-kausa',
     englishTerm: 'Consideration (Bargained-for Exchange / Quid Pro Quo)',
-    indonesianTerm: 'Kausa yang Halal / Prestasi Timbal Balik (Pasal 1320 ayat 4 KUHPer)',
+    indonesianTerm: 'Kausa yang Halal',
     category: 'Contract',
-    civilLawNuance: 'Syarat sahnya perjanjian ke-4 dalam Pasal 1320 KUHPerdata mensyaratkan "suatu sebab yang halal" (geoorloofde oorzaak) — yaitu isi dan tujuan kontrak tidak boleh bertentangan dengan undang-undang, kesusilaan, atau ketertiban umum.',
-    commonLawNuance: 'Syarat mutlak di mana setiap janji harus dibeli dengan nilai ekonomis atau pengorbanan hak (detriment to promisee / benefit to promisor). Janji tanpa pertukaran nilai (gratuitous promise) tidak mengikat di pengadilan, kecuali dibuat dalam bentuk "Deed under seal".',
-    whyContextMatters: 'Banyak mahasiswa mengira "Consideration" sama dengan "Kausa Halal". Padahal, hibah atau perjanjian sepihak bisa sah di Indonesia dengan akta notaris, sedangkan di Common Law hibah bukan kontrak sah tanpa deed.',
-    exampleScenario: 'Dalam klausul pembuka kontrak Inggris selalu ada kalimat: "NOW THEREFORE, in consideration of the sum of $1.00 and other good and valuable consideration...". Ini dicantumkan demi memenuhi doktrin Consideration Common Law.'
+    sourceRef: 'Pasal 1320, 1335, 1337 KUHPerdata',
+    relationship: 'false-friend',
+    civilLawNuance: 'Kausa yang halal adalah syarat keempat sahnya perjanjian (Pasal 1320 KUHPerdata): isi dan tujuan perjanjian itu sendiri harus halal. Perjanjian tanpa kausa, atau dengan kausa palsu atau terlarang, tidak mempunyai kekuatan (Pasal 1335). Kausa terlarang adalah kausa yang dilarang undang-undang, bertentangan dengan kesusilaan, atau ketertiban umum (Pasal 1337). Kausa bukan soal timbal balik prestasi, dan bukan motif pribadi para pihak.',
+    commonLawNuance: 'Di common law, consideration — sesuatu yang bernilai yang dipertukarkan sebagai harga suatu janji — umumnya disyaratkan agar janji dapat dipaksakan, dan janji cuma-cuma umumnya tidak dapat dipaksakan kecuali dibuat dalam bentuk deed. Itu aturan sistem lain, bukan syarat Pasal 1320.',
+    whyContextMatters: 'Jangan samakan consideration dengan kausa halal: sahnya perjanjian di Indonesia tidak bergantung pada timbal balik prestasi, dan perjanjian sepihak yang kausanya halal dapat sah. Akta notaris hanya disyaratkan untuk jenis perjanjian tertentu — misalnya hibah, kecuali hibah benda bergerak berwujud yang sah dengan penyerahan belaka (Pasal 1682 jo. 1687).',
+    exampleScenario: 'Dalam klausul pembuka kontrak Inggris selalu ada kalimat: "NOW THEREFORE, in consideration of the sum of $1.00 and other good and valuable consideration...". Ini dicantumkan demi memenuhi doktrin Consideration Common Law.',
+    sayIt: {
+      preferredExpression: 'lawful cause; lawful purpose',
+      collocations: ['lawful cause', 'for a lawful purpose', 'the agreement shall be void if its cause is unlawful', 'recitals state the purpose of this Agreement'],
+      modelSentenceEn: 'The Parties enter into this Agreement for a lawful purpose, and the obligations herein are binding upon execution, without any requirement of consideration under Indonesian law.',
+      modelSentenceId: 'Para Pihak mengadakan Perjanjian ini untuk tujuan yang halal, dan kewajiban-kewajiban di dalamnya mengikat sejak penandatanganan, tanpa syarat consideration menurut hukum Indonesia.',
+      doNotSay: 'This Agreement is valid because there is consideration / reciprocal performance.',
+      doNotSayWhy: 'Sahnya perjanjian tidak bergantung pada timbal balik prestasi. Yang menentukan adalah kausa yang halal (Pasal 1320); syarat bentuk seperti akta notaris hanya berlaku untuk jenis perjanjian tertentu, misalnya hibah (Pasal 1682 jo. 1687).',
+    },
+    exercise: {
+      task: 'Perbaiki kalimat ini: "The donation is enforceable because the donor received consideration in return."',
+      hint: 'Ganti alasan sahnya — bukan timbal balik, melainkan kausa yang halal dan syarat bentuk akta notaris untuk hibah.',
+      modelAnswer: 'The gift is enforceable because it was made for a lawful cause — not because consideration was given. Any formal requirement, such as a notarial deed for certain gifts, depends on the type of gift and the property involved.',
+    },
   },
   {
     id: 'comp-damages-gantirugi',
